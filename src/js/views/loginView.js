@@ -37,7 +37,7 @@ function loginTemplate() {
 
     <footer class="mt-6 text-center text-sm text-slate-500">
       No tienes cuenta?
-      <a href="#/register" class="font-bold text-[#0D4D44] hover:text-[#59B13F]">Crear cuenta</a>
+      <a href="/register" class="font-bold text-[#0D4D44] hover:text-[#59B13F]">Crear cuenta</a>
     </footer>
   `);
 }
@@ -59,6 +59,11 @@ export function renderLogin({ navigate }) {
     }
 
     saveSession(result.user);
-    navigate("#/profile");
+    if (result.user.role === "ADMIN") {
+      navigate("/admin");
+      return;
+    }
+
+    navigate("/profile");
   });
 }

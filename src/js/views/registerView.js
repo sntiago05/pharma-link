@@ -67,7 +67,7 @@ function registerTemplate() {
 
     <footer class="mt-6 text-center text-sm text-slate-500">
       Ya tienes cuenta?
-      <a href="#/login" class="font-bold text-[#0D4D44] hover:text-[#59B13F]">Iniciar sesion</a>
+      <a href="/login" class="font-bold text-[#0D4D44] hover:text-[#59B13F]">Iniciar sesion</a>
     </footer>
   `);
 }
@@ -100,6 +100,6 @@ export function renderRegister({ navigate }) {
     }
 
     saveSession(result.user);
-    navigate("#/profile");
+    navigate("/profile");
   });
 }

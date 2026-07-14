@@ -40,6 +40,6 @@ export function renderProfile({ navigate, user }) {
 
   document.getElementById("logoutButton").addEventListener("click", () => {
     logout();
-    navigate("#/login");
+    navigate("/login");
   });
 }
