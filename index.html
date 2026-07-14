@@ -6,7 +6,28 @@
     <title>pharma-link</title>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app" class="h-screen flex justify-around">
+      <div class="h-full flex flex-col justify-center items-center p-1">
+        <form id="add_user_form" class="flex flex-col w-50 gap-1">
+          <label for="user_name">Name:</label>
+          <input name="user_name" class="border" placeholder="name">
+          <label for="user_role">User role:</label>
+          <input name="user_role" class="border" placeholder="role">
+          <label for="user_email">User email:</label>
+          <input name="user_email" class="border" placeholder="email">
+          <label for="user_password">User password:</label>
+          <input name="user_password" class="border" placeholder="password">
+          <button id="add_user_btn">Add user</button>
+        </form>
+      </div>
+      <div class="h-full flex flex-col justify-center items-center p-1">
+        <form id="add_user_form" class="flex flex-col w-50 gap-1">
+            <label for="user_email">User email:</label>
+            <input name="user_email" class="border" placeholder="email">
+            <button id="disable_user_btn">Disable user</button>
+        </form>
+      </div>
+    </div>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
