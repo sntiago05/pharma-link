@@ -1,4 +1,4 @@
-import { admin_controller } from "../controllers/admin_controller";
+import { admin_controller } from "../../controllers/admin_controller";
 
 export function adminView() {
   document.getElementById("app").innerHTML = `
