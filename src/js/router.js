@@ -4,9 +4,11 @@ import { renderLogin } from "./views/loginView.js";
 import { renderProfile } from "./views/profileView.js";
 import { renderRegister } from "./views/registerView.js";
 import { adminView } from "./views/admin_view.js";
+import { renderWelcome } from "./views/welcomePage.js";
 
 const routes = {
   "/": renderLanding,
+  "/welcome": renderWelcome,
   "/login": renderLogin,
   "/register": renderRegister,
   "/profile": renderProfile,
