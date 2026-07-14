@@ -15,7 +15,7 @@ export function adminView() {
                 <option value="3">EPS personel</option>
               </select>
               <label for="email">User email:</label>
-              <input name="email" class="border" type="email" placeholder="email" >
+              <input name="email" class="border" type="text" placeholder="email" >
               <label for="password">User password:</label>
               <input name="password" class="border" type="password" placeholder="password" >
               <div id="add_message"></div>
