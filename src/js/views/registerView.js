@@ -1,89 +1,70 @@
 import { registerUser, saveSession } from "../auth.js";
-import { authShell, brandHeader, inputField } from "./components.js";
+import { inputField } from "./components.js";
 
 function registerTemplate() {
-  return authShell(`
-    ${brandHeader()}
+  return `
+    <main class="min-h-screen bg-[#F8FAFC] px-4 py-8 text-slate-900 sm:px-6 md:px-10 lg:px-16">
+      <div class="mx-auto w-full max-w-md overflow-hidden rounded-[32px] bg-white p-6 shadow-xl shadow-emerald-900/10 md:max-w-xl md:p-8 lg:max-w-3xl">
+      <div class="mb-8 flex flex-col items-center justify-center gap-3 text-center">
+        <img class="h-14 w-14" src="img/image%201.png" alt="PharmaLink logo" />
+        <div>
+          <p class="text-2xl font-semibold text-[#0D4D44]">Pharma<span class="text-[#059E3E]">Link</span></p>
+        </div>
+      </div>
 
-    <section class="mt-10 text-center">
-      <h1 class="text-3xl font-extrabold text-[#0D4D44]">Crear cuenta</h1>
-      <p class="mt-2 text-sm text-slate-500">Registrate para empezar con Pharma Link</p>
-    </section>
+      <div class="space-y-4">
+        <h1 class="text-3xl font-semibold leading-tight text-[#0D4D44]">Create your PharmaLink account</h1>
+        <p class="text-sm leading-6 text-slate-600">Fill in the form to access your pharmacy, orders, and promotions on a secure platform.</p>
+      </div>
 
-    <form id="registerForm" class="mt-8 space-y-4">
-      ${inputField({
-        id: "fullname",
-        label: "Nombre completo",
-        autocomplete: "name"
-      })}
+      <form id="registerForm" class="mt-8 space-y-4" aria-label="registration form">
+        ${inputField({ id: "userId", label: "ID", type: "text", autocomplete: "off" })}
+        ${inputField({ id: "fullname", label: "Full name", type: "text", autocomplete: "name" })}
+        ${inputField({ id: "email", label: "Email", type: "email", autocomplete: "email" })}
+        ${inputField({ id: "phone", label: "Phone", type: "tel", autocomplete: "tel" })}
+        ${inputField({ id: "password", label: "Password", type: "password", autocomplete: "new-password" })}
+        ${inputField({ id: "confirmPassword", label: "Confirm Password", type: "password", autocomplete: "new-password" })}
 
-      ${inputField({
-        id: "email",
-        label: "Email",
-        type: "email",
-        autocomplete: "email"
-      })}
+        <div class="flex items-start gap-3 rounded-[24px] bg-[#F1F5F9] p-4 text-[11px] text-slate-600">
+          <label class="flex cursor-pointer items-center gap-3">
+            <input id="terms" type="checkbox" class="h-4 w-4 rounded border-slate-300 text-[#059E3E] focus:ring-[#059E3E]" />
+            <span>I accept the <span class="font-semibold text-[#059E3E]">Terms & Conditions</span> and <span class="font-semibold text-[#059E3E]">Privacy Policy</span>.</span>
+          </label>
+        </div>
 
-      ${inputField({
-        id: "phone",
-        label: "Telefono",
-        type: "tel",
-        autocomplete: "tel"
-      })}
+        <p id="errorMessage" class="min-h-[1.25rem] text-sm font-medium text-red-600"></p>
+        <button type="submit" class="flex h-12 w-full items-center justify-center rounded-[28px] bg-gradient-to-r from-[#0D4D44] to-[#059E3E] text-sm font-semibold text-white shadow-lg shadow-emerald-900/10 transition hover:opacity-95">Create account</button>
+      </form>
 
-      ${inputField({
-        id: "password",
-        label: "Contrasena",
-        type: "password",
-        autocomplete: "new-password"
-      })}
-
-      ${inputField({
-        id: "confirmPassword",
-        label: "Confirmar contrasena",
-        type: "password",
-        autocomplete: "new-password"
-      })}
-
-      <label class="flex items-start gap-3 text-sm leading-5 text-slate-600">
-        <input id="terms" type="checkbox" required class="mt-1 h-4 w-4 rounded border-slate-300 text-[#0D4D44] focus:ring-emerald-200">
-        <span>
-          Acepto los
-          <a href="#" class="font-semibold text-[#0D4D44] hover:text-[#59B13F]">Terminos y condiciones</a>
-          y la
-          <a href="#" class="font-semibold text-[#0D4D44] hover:text-[#59B13F]">Politica de privacidad</a>
-        </span>
-      </label>
-
-      <button
-        type="submit"
-        class="w-full rounded-lg bg-[#0D4D44] px-4 py-3 text-base font-bold text-white transition hover:bg-emerald-800 focus:outline-none focus:ring-4 focus:ring-emerald-200"
-      >
-        Crear cuenta
-      </button>
-
-      <p id="errorMessage" class="min-h-5 text-center text-sm font-medium text-red-600"></p>
-    </form>
-
-    <footer class="mt-6 text-center text-sm text-slate-500">
-      Ya tienes cuenta?
-      <a href="/login" class="font-bold text-[#0D4D44] hover:text-[#59B13F]">Iniciar sesion</a>
-    </footer>
-  `);
+      <p class="mt-4 text-center text-[11px] text-slate-500">Already have an account? <a id="loginLink" href="/login" class="font-semibold text-[#059E3E]">Sign in</a></p>
+      </div>
+    </main>
+  `;
 }
 
 export function renderRegister({ navigate }) {
   document.getElementById("app").innerHTML = registerTemplate();
 
-  document.getElementById("registerForm").addEventListener("submit", (event) => {
+document.getElementById("loginLink").addEventListener("click", (event) => {
+      event.preventDefault();
+      navigate("/login");
+    });
+
+    document.getElementById("registerForm").addEventListener("submit", (event) => {
     event.preventDefault();
 
     const password = document.getElementById("password").value;
     const confirmPassword = document.getElementById("confirmPassword").value;
+    const termsChecked = document.getElementById("terms").checked;
     const errorMessage = document.getElementById("errorMessage");
 
+    if (!termsChecked) {
+      errorMessage.textContent = "You must accept the terms and conditions to create an account.";
+      return;
+    }
+
     if (password !== confirmPassword) {
-      errorMessage.textContent = "Las contrasenas no coinciden.";
+      errorMessage.textContent = "Passwords do not match.";
       return;
     }
 

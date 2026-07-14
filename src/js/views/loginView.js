@@ -68,6 +68,11 @@ function loginTemplate() {
 export function renderLogin({ navigate }) {
   document.getElementById("app").innerHTML = loginTemplate();
 
+  document.getElementById("signupLink").addEventListener("click", (event) => {
+    event.preventDefault();
+    navigate("/register");
+  });
+
   document.getElementById("loginForm").addEventListener("submit", (event) => {
     event.preventDefault();
 
