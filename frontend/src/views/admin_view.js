@@ -12,7 +12,7 @@ export function adminView() {
                 <option value="1">Admin</option>
                 <option value="2">Client</option>
                 <option value="3">Pharmacy personel</option>
-                <option value="3">EPS personel</option>
+                <option value="4">EPS personel</option>
               </select>
               <label for="email">User email:</label>
               <input name="email" class="border" type="text" placeholder="email" >
