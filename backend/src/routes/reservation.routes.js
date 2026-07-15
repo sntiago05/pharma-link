@@ -1,0 +1,11 @@
+import { Router } from 'express';
+import { availableSlots, cancelReservation, createReservation, listPharmacyReservations, markNoShow, rescheduleReservation } from '../controllers/reservation.controller.js';
+import { allowRoles } from '../middleware/auth.middleware.js';
+const router = Router();
+router.post('/', allowRoles('PATIENT'), createReservation);
+router.delete('/:id', allowRoles('PATIENT'), cancelReservation);
+router.put('/:id/reschedule', allowRoles('PATIENT'), rescheduleReservation);
+router.post('/:id/no-show', allowRoles('ADMIN', 'PHARMACY_OPERATOR'), markNoShow);
+router.get('/pharmacy/:pharmacyId/availability', availableSlots);
+router.get('/pharmacy/:pharmacyId', allowRoles('ADMIN', 'PHARMACY_OPERATOR'), listPharmacyReservations);
+export default router;

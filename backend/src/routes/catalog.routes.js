@@ -1,0 +1,24 @@
+import { Router } from 'express';
+import { createCatalog, deleteCatalog, getCatalogItem, linkEpsPharmacy, listCatalog, setWorkingHours, updateCatalog } from '../controllers/catalog.controller.js';
+import { allowRoles } from '../middleware/auth.middleware.js';
+
+const router = Router();
+const staff = allowRoles('ADMIN', 'EPS_OPERATOR', 'PHARMACY_OPERATOR');
+router.get('/eps', staff, listCatalog('eps'));
+router.post('/eps', allowRoles('ADMIN'), createCatalog('eps'));
+router.get('/eps/:id', staff, getCatalogItem('eps'));
+router.put('/eps/:id', allowRoles('ADMIN'), updateCatalog('eps'));
+router.delete('/eps/:id', allowRoles('ADMIN'), deleteCatalog('eps'));
+router.get('/pharmacies', staff, listCatalog('pharmacies'));
+router.post('/pharmacies', allowRoles('ADMIN'), createCatalog('pharmacies'));
+router.get('/pharmacies/:id', staff, getCatalogItem('pharmacies'));
+router.put('/pharmacies/:id', allowRoles('ADMIN'), updateCatalog('pharmacies'));
+router.delete('/pharmacies/:id', allowRoles('ADMIN'), deleteCatalog('pharmacies'));
+router.get('/medicines', staff, listCatalog('medicines'));
+router.post('/medicines', allowRoles('ADMIN'), createCatalog('medicines'));
+router.get('/medicines/:id', staff, getCatalogItem('medicines'));
+router.put('/medicines/:id', allowRoles('ADMIN'), updateCatalog('medicines'));
+router.delete('/medicines/:id', allowRoles('ADMIN'), deleteCatalog('medicines'));
+router.post('/eps-pharmacies', allowRoles('ADMIN'), linkEpsPharmacy);
+router.post('/working-hours', allowRoles('ADMIN', 'PHARMACY_OPERATOR'), setWorkingHours);
+export default router;
