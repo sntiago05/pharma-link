@@ -6,7 +6,7 @@ function registerTemplate() {
     <main class="min-h-screen bg-[#F8FAFC] px-4 py-8 text-slate-900 sm:px-6 md:px-10 lg:px-16">
       <div class="mx-auto w-full max-w-md overflow-hidden rounded-[32px] bg-white p-6 shadow-xl shadow-emerald-900/10 md:max-w-xl md:p-8 lg:max-w-3xl">
       <div class="mb-8 flex flex-col items-center justify-center gap-3 text-center">
-        <img class="h-14 w-14" src="img/image%201.png" alt="PharmaLink logo" />
+        <img class="h-14 w-14" src="/img/image%201.png" alt="PharmaLink logo" />
         <div>
           <p class="text-2xl font-semibold text-[#0D4D44]">Pharma<span class="text-[#059E3E]">Link</span></p>
         </div>

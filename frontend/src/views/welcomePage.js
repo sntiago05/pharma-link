@@ -2,7 +2,7 @@ function welcomeTemplate(user) {
   return `
   <main class="min-h-screen bg-slate-50 px-4 py-6 flex items-center justify-center">
     <section class="relative flex min-h-[844px] w-full max-w-[390px] lg:max-w-[1000px] lg:overflow-hidden lg:rounded-[32px] lg:bg-white lg:shadow-xl lg:ring-1 lg:ring-slate-200">
-      <img class="absolute left-1/2 top-[147px] w-[85%] -translate-x-1/2 lg:left-[34%] lg:top-[18%] lg:w-[300px] lg:translate-x-0" src="./img/welcomeFigure.png" alt="Welcome image" />
+      <img class="absolute left-1/2 top-[147px] w-[85%] -translate-x-1/2 lg:left-[34%] lg:top-[18%] lg:w-[300px] lg:translate-x-0" src="/img/welcomeFigure.png" alt="Welcome image" />
 
       <section class="absolute inset-x-0 bottom-[180px] px-6 text-center">
         <h1 class="text-[35px] font-medium text-black font-['Poppins']">Welcome to</h1>

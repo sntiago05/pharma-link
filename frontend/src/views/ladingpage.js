@@ -4,7 +4,7 @@ function landingTemplate(user) {
     <section class="w-full max-w-[390px] min-h-[844px] overflow-hidden lg:rounded-[32px] lg:bg-white lg:shadow-xl lg:ring-1 lg:ring-slate-200 relative lg:max-w-6xl lg:min-h-[640px] lg:flex lg:items-center lg:overflow-visible lg:p-8">
       <div class="absolute left-1/2 top-[62.63px] -translate-x-1/2 flex flex-col items-center text-center lg:left-[8%] lg:top-[8%] lg:translate-x-0 lg:items-start lg:text-left">
         <div class="flex items-center gap-2">
-          <img class="w-25 h-14" src="./img/logo horizontal.png" alt="Pharma Link logo" />
+          <img class="w-25 h-14" src="/img/logo horizontal.png" alt="Pharma Link logo" />
         </div>
       </div>
 
@@ -13,7 +13,7 @@ function landingTemplate(user) {
         <p class="mt-3 text-black text-sm font-normal font-['Montserrat'] lg:text-base lg:max-w-md">Join Pharma Link and take care of your health easily.</p>
       </div>
 
-      <img class="absolute left-1/2 top-[233px] w-44 -translate-x-1/2 lg:left-[58%] lg:top-[18%] lg:w-[320px] lg:translate-x-0" src="./img/landingImg.png" alt="App preview" />
+      <img class="absolute left-1/2 top-[233px] w-44 -translate-x-1/2 lg:left-[58%] lg:top-[18%] lg:w-[320px] lg:translate-x-0" src="/img/landingImg.png" alt="App preview" />
 
       <div class="absolute left-1/2 top-[400px] w-[78%] -translate-x-1/2 space-y-4 text-black lg:left-[8%] lg:top-[54%] lg:w-[46%] lg:translate-x-0 lg:grid lg:grid-cols-2 lg:gap-4 lg:space-y-0">
         

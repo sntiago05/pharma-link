@@ -56,5 +56,18 @@ function renderRoute() {
 
 export function startRouter() {
   window.addEventListener("popstate", renderRoute);
+
+  document.addEventListener("click", (event) => {
+    const link = event.target.closest("a");
+    if (!link) return;
+
+    const href = link.getAttribute("href");
+    if (!href || !href.startsWith("/")) return;
+    if (link.target === "_blank" || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+
+    event.preventDefault();
+    navigate(href);
+  });
+
   renderRoute();
 }
