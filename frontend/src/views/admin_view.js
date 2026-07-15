@@ -1,4 +1,4 @@
-import { admin_controller } from "../services/admin_controller";
+import { admin_controller } from "../services/user_management";
 
 export function adminView() {
   document.getElementById("app").innerHTML = `
@@ -24,7 +24,7 @@ export function adminView() {
           </div>
           <div class="h-full flex flex-col justify-center items-center p-1"></div>
           <div class="h-full flex flex-col justify-center items-center p-1">
-            <form id="add_user_form" class="flex flex-col w-50 gap-1">
+            <form id="disable_user_form" class="flex flex-col w-50 gap-1">
                 <label for="user_email">User email:</label>
                 <input name="user_email" class="border" placeholder="email" >
                 <div id="disable_message"></div>
