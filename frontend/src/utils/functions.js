@@ -14,6 +14,11 @@ export function validateEmail(param) {
     return regexEmail.test(param);
 };
 
+export function isOnlyNumbers(param) {
+    const regex = /^\d+$/;
+    return regex.test(param);
+};
+
 export function confirmation(message) {
     const confirmedAction = window.confirm(message);
     if (!confirmedAction) {
