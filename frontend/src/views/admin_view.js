@@ -31,6 +31,14 @@ export function adminView() {
                 <button id="disable_user_btn">Disable user</button>
             </form>
           </div>
+          <div class="h-full flex flex-col justify-center items-center p-1">
+            <form id="enable_user_form" class="flex flex-col w-50 gap-1">
+                <label for="enable_user_email">User email:</label>
+                <input name="enable_user_email" class="border" placeholder="email" >
+                <div id="enable_message"></div>
+                <button id="enable_user_btn">Enable user</button>
+            </form>
+          </div>
         </div>`;
   admin_controller();
 }

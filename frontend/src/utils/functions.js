@@ -13,3 +13,17 @@ export function validateEmail(param) {
 
     return regexEmail.test(param);
 };
+
+export function confirmation(message) {
+    const confirmedAction = window.confirm(message);
+    if (!confirmedAction) {
+        return false;
+    }
+
+    const currentPassword = window.prompt("Enter your current password to continue:", "");
+    if (!currentPassword) {
+        return null;
+    }
+
+    return true;
+};
