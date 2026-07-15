@@ -3,6 +3,7 @@ import { renderLanding } from "./views/ladingpage.js";
 import { renderLogin } from "./views/loginView.js";
 import { renderProfile } from "./views/profileView.js";
 import { renderRegister } from "./views/registerView.js";
+import { renderPatient } from "./views/patientView.js";
 import { adminView } from "./views/admin_view.js";
 import { renderWelcome } from "./views/welcomePage.js";
 
@@ -12,6 +13,7 @@ const routes = {
   "/login": renderLogin,
   "/register": renderRegister,
   "/profile": renderProfile,
+  "/patient": renderPatient,
   "/admin": adminView
 };
 
