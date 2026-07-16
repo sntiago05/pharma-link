@@ -31,7 +31,7 @@ import reservationRoutes from './src/routes/reservation.routes.js';
 import { expireOrders } from './src/services/expiration.service.js';
 import { sendSuccess } from './src/utils/api-response.js';
 import { asyncHandler } from './src/utils/async-handler.js';
-
+console.log("Inicio de app.js");
 const app = express();
 
 // Needed for correct client IPs (rate limiting and audit logs) behind a proxy.
