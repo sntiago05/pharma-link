@@ -6,7 +6,7 @@ function loginTemplate() {
   <main class="min-h-screen bg-slate-50 px-4 py-8 flex items-center justify-center">
     <section class="relative w-full max-w-[390px] overflow-hidden lg:max-w-[700px] lg:rounded-[32px] lg:bg-white lg:px-6 lg:py-8 lg:shadow-xl lg:ring-1 lg:ring-slate-200">
       <header class="mb-10 text-center">
-        <img src="/img/logo horizontal.png" alt="Pharma Link logo" class="mx-auto h-14 w-26" />
+        <img src="/img/logo%20horizontal.png" alt="Pharma Link logo" class="mx-auto h-14 w-26" />
       </header>
 
       <div class="mb-10 flex justify-center">

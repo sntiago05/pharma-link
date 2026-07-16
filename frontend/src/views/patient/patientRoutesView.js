@@ -11,6 +11,7 @@ import {
   loadingState,
   panel,
   primaryButton,
+  promoCard,
   roleShell,
   secondaryButton,
   selectField,
@@ -157,6 +158,15 @@ async function renderDashboard() {
       title: "Actividad reciente",
       action: `<a href="/patient/notifications" class="text-sm font-medium text-emerald-700">Ver todo</a>`,
       body: activity
+    })}
+
+    ${promoCard({
+      title: "Tu salud es nuestra prioridad",
+      subtitle: "Reserva tus medicamentos y sigue tu atención desde el panel del paciente.",
+      buttonLabel: "Agenda ahora",
+      buttonHref: "/patient/availability",
+      image: "/img/promo.png",
+      imageAlt: "Ilustración de salud"
     })}
   `);
 }

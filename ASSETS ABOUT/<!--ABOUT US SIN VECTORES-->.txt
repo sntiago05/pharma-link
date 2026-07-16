@@ -1,0 +1,307 @@
+<!--ABOUT US SIN VECTORES-->
+<!--ABOUT US SIN VECTORES-->
+
+<div class="w-[1440px] h-[3238px] relative bg-white overflow-hidden">
+  <div class="left-[120px] top-[41px] absolute justify-start"><span class="text-teal-900 text-3xl font-semibold font-['Montserrat']">Pharma</span><span class="text-black text-3xl font-semibold font-['Montserrat']"> </span><span class="text-lime-600 text-3xl font-semibold font-['Montserrat']">Link</span></div>
+  <div class="left-[169.63px] top-[81.08px] absolute justify-start text-teal-900 text-sm font-normal font-['Montserrat']">F A R M A C I A</div>
+  <img class="w-14 h-16 left-[55px] top-[31px] absolute" src="https://placehold.co/59x66" />
+  <div class="left-[433px] top-[1619px] absolute text-center justify-start text-emerald-700 text-9xl font-medium font-['Poppins']">About us</div>
+  <div class="w-[527px] left-[153px] top-[1914px] absolute justify-start text-black text-lg font-medium font-['Montserrat']">At Pharma Link, we are the digital platform connecting laboratories, distributors, and pharmacies to transform healthcare supply management. Through advanced technology and a centralized reservation system, we ensure essential medicines reach those who need them most—fast, transparently, and with zero paperwork.</div>
+  <img class="w-[574px] h-96 left-[585px] top-[1809px] absolute" src="https://placehold.co/574x383" />
+  <div class="w-[1592px] h-[506px] left-[1592px] top-[2693px] absolute origin-top-left -rotate-180 bg-emerald-700"></div>
+  <div class="left-[254.80px] top-[2377.64px] absolute justify-start text-white text-5xl font-semibold font-['Montserrat']">Pharma Link</div>
+  <div class="left-[332.53px] top-[2440.31px] absolute justify-start text-white text-xl font-normal font-['Montserrat']">F A R M A C I A</div>
+  <img class="size-24 left-[153px] top-[2362px] absolute" src="https://placehold.co/93x104" />
+  <div class="left-[1017px] top-[60px] absolute justify-start text-black text-xs font-medium font-['Poppins']">Home</div>
+  <div class="left-[1097px] top-[60px] absolute justify-start text-black text-xs font-medium font-['Poppins']">Create</div>
+  <div class="left-[1179px] top-[60px] absolute justify-start text-black text-xs font-medium font-['Poppins']">Reservations</div>
+  <div class="left-[1297px] top-[60px] absolute justify-start text-black text-xs font-medium font-['Poppins']">Profile</div>
+  <div class="w-[485px] h-12 left-[433px] top-[45px] absolute bg-white rounded-2xl shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)]"></div>
+  <div class="left-[450px] top-[61px] absolute justify-start text-zinc-400 text-xs font-medium font-['Google_Sans_Flex']">Search</div>
+  <img class="size-5 left-[885px] top-[59px] absolute" src="https://placehold.co/18x18" />
+  <div class="w-[1443px] h-72 left-0 top-[137px] absolute bg-teal-900 border-black"></div>
+  <img class="w-80 h-96 left-[502px] top-[227px] absolute" src="https://placehold.co/347x427" />
+  <div class="w-80 left-[180px] top-[390px] absolute justify-start text-teal-900 text-4xl font-medium font-['Google_Sans_Flex']">Centralized Reservation System</div>
+  <div class="w-[496.56px] left-[787px] top-[267px] absolute text-center justify-start text-white text-2xl font-medium font-['Google_Sans_Flex']">We optimize access to medicines through a centralized booking system.</div>
+  <div class="w-48 left-[401px] top-[716px] absolute justify-start text-teal-900 text-2xl font-medium font-['Google_Sans_Flex']">Ensuring supply</div>
+  <div class="w-[484px] left-[401px] top-[744px] absolute justify-start text-emerald-700 text-2xl font-medium font-['Google_Sans_Flex']">Eliminating stockouts of healthcare products.</div>
+  <div class="left-[55px] top-[703px] absolute justify-start"><span class="text-teal-900 text-5xl font-semibold font-['Montserrat']">Pharma</span><span class="text-black text-5xl font-semibold font-['Montserrat']"> </span><span class="text-lime-600 text-5xl font-semibold font-['Montserrat']">Link</span></div>
+  <div class="left-[128.48px] top-[756.31px] absolute justify-start text-teal-900 text-xl font-normal font-['Montserrat']">F A R M A C I A</div>
+  <div class="size-3.5 left-[655.23px] top-[668.64px] absolute origin-top-left rotate-180 bg-neutral-200 rounded-full"></div>
+  <div class="size-3.5 left-[626.64px] top-[668.64px] absolute origin-top-left rotate-180 bg-teal-900 rounded-full"></div>
+  <div class="size-3.5 left-[683.82px] top-[668.64px] absolute origin-top-left rotate-180 bg-neutral-200 rounded-full"></div>
+  <div class="size-3.5 left-[712.41px] top-[668.64px] absolute origin-top-left rotate-180 bg-neutral-200 rounded-full"></div>
+  <div class="size-3.5 left-[741px] top-[668.64px] absolute origin-top-left rotate-180 bg-neutral-200 rounded-full"></div>
+  <div class="w-72 h-32 left-[93px] top-[829px] absolute bg-emerald-700 rounded-2xl"></div>
+  <div class="w-72 h-32 left-[415px] top-[829px] absolute bg-emerald-700 rounded-2xl"></div>
+  <div class="w-72 h-32 left-[737px] top-[829px] absolute bg-emerald-700 rounded-2xl"></div>
+  <div class="w-72 h-32 left-[1059px] top-[829px] absolute bg-emerald-700 rounded-2xl"></div>
+  <div class="left-[109px] top-[841px] absolute text-center justify-start text-white text-7xl font-normal font-['Krona_One']">100K</div>
+  <div class="left-[469px] top-[841px] absolute text-center justify-start text-white text-7xl font-normal font-['Krona_One']">10K</div>
+  <div class="left-[817px] top-[841px] absolute text-center justify-start text-white text-7xl font-normal font-['Krona_One']">1M</div>
+  <div class="left-[1093px] top-[841px] absolute text-center justify-start text-white text-7xl font-normal font-['Krona_One']">2.5k</div>
+  <div class="left-[156px] top-[931px] absolute text-center justify-start text-white text-sm font-normal font-['Google_Sans_Flex']">Streamlined reservations</div>
+  <div class="left-[487px] top-[931px] absolute text-center justify-start text-white text-sm font-normal font-['Google_Sans_Flex']">Outstanding deliveries</div>
+  <div class="left-[833px] top-[931px] absolute text-center justify-start text-white text-sm font-normal font-['Google_Sans_Flex']">Customer success</div>
+  <div class="left-[1147px] top-[931px] absolute text-center justify-start text-white text-sm font-normal font-['Google_Sans_Flex']">Enhanced control</div>
+  <img class="size-24 left-[19px] top-[425px] absolute" src="https://placehold.co/90x90" />
+  <img class="size-24 left-[1257px] top-[441px] absolute" src="https://placehold.co/90x90" />
+  <div class="left-[64px] top-[1104px] absolute justify-start text-emerald-700 text-2xl font-medium font-['Poppins']">Useful information</div>
+  <div class="w-[1085px] h-[3px] left-[292px] top-[1122px] absolute bg-teal-900 rounded-[1px]"></div>
+  <div class="w-56 h-24 left-[137px] top-[1209px] absolute bg-teal-900 rounded-2xl"></div>
+  <div class="left-[229px] top-[1245px] absolute justify-start text-white text-xs font-medium font-['Poppins']">Pending Shipments</div>
+  <div class="w-24 left-[229px] top-[1261px] absolute justify-start text-white text-[6.62px] font-medium font-['Montserrat']">Track the status of your backordered medicines.</div>
+  <img class="size-12 left-[156px] top-[1239px] absolute" src="https://placehold.co/47x47" />
+  <div class="w-56 h-24 left-[420px] top-[1209px] absolute bg-teal-900 rounded-2xl"></div>
+  <div class="left-[512px] top-[1245px] absolute justify-start text-white text-xs font-medium font-['Poppins']">Help Center</div>
+  <div class="w-28 left-[512px] top-[1261px] absolute justify-start text-white text-[6.62px] font-medium font-['Montserrat']">Find answers to frequently asked questions and learn how to contact us.</div>
+  <img class="size-12 left-[452px] top-[1237px] absolute" src="https://placehold.co/48x48" />
+  <div class="w-56 h-24 left-[703px] top-[1209px] absolute bg-teal-900 rounded-2xl"></div>
+  <div class="left-[795px] top-[1245px] absolute justify-start text-white text-xs font-medium font-['Poppins']">Profile Update</div>
+  <div class="w-24 left-[795px] top-[1261px] absolute justify-start text-white text-[6.62px] font-medium font-['Montserrat']">To update your information, please enter your ID or document first.</div>
+  <img class="size-12 left-[731px] top-[1235px] absolute" src="https://placehold.co/51x51" />
+  <div class="w-56 h-24 left-[986px] top-[1209px] absolute bg-teal-900 rounded-2xl"></div>
+  <div class="w-28 left-[1078px] top-[1239px] absolute justify-start text-white text-[9.43px] font-medium font-['Poppins']">Medicine Reservations Management</div>
+  <div class="w-28 left-[1078px] top-[1267px] absolute justify-start text-white text-[4.70px] font-medium font-['Montserrat']">At Pharma Link, we guarantee the availability of essential treatments through our smart medicine reservation system.</div>
+  <img class="size-14 left-[1014px] top-[1234px] absolute" src="https://placehold.co/52x52" />
+  <div class="w-56 h-24 left-[420px] top-[1359px] absolute bg-teal-900 rounded-2xl"></div>
+  <div class="w-28 left-[512px] top-[1394px] absolute justify-start text-white text-[9.43px] font-medium font-['Poppins']">Immediate delivery</div>
+  <div class="w-20 left-[512px] top-[1408px] absolute justify-start text-white text-[4.70px] font-medium font-['Montserrat']">Fast distribution of critical medicines.</div>
+  <img class="size-9 left-[450px] top-[1390px] absolute" src="https://placehold.co/36x36" />
+  <div class="w-56 h-24 left-[703px] top-[1359px] absolute bg-teal-900 rounded-2xl"></div>
+  <div class="w-28 left-[795px] top-[1391px] absolute justify-start text-white text-[9.43px] font-medium font-['Poppins']">100% digital process</div>
+  <div class="w-28 left-[795px] top-[1405px] absolute justify-start text-white text-[4.70px] font-medium font-['Montserrat']">From medicine reservation to ID verification, everything happens online. No printing, no delays.</div>
+  <img class="size-11 left-[738px] top-[1382px] absolute" src="https://placehold.co/44x44" />
+  <div class="w-48 left-[817px] top-[2294px] absolute justify-start text-white text-xl font-medium font-['Montserrat']">> Clients<br/>> Reservations<br/>> Create<br/>> Location<br/>> Profile<br/>> Register<br/>> Login<br/>> Delivery<br/>> Help Center</div>
+  <div class="left-[535px] top-[2679px] absolute justify-start text-teal-900 text-4xl font-medium font-['Montserrat']">Our Main Headquarters</div>
+  <div class="left-[535px] top-[2801.66px] absolute justify-start text-teal-900 text-4xl font-medium font-['Montserrat']">Contact Channels</div>
+  <div class="left-[535px] top-[2905.80px] absolute justify-start text-teal-900 text-4xl font-medium font-['Montserrat']">Employment Verification</div>
+  <div class="left-[535px] top-[3094.42px] absolute justify-start text-teal-900 text-3xl font-medium font-['Montserrat']">Employment Documents Requests</div>
+  <div class="left-[535px] top-[2993.74px] absolute justify-start text-teal-900 text-4xl font-medium font-['Montserrat']">Business Hours</div>
+  <div class="w-80 left-[535px] top-[2736.86px] absolute justify-start text-emerald-700 text-2xl font-medium font-['Montserrat']">Barranquilla:</div>
+  <div class="w-96 left-[535px] top-[2768.10px] absolute justify-start text-emerald-700 text-lg font-medium font-['Montserrat']">Calle 105 N° 14 - 140 Zona Industrial de Occidente</div>
+  <div class="w-96 left-[535px] top-[2851.42px] absolute justify-start text-emerald-700 text-lg font-medium font-['Montserrat']">From any mobile or landline: +57 601 9169338<br/>Toll-Free Nationwide Line: 018000 112 554</div>
+  <div class="w-[454.76px] left-[535px] top-[2960.19px] absolute justify-start text-emerald-700 text-lg font-medium font-['Montserrat']">Phone numbers: +57 313 409 5210 - +57 315 505 2246</div>
+  <div class="w-[454.76px] left-[535px] top-[3048.13px] absolute justify-start text-emerald-700 text-lg font-medium font-['Montserrat']">Mon - Thu: 7:00 a.m. to 5:30 p.m.<br/>Fri: 7:00 a.m. to 4:30 p.m.</div>
+  <div class="w-[454.76px] left-[535px] top-[3139.55px] absolute justify-start text-emerald-700 text-lg font-medium font-['Montserrat']">employmentcertificates@pharmalink.com.co</div>
+  <img class="w-60 h-24 left-[33px] top-[3025.08px] absolute origin-top-left -rotate-90" src="https://placehold.co/232x101" />
+</div>
+
+<!--ABOUT US SIN VECTORES-->
+<!--ABOUT US SIN VECTORES-->
+
+<!--ABOUT US CON VECTORES-->
+<!--ABOUT US CON VECTORES-->
+
+<div class="w-[1440px] h-[3238px] relative bg-white overflow-hidden">
+  <div class="left-[120px] top-[41px] absolute justify-start"><span class="text-teal-900 text-3xl font-semibold font-['Montserrat']">Pharma</span><span class="text-black text-3xl font-semibold font-['Montserrat']"> </span><span class="text-lime-600 text-3xl font-semibold font-['Montserrat']">Link</span></div>
+  <div class="left-[169.63px] top-[81.08px] absolute justify-start text-teal-900 text-sm font-normal font-['Montserrat']">F A R M A C I A</div>
+  <img class="w-14 h-16 left-[55px] top-[31px] absolute" src="https://placehold.co/59x66" />
+  <div class="left-[433px] top-[1619px] absolute text-center justify-start text-emerald-700 text-9xl font-medium font-['Poppins']">About us</div>
+  <div class="w-[527px] left-[153px] top-[1914px] absolute justify-start text-black text-lg font-medium font-['Montserrat']">At Pharma Link, we are the digital platform connecting laboratories, distributors, and pharmacies to transform healthcare supply management. Through advanced technology and a centralized reservation system, we ensure essential medicines reach those who need them most—fast, transparently, and with zero paperwork.</div>
+  <img class="w-[574px] h-96 left-[585px] top-[1809px] absolute" src="https://placehold.co/574x383" />
+  <div data-svg-wrapper class="left-0 top-[2187px] absolute">
+    <svg width="1440" height="506" viewBox="0 0 1440 506" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M1592 72.2857L1503.11 156.619C1415.55 240.952 1237.78 409.619 1061.33 445.762C884.887 481.905 707.113 385.524 530.667 373.476C354.22 361.429 176.447 433.714 88.8866 469.857L-5.53131e-05 506V7.62939e-06H88.8866C176.447 7.62939e-06 354.22 7.62939e-06 530.667 7.62939e-06C707.113 7.62939e-06 884.887 7.62939e-06 1061.33 7.62939e-06C1237.78 7.62939e-06 1415.55 7.62939e-06 1503.11 7.62939e-06H1592V72.2857Z" fill="#018856"/>
+    </svg>
+  </div>
+  <div class="left-[254.80px] top-[2377.64px] absolute justify-start text-white text-5xl font-semibold font-['Montserrat']">Pharma Link</div>
+  <div class="left-[332.53px] top-[2440.31px] absolute justify-start text-white text-xl font-normal font-['Montserrat']">F A R M A C I A</div>
+  <img class="size-24 left-[153px] top-[2362px] absolute" src="https://placehold.co/93x104" />
+  <div class="left-[1017px] top-[60px] absolute justify-start text-black text-xs font-medium font-['Poppins']">Home</div>
+  <div class="left-[1097px] top-[60px] absolute justify-start text-black text-xs font-medium font-['Poppins']">Create</div>
+  <div class="left-[1179px] top-[60px] absolute justify-start text-black text-xs font-medium font-['Poppins']">Reservations</div>
+  <div class="left-[1297px] top-[60px] absolute justify-start text-black text-xs font-medium font-['Poppins']">Profile</div>
+  <div class="w-[485px] h-12 left-[433px] top-[45px] absolute bg-white rounded-2xl shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)]"></div>
+  <div class="left-[450px] top-[61px] absolute justify-start text-zinc-400 text-xs font-medium font-['Google_Sans_Flex']">Search</div>
+  <div data-svg-wrapper class="left-[885px] top-[59px] absolute">
+    <svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <rect width="18.26" height="18.26" fill="url(#pattern0_75_133)"/>
+    <defs>
+    <pattern id="pattern0_75_133" patternContentUnits="objectBoundingBox" width="1" height="1">
+    <use xlink:href="#image0_75_133" transform="scale(0.0111111)"/>
+    </pattern>
+    <image id="image0_75_133" width="90" height="90" preserveAspectRatio="none" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAAEpklEQVR4nO2cy2uVRxTAfxG8mocL3+22SF20WNBWq0TqovgAi7Z/h2myq7oSEdqNjxjdiqRV20ARBYuIaCs+qutWu6mt4iMmJpsu1EiNDJwLIdwz97tJ7jdzJvODs7n38n3nnDvfmTNnznyQyWQymUwmk8lkMpmatANbgD3ASeB34G9gFHglMiqf3ZLfuN9uBtpqXzJTZRnQA1wTR45PUV7JNbrlmhlhI3AOeD0N52oyJtfuZBbzGfBbE5yrya/yp84a3gH6gTclOnmiDADLSZyvZBIbDyyjwE4SpAL0NjiKnwCngC7JJlYAC4G5IgvlM/fd1/Lbpw1c3+lyWK6VBB3ApYLGDwFHgDXTuN/H8qcOF7znRdHRNIuBOwWMfQDsAlpn8N6t8jQ8LHD/26KrSdzC4WaB9Ku3ySPKOXwf8LKOLncsjuxKgXDxJ/BBiTp9CNwtEEZMxezeOgadCbRUbpf0zqfbIYzwRZ3s4hgwJ6B+LcDBOtnIlxhYjPjy5KPEQ59Hz5HY6yTf1wkXIUfyZObUCSOuIhht7UILGX9EWr7sAO55QkiUxSitQPSy5OyiUVZ5yrJXiIz1nkdwP/HzrUf/qEb1Oc+KbyZXe81M+x4pNpwlEpbJCq+Wkm5ZbYUez+p1KRErOGRkNFdp8xSiXM0kONcU5VwVzhpHFVuuxhDbtBl7Nfb4xJM5BX06N3uK9hZpAQYVmz4PqdheRakfsMsZxaZvQip1MubJY4p0KzadICC3FKVcSLHKVsWmGyGV+kdR6j3sskKx6X5IpUYUpRZhl8WKTS7HDoaW2rmtLKtUPCleMFJ09DzFJmdrMFIMHUsUm5ytwZhNk+GDGNM710RulW2KTddjXLC4Xjir9Cg2uQ7YYOxRlDqNXX5UbHK2BmOLotSgFGhSKiptCl0s11I819VpjXWeXRZXEo6y8O/awqzRp9hymYirXUOR9nJoOF2fx7z36duc7Upkc/ZdIm83eGhkVLcDjxUbfiIiOhUlnRwgfr6z0kCDnOPTql6uCTxWPvJkTlFMgpPZ6GlyvBtDelSDBcBfis7Olk+JlH7PIzgQYdvuzxbbdpETqb5GdJenxsJxj57DUi6Nmu0JHK3YiREOewyphpGOQDHZFy5MHRZCjpBdrGPQPWkCLzO70Ca+iXJBtrPM0Ca9EEUOdC5osh5FDnROFDdI5mNs6/52AcMeSc1kJleRbbKs1lZ8yY3sjgJhZHzCbO9aZ9dOsZ7dIqXOPk+BKGlnz5VJppHXSAxKw2G3tGm9L6+OqIi4nfaV8l2P7Iw8a+D6b0SnC6k527HD06IwXqIMiy6IE5N09iKZAP8P5OSBGmdSKp4KpNkJskqnnOMry8GX69Qukh3ZVTbIETNt82A6Mib15KKlzuSdjdQWuuRgTiM572R5LaN31xR3RmaFs6u0ypmR3dJpf1NejzkiteMxKV79Kx1E/dJ3sWmGyrFFnP1LKs4OTdITZGxkZ5fs7PPZ2eWQnV0i2dklkp1dIvMktcupXyTOtvh2B5PO/s9oj7g5Z7+IrI8lWWcHPaSfsrOPSLh4IU429+ZeS7iYnONyJpPJZDKZTCZDc3kLHb2WZI9Umw0AAAAASUVORK5CYII="/>
+    </defs>
+    </svg>
+  </div>
+  <div data-svg-wrapper class="left-0 top-[137px] absolute">
+    <svg width="1440" height="304" viewBox="0 0 1440 304" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M0 303.571L49.902 274.461C95.6455 245.352 191.291 187.133 286.937 145.548C386.741 99.804 482.386 70.6945 578.032 99.804C673.677 128.914 769.323 216.242 864.968 257.827C960.614 303.571 1056.26 303.571 1156.06 274.461C1251.71 245.352 1347.35 187.133 1393.1 158.023L1443 128.914V0H1393.1C1347.35 0 1251.71 0 1156.06 0C1056.26 0 960.614 0 864.968 0C769.323 0 673.677 0 578.032 0C482.386 0 386.741 0 286.937 0C191.291 0 95.6455 0 49.902 0H0V303.571Z" fill="#0D4D44"/>
+    </svg>
+  </div>
+  <img class="w-80 h-96 left-[502px] top-[227px] absolute" src="https://placehold.co/347x427" />
+  <div class="w-80 left-[180px] top-[390px] absolute justify-start text-teal-900 text-4xl font-medium font-['Google_Sans_Flex']">Centralized Reservation System</div>
+  <div class="w-[496.56px] left-[787px] top-[267px] absolute text-center justify-start text-white text-2xl font-medium font-['Google_Sans_Flex']">We optimize access to medicines through a centralized booking system.</div>
+  <div class="w-48 left-[401px] top-[716px] absolute justify-start text-teal-900 text-2xl font-medium font-['Google_Sans_Flex']">Ensuring supply</div>
+  <div class="w-[484px] left-[401px] top-[744px] absolute justify-start text-emerald-700 text-2xl font-medium font-['Google_Sans_Flex']">Eliminating stockouts of healthcare products.</div>
+  <div class="left-[55px] top-[703px] absolute justify-start"><span class="text-teal-900 text-5xl font-semibold font-['Montserrat']">Pharma</span><span class="text-black text-5xl font-semibold font-['Montserrat']"> </span><span class="text-lime-600 text-5xl font-semibold font-['Montserrat']">Link</span></div>
+  <div class="left-[128.48px] top-[756.31px] absolute justify-start text-teal-900 text-xl font-normal font-['Montserrat']">F A R M A C I A</div>
+  <div data-svg-wrapper class="left-[640.59px] top-[654px] absolute">
+    <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="7.32162" cy="7.32162" r="7.32162" transform="matrix(-1 0 0 1 14.6432 0)" fill="#E7E7E7"/>
+    </svg>
+  </div>
+  <div data-svg-wrapper class="left-[612px] top-[654px] absolute">
+    <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="7.32162" cy="7.32162" r="7.32162" transform="matrix(-1 0 0 1 14.6432 0)" fill="#0D4D44"/>
+    </svg>
+  </div>
+  <div data-svg-wrapper class="left-[669.18px] top-[654px] absolute">
+    <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="7.32162" cy="7.32162" r="7.32162" transform="matrix(-1 0 0 1 14.6432 0)" fill="#E7E7E7"/>
+    </svg>
+  </div>
+  <div data-svg-wrapper class="left-[697.77px] top-[654px] absolute">
+    <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="7.32162" cy="7.32162" r="7.32162" transform="matrix(-1 0 0 1 14.6432 0)" fill="#E7E7E7"/>
+    </svg>
+  </div>
+  <div data-svg-wrapper class="left-[726.36px] top-[654px] absolute">
+    <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="7.32162" cy="7.32162" r="7.32162" transform="matrix(-1 0 0 1 14.6432 0)" fill="#E7E7E7"/>
+    </svg>
+  </div>
+  <div class="w-72 h-32 left-[93px] top-[829px] absolute bg-emerald-700 rounded-2xl"></div>
+  <div class="w-72 h-32 left-[415px] top-[829px] absolute bg-emerald-700 rounded-2xl"></div>
+  <div class="w-72 h-32 left-[737px] top-[829px] absolute bg-emerald-700 rounded-2xl"></div>
+  <div class="w-72 h-32 left-[1059px] top-[829px] absolute bg-emerald-700 rounded-2xl"></div>
+  <div class="left-[109px] top-[841px] absolute text-center justify-start text-white text-7xl font-normal font-['Krona_One']">100K</div>
+  <div class="left-[469px] top-[841px] absolute text-center justify-start text-white text-7xl font-normal font-['Krona_One']">10K</div>
+  <div class="left-[817px] top-[841px] absolute text-center justify-start text-white text-7xl font-normal font-['Krona_One']">1M</div>
+  <div class="left-[1093px] top-[841px] absolute text-center justify-start text-white text-7xl font-normal font-['Krona_One']">2.5k</div>
+  <div class="left-[156px] top-[931px] absolute text-center justify-start text-white text-sm font-normal font-['Google_Sans_Flex']">Streamlined reservations</div>
+  <div class="left-[487px] top-[931px] absolute text-center justify-start text-white text-sm font-normal font-['Google_Sans_Flex']">Outstanding deliveries</div>
+  <div class="left-[833px] top-[931px] absolute text-center justify-start text-white text-sm font-normal font-['Google_Sans_Flex']">Customer success</div>
+  <div class="left-[1147px] top-[931px] absolute text-center justify-start text-white text-sm font-normal font-['Google_Sans_Flex']">Enhanced control</div>
+  <img class="size-24 left-[19px] top-[425px] absolute" src="https://placehold.co/90x90" />
+  <img class="size-24 left-[1257px] top-[441px] absolute" src="https://placehold.co/90x90" />
+  <div class="left-[64px] top-[1104px] absolute justify-start text-emerald-700 text-2xl font-medium font-['Poppins']">Useful information</div>
+  <div class="w-[1085px] h-[3px] left-[292px] top-[1122px] absolute bg-teal-900 rounded-[1px]"></div>
+  <div class="w-56 h-24 left-[137px] top-[1209px] absolute bg-teal-900 rounded-2xl"></div>
+  <div class="left-[229px] top-[1245px] absolute justify-start text-white text-xs font-medium font-['Poppins']">Pending Shipments</div>
+  <div class="w-24 left-[229px] top-[1261px] absolute justify-start text-white text-[6.62px] font-medium font-['Montserrat']">Track the status of your backordered medicines.</div>
+  <div data-svg-wrapper class="left-[156px] top-[1239px] absolute">
+    <svg width="47" height="47" viewBox="0 0 47 47" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <rect width="47" height="47" fill="url(#pattern0_76_183)"/>
+    <defs>
+    <pattern id="pattern0_76_183" patternContentUnits="objectBoundingBox" width="1" height="1">
+    <use xlink:href="#image0_76_183" transform="scale(0.0111111)"/>
+    </pattern>
+    <image id="image0_76_183" width="90" height="90" preserveAspectRatio="none" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAADzklEQVR4nO2dPWsVQRSGJ4KJUWy0SoKIopVY+QtsbNRKG7vUwaiFmARCPrSy9BdoZy02/gE1SiASsNDEwkJFgqBGjUHlkSEb2Nzcj51758zumZ0H0k04774MZ4Z3du4ak0gkEvoA9gHXgRfAD6qH1bQAjAMDRiPAEWAZPSwBI0bhTF5GH9bsfqMF4AZ6uWq0ALxELwtGC8A6elk3WkA5RgvAJeABsIZCjDaAPcAZYA54jRLK9i06SEaHIRkdCHVGA6PAp2wBPF22nigBTjUERv+AaaCvbG3RABxos5uYLFtfNAD32+yS/gAny9aonqwvd+Ju2Tpj68utWCxba6x9uZHPJWvdD9wG3gF/ccOOXwXmgcGq9eVGfgUXuNNke0zlg+dBzS7Yl/O8CSZut1Y7k30yV7W+nOdhEHHN9dp24ZOVqvXlPJfFxbXWvIlffletL2/zocwj/Gwh88lbSbHHgcddCrspJqyYdrtb8MmshMjBLKzf6FLUF+Cgd2Huz2B3Cz546n3XAVz0sJDMmwqQmzArXe6j7f/NejW5xzaRx56AH/YmLBY8tIlG7pT9TJXDU5vI8xU4VPZzVQaPbaKRaVMhesw6us89BNpEnrWydxqCWUfx3EOgTTjtm4HzEoYGzDqK5R7I8tHOoA6v8a5KmdqipuSkap17IMt4h4eesYMkDA2YdRTLPQSLvm+XaQDHbC5tB0qZGijrKJZ7CBYd7fDAj7YHShgaMOsolnsIFXxlX2RsU/NCfrCUqQGyjuK5BzKc67AA7liQpEwVyjq6yz0QoEO9OZfx0RDSaOAo8DMZLW/0Y5fxURHY6KbUIutAANdapiZZh3dca5mARJV1uNYyAYkq63CtZQISVdbhWssEJKqsw7WWCUhUWYdrLROQqLIO11omMNFnHTiOj4pkdCCS0YGoo9GUcYeld1uLG4fj+KjusCCAay1ThzssCOBay9ThDgsCuNYydbjDggCutUwd7rAggGstU4c7LAjgWsvU4Q4LArjWMnW4w9K7rcWNw3F8VCSjA5GMDkQyOhDJ6EAko2tktBaS0YFIRisxeiaUIGSwadwtYDj7m5B6G6kno3M/PrWh1OiJJnUmK2l0Ju4E8ERSEDIMNakzVFmjcyKvZDdevQtChuEmdUYqb3TuAPNat8c+gY2ebFJnSoXROcF9wFngXnZ38HsvgpBhM+vJw9lMnqrsYhgKdH/w5pvRAjJ3R0LxzGiBre8DamXMaAEYyD5Zp41FYK/RBFsL1pIyk3ft1VUA9NvvA2an0VVcINezE+4xdTM5kUgY5fwHHZ1AJzDMmZsAAAAASUVORK5CYII="/>
+    </defs>
+    </svg>
+  </div>
+  <div class="w-56 h-24 left-[420px] top-[1209px] absolute bg-teal-900 rounded-2xl"></div>
+  <div class="left-[512px] top-[1245px] absolute justify-start text-white text-xs font-medium font-['Poppins']">Help Center</div>
+  <div class="w-28 left-[512px] top-[1261px] absolute justify-start text-white text-[6.62px] font-medium font-['Montserrat']">Find answers to frequently asked questions and learn how to contact us.</div>
+  <div data-svg-wrapper class="left-[452px] top-[1237px] absolute">
+    <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <rect width="48" height="48" fill="url(#pattern0_76_199)"/>
+    <defs>
+    <pattern id="pattern0_76_199" patternContentUnits="objectBoundingBox" width="1" height="1">
+    <use xlink:href="#image0_76_199" transform="scale(0.0111111)"/>
+    </pattern>
+    <image id="image0_76_199" width="90" height="90" preserveAspectRatio="none" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAADbUlEQVR4nO3cO2jVUBjA8U8RHayCiohopbg4+KgutaJFcFEnR3WykxR8YXG4Wl8gOLjY6qZDRYeCgjhYl+oiiI46aFHBYl8itGof0NYHfzlwBBHvI8nNyTnp94MLhXLT5N/DSW5uEhGllFJKKaWUUukDVgIHgatAD9ALfLGvGWAIeAHcB84CO4AFDlYtfMAi4BjwDPhFdIWst8FrwBLgCvCN+C5kvR3eAuYALcBIgsAauRRgOfAwYWCNXApQb3dmGjktwM6Ec7FGLgfYAHzVyCkCVgH9GjlFwFx7bKyR0wQc1chuDuPGNXLKgPMaOWXAfOCTRk4ZsEsjOwBcShC6Luv1DwbwJEHoZsfretpMdRIi4F2C0J0O1/Oi/ZvbJUTAWILQfY4jG2ckRMAEydQ5jGzckxCR/FRos8PIxnMJEfAqYehOh5GNfgkRcCdh6D6HkY0JCRFwkuTqHEU2RiVEwMYqhG52FNkYllABb7KepyuMbPRKqICuLOfpCJGNBxIi4BTVMQzcBQ4Da1OKbFyW0AAF0tMH3AIOFdtZxohs7JeQkG7ksuFjRv5uLk2TWThduPZYQoH7kVxNLRICwh3J2IssF4rvCDuycU58R9jThfEZWCo+I/yRbBwQn5GPyN3iM/IR+QOwQnxFPiKPAuvEVznY8WG/MG4SX+VkJA8BW8RXORnJT83F8OKrHIzkMeCEuRhefOXRSO4CXkd8z6Bd/2XiM48iF/5ap/XAcXtK9CXw0d4bPmL/ET32FGkTME9859F00SZ5pZEd0MgOaGQHNLIDGtkBoBU/FCSvgD3Az6wLk/ORXJvwtodqye9INoCbJTZ+CmgHGsw3w/a1FegApquWeBZEXgP8KLLxA8CmMk+OGdDIyZ40MFUq8j+xpzVyGcCjIgHaIyzjmkYuA3hfJEJDhGU0auQygMkiIWoiLKMmYuT8HsLFuMkySujFGtmvqaMgs1WJnWFHhGVc18jxD+/MIVt9Be/fbB8rrJEr+Phd6gNLfZnIgxq5QsCNEqGm7XFyoz26MK9tdrqY0cgRAKtTOKlUyHq7vATsruJp0rast8dr9jHvcR7x/od5b2vW2xEEYG/MJ+COA/uyXv8Qn4TbUcHODnvEclsfl5b8XPURc8sB8NaeF5m0P3fb39VmvZ5KKaWUUkoppeT/fgO11RC76I5EwAAAAABJRU5ErkJggg=="/>
+    </defs>
+    </svg>
+  </div>
+  <div class="w-56 h-24 left-[703px] top-[1209px] absolute bg-teal-900 rounded-2xl"></div>
+  <div class="left-[795px] top-[1245px] absolute justify-start text-white text-xs font-medium font-['Poppins']">Profile Update</div>
+  <div class="w-24 left-[795px] top-[1261px] absolute justify-start text-white text-[6.62px] font-medium font-['Montserrat']">To update your information, please enter your ID or document first.</div>
+  <div data-svg-wrapper class="left-[731px] top-[1235px] absolute">
+    <svg width="51" height="51" viewBox="0 0 51 51" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <rect width="51" height="51" fill="url(#pattern0_76_200)"/>
+    <defs>
+    <pattern id="pattern0_76_200" patternContentUnits="objectBoundingBox" width="1" height="1">
+    <use xlink:href="#image0_76_200" transform="scale(0.0111111)"/>
+    </pattern>
+    <image id="image0_76_200" width="90" height="90" preserveAspectRatio="none" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAADZklEQVR4nO2cvU5UQRSABylUIBb6AEqjvIU/haC1aAmEBH0Dy6U0BgtwifTGxBj0HcBALAwFYA/ESo1UGqXgMyc7JIbcuXch7Jk7c8+X0NDMmY/ZszPDnOOcYRiGYRiGYRiGYRiG0TXAMPAEeANsAD+AA+Jx4GPY8DFJbMMuRYBzwEPgI3BI/ZEYV4Fxid2lAHAH+EK6bAO3XF0BLgCL5MEh8BI47+oEcAX4RH6sy9xcjSTLxy1XtqPL9umim5W8A8wDd4EbwGDEmAd9DKM+Jomtm5UdL410kZN3gYk6f5MD/cAksFcxl3bM3UUZ74ABlwh0VvpyxRfk7RiroGwL9xzoc4kB9AFzFfla79MJPCoJ5n2Kko/Jflsyv3GnhT/xhXJyMumiIo2EcvaqU7y7CB2rJ1wmAFOBOcrcr2kEIJcwRezUeXdxyu8h+YQWMaMRgNx4FTHvMoPOMbyI1xqDy/ViEaMuM4B7gbl+1hhc7nKLuO4yg84JsohvGoP/DQw+5DIDGArM9Y/G4PsFA/90mUIAjYHbBeMuuEwhouiLwBLwy/+8kt+5TCGW6GNH1WSP2smIbgqYaB1M9BkAPKV3tM4ixmygN7JNsoJsk6wg2yQryDbJCrJ7JxmYBZ65DOFksnsu+Ygmy25pSW6y7Ja25CbKbsWS3CTZrdiSj5h1GULHwWxdJGe9susm2WQrSjbZipJNtqJkk60o+QiTfRIIEDuu7DDRSjRVNNrPK5omGhjwD4Z++58llQdDDRS9GKUUroGi96M86mzYs91LMZ/t2kN0dB6ih0orxlxmAPdjllZYsRA6xUJl5W/9Lq/yt72Y5W9lBZ2TLhOA6cAcZe5XtYKQRk9F7MXsxXHGRUJfA3Nc0QxEOoCF+JByBS2do7a0wAjxQLvdWll7n7kUyy7oSH5RMq9N9UUkLcsqetotp5RG6KQL+TSGkLnerNv25/+cPVXn3YjfXUyX5OT4JX7S0Mk3dqpi1/9RxoCRmMd1v3JHfJ13u4teSsJa9B54vh3bFvmyBVx2dcDL7mZlp8ZabSQfSyPtRJq+ViFzWIieLsqQlmWJd3bcjLa7OOU+e9yfIA+pPxLjihxGkj1sSaMn4LHceMn1or/PDv3zQAMZ+7uPRWKaUbu7MAzDMAzDMAzDMAzDcHnwD34PQIdW8VLfAAAAAElFTkSuQmCC"/>
+    </defs>
+    </svg>
+  </div>
+  <div class="w-56 h-24 left-[986px] top-[1209px] absolute bg-teal-900 rounded-2xl"></div>
+  <div class="w-28 left-[1078px] top-[1239px] absolute justify-start text-white text-[9.43px] font-medium font-['Poppins']">Medicine Reservations Management</div>
+  <div class="w-28 left-[1078px] top-[1267px] absolute justify-start text-white text-[4.70px] font-medium font-['Montserrat']">At Pharma Link, we guarantee the availability of essential treatments through our smart medicine reservation system.</div>
+  <div data-svg-wrapper class="left-[1014px] top-[1234px] absolute">
+    <svg width="53" height="53" viewBox="0 0 53 53" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <rect width="52.02" height="52.02" fill="url(#pattern0_76_201)"/>
+    <defs>
+    <pattern id="pattern0_76_201" patternContentUnits="objectBoundingBox" width="1" height="1">
+    <use xlink:href="#image0_76_201" transform="scale(0.0111111)"/>
+    </pattern>
+    <image id="image0_76_201" width="90" height="90" preserveAspectRatio="none" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAADV0lEQVR4nO2cPU9UQRSGL4Vg7WqllYnBUAlqFPUn+AcUO0IIUfQ/2Lj2kNgrfrQWGjS2flRqDcHEiEatDIoFmMdMGMIKuOzMPXP23p3zJNvskuG8T2Zn77l3MkVhGIZhGIZhGIZRV4D9wA3gDfCTeP4AH4EHwGi3c1UK4AjwvoTcdtJvdjtflWZyCsmtXC1yxy8XqfkNHC1yxq/JGjwucgZYQY+LRa4oSq4r7grsNXAdGDDROrxzV2gmWk92+MxWKq7XmDbROrwy0TqsmGglTLQSJloJE62EiVbCRCtRV9ELwAxwCRgGDgD7/Kvh33OfzQKLVIA6iV4D7sU87gLOAXPAereKr4vop8Cx4GJ31j4IzHcjQNVF/wLGywreJcMEsKoZpMqivwIj0pJbcpwCvmmFiSlQS/JgEsM7lxIV2THFaSwXIwH19AO3gc/AMtB07wXObPcwODvR44H1OLHbaQaOMZmb6PmIetxM3s6XiHGepAxWJdFrMZdwUsGA4ymvs6sk+m5wMYKi/Vhu/18SxIIJcDZSjkywjbHOpwonFqwkCzFi2tUTOVYfsJQioFiwkszEiGlXT4nx7qQIKBasJJdKiJEJtjXeWIqAYsFKcqKDZkSKtk2Na5boYdGNgGZEil2bGuBQL4vu/8//kpzJHTU1bvtWjqKXScenHEU3urB03Mpx6Rhu82PYFJ7Ze/0YnqSHRV8OLmSPekqMdyVFQLFgJZktIUYmWCYNy6JrfyPFSLfgH1IEFAsmwGikHJlgG2NdSBVOLJgAc5FyZIJtjPUoVTixYAKsxzyQlQoGDOVy49/xLKKe5U6bkT3GeUFCqvhwdiKwnmanzUibMaZSh6qi6FW3BSCgntamJma7wZlctxvgN7VobKBxD2S/o0BMcSjKPp3E8NZMzn5L2CbuKz2ZQPKUxnJRJ9GbPHdfcwHBQ6mvLuouGn+Ne99vCegLbKtdx/fQHyXUFeokupUlf/NnzD/ja/irD/c66G91jvm/SXLvIhfRtcNEK2GilTDRSphoJUx0hUVrHsfWK/yo8gGD5H7UjzvPzQjjWozoAX/EmNEZb0Puj+92rLHJ7kzy4SjJ22b2tFt/7AfyH5yLl265iJ7JhmEYhmEYhmEYhmEYhmEYRTb8BXEI3V61oSJVAAAAAElFTkSuQmCC"/>
+    </defs>
+    </svg>
+  </div>
+  <div class="w-56 h-24 left-[420px] top-[1359px] absolute bg-teal-900 rounded-2xl"></div>
+  <div class="w-28 left-[512px] top-[1394px] absolute justify-start text-white text-[9.43px] font-medium font-['Poppins']">Immediate delivery</div>
+  <div class="w-20 left-[512px] top-[1408px] absolute justify-start text-white text-[4.70px] font-medium font-['Montserrat']">Fast distribution of critical medicines.</div>
+  <div data-svg-wrapper class="left-[450px] top-[1390px] absolute">
+    <svg width="37" height="37" viewBox="0 0 37 37" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <rect width="36.17" height="36.17" fill="url(#pattern0_76_212)"/>
+    <defs>
+    <pattern id="pattern0_76_212" patternContentUnits="objectBoundingBox" width="1" height="1">
+    <use xlink:href="#image0_76_212" transform="scale(0.0111111)"/>
+    </pattern>
+    <image id="image0_76_212" width="90" height="90" preserveAspectRatio="none" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFUElEQVR4nO2dSYxVRRRAq7VFkEEwEBIMMtk4oLIgbjTsRBQNiQvjiMEh7owstNst0RATXYiYuDEKLoxzOhoTp4XogogxiC2KOC00JEDEkWbq7mMu1Cff5g31qOFXdddJekHe71v3Hor69areK5TyDHAz8AGwj/jYp3O7SaUMsIF02KBSRHoJ6bFapQRwFvA16bEH6FapANxRUMQwcNDiZ7Ag5qBlTMlpNHepFADOBr4tKGCLZdzegpi9ljFfTrZXS48oSH4IuCRC0RcDx5Pr1bo3f1eQ+GYHsZ2L1nG3JNergTU+erNn0YtKevXdKuLevLsg4ZccxfciWsfeXBD7hyh7NXBPSW9enIDosl69RsUG8L2v3uxbtI7/YkH83So2gCMFiX4GvO7oZ2dB/J0O439aEP+wSkR06hxWsZFFByKLDkQWHYgsOhBZdCCy6EBk0YHIogORRQciiw5EFh2ILDoQWXQgsuhAZNGByKIDkUUHIosORBYdiCw6EFm0IUAXMEOeODrD38+i///UlrjsGn1hHfBr23sdD6mGZNEnAR4G9uvfF6frWhceKGnkXtWALFqJg/tK4twvFwdKLn6TRdNU9K6SOANy8VDJxaEmT1OOd9FAt3ZWxKE6QXOzaDOAiyrj1Ai6xrCdLBqurYwDHK34wG1ZtBnA7RVxjtSJfsSwnSwaHrUR/UwWbQawsU70sYoPvGXYThYNb1fEOVrXo7c3aOh3xh4HGtS/vU50VY/e26Chjxh7vN+g/r0VcY7ViZZ3pScYNrSKsccNhrVPKHmv3Fi0sKDB3+rjjB3WN6h7QU2sE6KL3q9rZ7lpg209W051OUB67JfhwrQnt9W8vCbucVVxf97iziaNjkcoPmigsei+ThcSO8BjLkRv6nQhsQM850J0f1vAK+XPwI/AJ8AKNU4Argc+Bn4CXgOWtF0TJ1UMmYj+Uge7Avh31LURfetpNAVMET1126hrbefPlmxxZCK6av6H3hiYDbxR8ZltTdauU0Fq0rWV8Yp2U7Z50mLYRLTwfMnJMu3IdG6lGiMAKw2mqF9pN7gSLXPtn00CykRfjmNTicLJo+TWG3rZZXAfckr06LGnDNPPCR8Cs1RiALN07qYMm7qT4L74TbZ3VCIAVwO/eHLhVTT6n1XfaU/sRAbwYM1ycfSiW/QD01VkAFP1nNg3J0SPnhv7Yg9wlYoEyUXnFIJ/pMF3CMcgsDYCyWtLzjr1RX/r2Miq3QEfvABM6oDgSbrtkIjbRe13QF8ETmCH/CUHlDyvZl/PB3KK2cLRiUwsOafTJ38BtwaQvFofYxySV4HJVQ+j9xosNLlkpMm2UUPBUs8TDW+2bBkyntLqJcHQjw885UH004FrONh4vUef1xny+PgR4DqHklcE7skDp770ziDZKTXLo67Z6lD01oB5i6MpLsa5vkDj9ghwgQPJMxos+Njm+6TT1UrgRuCPAMkvc5DrsgB5iotVbuyeXkBPxXsarljqIM+lnnMUBz1urFaP2296LGKJgxxlf9MX7wLnu7FpPm77GAcvdZDfZUmMxx0et3sc5LXYcU5/A7e4sRbPuL3QQU5yD+AKWUq9XEW0gF71xHsT5jnIZz5ueC+6DQu9e7zJQXFzHeQiq5G2PBvtbr6W/bllgXMc5DHHModt0UpuIf8jj2WRsx3kIE8P2RD/o8ryxWFZ5EwHOcy0zCGOLz/L1wzqmO5orcOG+Sp2gAsti5zqIIdpnf6eCPVYlQ3nOchhcqeHL+/IOoBlkec6yEH2P22YpmJHb+nb0O0gh3Msc5ioYkefkGVDl4McZD5vg/M59H9Wc/U/qU8i8QAAAABJRU5ErkJggg=="/>
+    </defs>
+    </svg>
+  </div>
+  <div class="w-56 h-24 left-[703px] top-[1359px] absolute bg-teal-900 rounded-2xl"></div>
+  <div class="w-28 left-[795px] top-[1391px] absolute justify-start text-white text-[9.43px] font-medium font-['Poppins']">100% digital process</div>
+  <div class="w-28 left-[795px] top-[1405px] absolute justify-start text-white text-[4.70px] font-medium font-['Montserrat']">From medicine reservation to ID verification, everything happens online. No printing, no delays.</div>
+  <div data-svg-wrapper class="left-[738px] top-[1382px] absolute">
+    <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <rect width="44" height="44" fill="url(#pattern0_76_213)"/>
+    <defs>
+    <pattern id="pattern0_76_213" patternContentUnits="objectBoundingBox" width="1" height="1">
+    <use xlink:href="#image0_76_213" transform="scale(0.0111111)"/>
+    </pattern>
+    <image id="image0_76_213" width="90" height="90" preserveAspectRatio="none" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAADA0lEQVR4nO2cT2oUQRSHRyWJegNRURJB8AAiingNcRFwJ0yibtxEkSguFDyB5AIiCN5AF0n8AxmVXEE3CkYzg7ownzRT48ZMZqp66r2q6vfBECYMVb/50qmuftXVrZZhGIZhGIbhAA4CN4A3QNe9XgOLwMzgc0YNgOPAR4bTAY7W6aPx0D+S95I8YAOY1s6bLcBNxqetnTdbgHceole182YL0PMQvaWdN1uAbx6iv2jnzRZg3UP0K+282QJc8xB9VTtvtgBT1UluDMnVkW/TuzpUFyPA2z0kV1eIR2p1YvQBDg2RvGNH8gQB9g8TrZ2tKDDRMtBk0buULkulq1aSHaN0WSodsZKsR+myVDZEZjqepctSaadWuiyV1dRKl6WypTXNahp/TLQMJloIEy2EiRbCRAthooUw0UKY6GxFRy6H9oA7wKxbiJ1173uJtRm3fBq5HNoFzg7p91ygmBhtxi2fuiP5A/FYGtH/3UTajFs+dcNFTE6O6P9UIm36sBAiuhqTYzI1xn9UCm36sB4iejtyqLkR/Z9OpE0ffoSIjs3yiP4fJNKmFymK/glcGNL3ReBXIm1mL3ogZtmdpKbdz3vu9ym1mb3o4jDRQpjohEXHnt6VyPcUL1hKJOiC5bp26gwJugSfAd4rhD3vHfb/7JcUcneC78kDjinIflktMNSQfABYy+4uU3dkL7qdT1InyNs18t4Xyrjt/qALE7+7FNgn9CV2gFsB2ZaSncYFfBlJngMnxshVLVe9kAxWmuiK38BT4LITeti95oArwDP3GVFKFJ0icTcpmeh/mGghTLQQJloIEy2EiRbCRAthooWIv9nfVl6EHv024rE7TWFNQrStvCCzF1xr5SUV5B44q7Tykopk2UcoK628aDBYSWln8UQywqaG1VaJM9rZs4Iw0fPauZsgekU7cxNEb1bLVdqZSxfdtXFZRvS8dtYmiF7RztkE0Zs2LscX3bVxeYIAn21cFgB4tIvkJ9q5ioP+drSHwCfgK/A4i/qBYRiGYRhGKxf+Amk0FOOlodSTAAAAAElFTkSuQmCC"/>
+    </defs>
+    </svg>
+  </div>
+  <div class="w-48 left-[817px] top-[2294px] absolute justify-start text-white text-xl font-medium font-['Montserrat']">> Clients<br/>> Reservations<br/>> Create<br/>> Location<br/>> Profile<br/>> Register<br/>> Login<br/>> Delivery<br/>> Help Center</div>
+  <div class="left-[535px] top-[2679px] absolute justify-start text-teal-900 text-4xl font-medium font-['Montserrat']">Our Main Headquarters</div>
+  <div class="left-[535px] top-[2801.66px] absolute justify-start text-teal-900 text-4xl font-medium font-['Montserrat']">Contact Channels</div>
+  <div class="left-[535px] top-[2905.80px] absolute justify-start text-teal-900 text-4xl font-medium font-['Montserrat']">Employment Verification</div>
+  <div class="left-[535px] top-[3094.42px] absolute justify-start text-teal-900 text-3xl font-medium font-['Montserrat']">Employment Documents Requests</div>
+  <div class="left-[535px] top-[2993.74px] absolute justify-start text-teal-900 text-4xl font-medium font-['Montserrat']">Business Hours</div>
+  <div class="w-80 left-[535px] top-[2736.86px] absolute justify-start text-emerald-700 text-2xl font-medium font-['Montserrat']">Barranquilla:</div>
+  <div class="w-96 left-[535px] top-[2768.10px] absolute justify-start text-emerald-700 text-lg font-medium font-['Montserrat']">Calle 105 N° 14 - 140 Zona Industrial de Occidente</div>
+  <div class="w-96 left-[535px] top-[2851.42px] absolute justify-start text-emerald-700 text-lg font-medium font-['Montserrat']">From any mobile or landline: +57 601 9169338<br/>Toll-Free Nationwide Line: 018000 112 554</div>
+  <div class="w-[454.76px] left-[535px] top-[2960.19px] absolute justify-start text-emerald-700 text-lg font-medium font-['Montserrat']">Phone numbers: +57 313 409 5210 - +57 315 505 2246</div>
+  <div class="w-[454.76px] left-[535px] top-[3048.13px] absolute justify-start text-emerald-700 text-lg font-medium font-['Montserrat']">Mon - Thu: 7:00 a.m. to 5:30 p.m.<br/>Fri: 7:00 a.m. to 4:30 p.m.</div>
+  <div class="w-[454.76px] left-[535px] top-[3139.55px] absolute justify-start text-emerald-700 text-lg font-medium font-['Montserrat']">employmentcertificates@pharmalink.com.co</div>
+  <img class="w-60 h-24 left-[33px] top-[3025.08px] absolute origin-top-left -rotate-90" src="https://placehold.co/232x101" />
+</div>
+
+<!--ABOUT US CON VECTORES-->
+<!--ABOUT US CON VECTORES-->
+
+<!--COLORES 
+Color Palette
+7 colors
+
+#000000
+bg-black
+
+#018856
+bg-emerald-700
+
+#0D4D44
+bg-teal-900
+
+#59B13F
+bg-lime-600
+
+#B9B9B9
+bg-zinc-400
+
+#E7E7E7
+bg-neutral-200
+
+#FFFFFF
+bg-white
+-->

@@ -90,22 +90,8 @@ export function renderRegister({ navigate }) {
       return;
     }
 
-    // Register does not issue a token, so signing in here is what actually
-    // establishes the session. Storing the user alone (as before) produced a
-    // "logged in" state with no credential, and every request answered 401.
-    const session = await login(email, password);
-    if (!session.success) {
-      errorMessage.textContent = "Cuenta creada. Inicia sesión para continuar.";
-      setTimeout(() => navigate("/login"), 1200);
-      return;
-    }
-
-    try {
-      await loadContext();
-    } catch (error) {
-      console.warn("No se pudo cargar el contexto de sesión:", error);
-    }
-
-    navigate(homeFor(session.user.role));
+    errorMessage.textContent = "Cuenta creada. Ve al login para ingresar con tu email y contraseña.";
+    submitButton.textContent = "Cuenta creada";
+    setTimeout(() => navigate("/welcome"), 800);
   });
 }

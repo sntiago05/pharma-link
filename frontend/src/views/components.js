@@ -47,7 +47,7 @@ export function inputField({ id, label, type = "text", autocomplete = "", requir
 
 export function roleShell({ title, subtitle, navItems = [], content, sideContent }) {
   const navHtml = navItems.length
-    ? `<nav class="flex flex-wrap gap-2">${navItems
+    ? `<nav class="flex justify-center flex-wrap gap-2">${navItems
         .map(({ label, href, active = false }) => {
           return `
             <a href="${href}" class="rounded-full border px-3 py-2 text-sm font-medium transition ${active ? "border-emerald-600 bg-emerald-50 text-emerald-700" : "border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-700"}">
@@ -59,11 +59,11 @@ export function roleShell({ title, subtitle, navItems = [], content, sideContent
 
   return `
     <main class="min-h-screen bg-slate-50 px-4 py-4 text-slate-900 sm:px-6 lg:px-8">
-      <section class="mx-auto flex w-full max-w-6xl flex-col gap-4 lg:flex-row lg:items-start">
+      <section class="mx-auto flex w-full max-w-[90%] flex-col gap-4 lg:flex-row lg:items-start">
         <div class="w-full rounded-[32px] bg-white p-4 shadow-xl shadow-emerald-900/10 ring-1 ring-slate-200 sm:p-6 lg:flex-1">
           <header class="flex flex-col gap-4 border-b border-slate-200 pb-4 sm:flex-row sm:items-start sm:justify-between">
-            <div>
-              <p class="text-[11px] font-semibold uppercase tracking-[0.32em] text-slate-400">Pharma Link</p>
+            <div class="flex flex-col items-center gap-1 sm:items-start">
+              <img src="/img/logo%20horizontal.png" alt="Pharma Link logo" class="h-[90px] w-[260px]" />
               <h1 class="mt-1 text-2xl font-semibold text-[#0D4D44]">${title}</h1>
               <p class="mt-1 text-sm text-slate-500">${subtitle}</p>
             </div>
@@ -241,6 +241,23 @@ export function panel({ title, action = "", body }) {
         ${action}
       </div>
       <div class="mt-4">${body}</div>
+    </section>
+  `;
+}
+
+export function promoCard({ title, subtitle, buttonLabel, buttonHref, image, imageAlt = "" }) {
+  return `
+    <section class="mt-5 overflow-hidden rounded-[32px] bg-emerald-700 text-white shadow-xl shadow-emerald-900/10 ring-1 ring-emerald-900/10">
+      <div class="grid gap-6 p-6 lg:grid-cols-[1.3fr_0.9fr] lg:items-center">
+        <div>
+          <p class="text-3xl font-semibold leading-tight">${escapeHtml(title)}</p>
+          <p class="mt-3 max-w-xl text-sm text-emerald-100">${escapeHtml(subtitle)}</p>
+          <a href="${escapeHtml(buttonHref)}" class="mt-6 inline-flex rounded-full bg-white px-5 py-3 text-sm font-semibold text-emerald-700 transition hover:bg-slate-100">
+            ${escapeHtml(buttonLabel)}
+          </a>
+        </div>
+        ${image ? `<div class="flex justify-center lg:justify-end"><img src="${escapeHtml(image)}" alt="${escapeHtml(imageAlt)}" class="max-h-48 w-full max-w-[260px] object-contain" /></div>` : ""}
+      </div>
     </section>
   `;
 }

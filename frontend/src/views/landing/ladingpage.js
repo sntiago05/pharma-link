@@ -4,7 +4,7 @@ function landingTemplate(user) {
     <section class="w-full max-w-[390px] min-h-[844px] overflow-hidden lg:rounded-[32px] lg:bg-white lg:shadow-xl lg:ring-1 lg:ring-slate-200 relative lg:max-w-6xl lg:min-h-[640px] lg:flex lg:items-center lg:overflow-visible lg:p-8">
       <div class="absolute left-1/2 top-[62.63px] -translate-x-1/2 flex flex-col items-center text-center lg:left-[8%] lg:top-[8%] lg:translate-x-0 lg:items-start lg:text-left">
         <div class="flex items-center gap-2">
-          <img class="w-25 h-14" src="/img/logo horizontal.png" alt="Pharma Link logo" />
+          <img class="w-25 h-14" src="/img/logo%20horizontal.png" alt="Pharma Link logo" />
         </div>
       </div>
 

@@ -1,6 +1,7 @@
 import { getSession } from "./services/session.js";
 import { canAccess, homeFor } from "./services/roles.js";
 import { renderLanding } from "./views/landing/ladingpage.js";
+import { renderLandingDep } from "./views/landing/landingpage_dep.js";
 import { renderLogin } from "./views/login/loginView.js";
 import { renderProfile } from "./views/profile/profileView.js";
 import { renderRegister } from "./views/register/registerView.js";
@@ -18,10 +19,11 @@ import { renderNotFound } from "./views/notFound/notFoundView.js";
  * which is why several routes map to the same renderer.
  */
 
-const PUBLIC_ROUTES = new Set(["/", "/login", "/register", "/welcome"]);
+const PUBLIC_ROUTES = new Set(["/", "/landing-dep", "/login", "/register", "/welcome"]);
 
 const routes = {
-  "/": renderLanding,
+  "/": renderLandingDep,
+  "/landing": renderLanding,
   "/welcome": renderWelcome,
   "/login": renderLogin,
   "/register": renderRegister,
