@@ -1,7 +1,7 @@
-import * as epsApi from "../services/eps.js";
-import { listNotifications } from "../services/notifications.js";
-import { loadContext } from "../services/auth.js";
-import { getContext } from "../services/session.js";
+import * as epsApi from "../../services/eps.js";
+import { listNotifications } from "../../services/notifications.js";
+import { loadContext } from "../../services/auth.js";
+import { getContext } from "../../services/session.js";
 import {
   dataTable,
   emptyState,
@@ -19,9 +19,9 @@ import {
   statusLabel,
   statusTone,
   textField,
-  toast
-} from "./components.js";
-import { bindLogout, quickLinks, sectionFromPath, userCard } from "./shell.js";
+  toast 
+} from "../components.js";
+import { bindLogout, quickLinks, sectionFromPath, userCard } from "../shell.js";
 
 /**
  * EPS panel.

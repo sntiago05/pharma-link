@@ -1,4 +1,4 @@
-import { roleShell } from "./components.js";
+import { roleShell } from "../components.js";
 
 function notFoundTemplate() {
   const content = `

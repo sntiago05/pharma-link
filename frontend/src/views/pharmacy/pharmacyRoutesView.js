@@ -1,7 +1,7 @@
-import * as pharmacyApi from "../services/pharmacy.js";
-import { listNotifications, markAllAsRead } from "../services/notifications.js";
-import { loadContext } from "../services/auth.js";
-import { getContext } from "../services/session.js";
+import * as pharmacyApi from "../../services/pharmacy.js";
+import { listNotifications, markAllAsRead } from "../../services/notifications.js";
+import { loadContext } from "../../services/auth.js";
+import { getContext } from "../../services/session.js";
 import {
   dataTable,
   emptyState,
@@ -21,8 +21,9 @@ import {
   statusTone,
   textField,
   toast
-} from "./components.js";
-import { bindLogout, quickLinks, sectionFromPath, userCard } from "./shell.js";
+} from "../components.js";
+
+import { bindLogout, quickLinks, sectionFromPath, userCard } from "../shell.js";
 
 /**
  * Pharmacy panel.

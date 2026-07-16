@@ -1,4 +1,4 @@
-import { brandHeader } from "./components.js";
+import { brandHeader } from "../components.js";
 
 function ordersTemplate(user) {
   const patientName = user?.name || "Paciente";

@@ -1,15 +1,15 @@
 import { getSession } from "./services/session.js";
 import { canAccess, homeFor } from "./services/roles.js";
-import { renderLanding } from "./views/ladingpage.js";
-import { renderLogin } from "./views/loginView.js";
-import { renderProfile } from "./views/profileView.js";
-import { renderRegister } from "./views/registerView.js";
-import { renderPatientDashboard } from "./views/patientRoutesView.js";
-import { renderWelcome } from "./views/welcomePage.js";
-import { renderEpsDashboard } from "./views/epsRoutesView.js";
-import { renderPharmacyDashboard } from "./views/pharmacyRoutesView.js";
-import { renderAdminDashboard } from "./views/adminRoutesView.js";
-import { renderNotFound } from "./views/notFoundView.js";
+import { renderLanding } from "./views/landing/ladingpage.js";
+import { renderLogin } from "./views/login/loginView.js";
+import { renderProfile } from "./views/profile/profileView.js";
+import { renderRegister } from "./views/register/registerView.js";
+import { renderPatientDashboard } from "./views/patient/patientRoutesView.js";
+import { renderWelcome } from "./views/welcome/welcomePage.js";
+import { renderEpsDashboard } from "./views/eps/epsRoutesView.js";
+import { renderPharmacyDashboard } from "./views/pharmacy/pharmacyRoutesView.js";
+import { renderAdminDashboard } from "./views/admin/adminRoutesView.js";
+import { renderNotFound } from "./views/notFound/notFoundView.js";
 
 /**
  * Client-side router.

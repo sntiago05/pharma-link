@@ -1,7 +1,7 @@
-import * as patientApi from "../services/patient.js";
-import { listNotifications, markAllAsRead } from "../services/notifications.js";
-import { loadContext } from "../services/auth.js";
-import { getContext } from "../services/session.js";
+import * as patientApi from "../../services/patient.js";
+import { listNotifications, markAllAsRead } from "../../services/notifications.js";
+import { loadContext } from "../../services/auth.js";
+import { getContext } from "../../services/session.js";
 import {
   emptyState,
   errorState,
@@ -20,8 +20,8 @@ import {
   statusTone,
   textField,
   toast
-} from "./components.js";
-import { bindLogout, quickLinks, sectionFromPath, userCard } from "./shell.js";
+} from "../components.js";
+import { bindLogout, quickLinks, sectionFromPath, userCard } from "../shell.js";
 
 /**
  * Patient panel.

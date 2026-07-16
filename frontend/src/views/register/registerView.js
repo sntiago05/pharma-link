@@ -1,6 +1,6 @@
-import { loadContext, login, registerUser } from "../services/auth.js";
-import { homeFor } from "../services/roles.js";
-import { inputField } from "./components.js";
+import { loadContext, login, registerUser } from "../../services/auth.js";
+import { homeFor } from "../../services/roles.js";
+import { inputField } from "../components.js";
 
 function registerTemplate() {
   return `

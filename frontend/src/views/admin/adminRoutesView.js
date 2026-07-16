@@ -1,6 +1,6 @@
-import * as adminApi from "../services/admin.js";
-import { loadContext } from "../services/auth.js";
-import { getContext } from "../services/session.js";
+import * as adminApi from "../../services/admin.js";
+import { loadContext } from "../../services/auth.js";
+import { getContext } from "../../services/session.js";
 import {
   dataTable,
   emptyState,
@@ -17,8 +17,8 @@ import {
   statusBadge,
   textField,
   toast
-} from "./components.js";
-import { bindLogout, quickLinks, sectionFromPath, userCard } from "./shell.js";
+} from "../components.js";
+import { bindLogout, quickLinks, sectionFromPath, userCard } from "../shell.js";
 
 /**
  * Admin panel.

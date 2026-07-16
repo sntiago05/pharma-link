@@ -1,5 +1,5 @@
-import { loadContext, login } from "../services/auth.js";
-import { homeFor } from "../services/roles.js";
+import { loadContext, login } from "../../services/auth.js";
+import { homeFor } from "../../services/roles.js";
 
 function loginTemplate() {
   return `

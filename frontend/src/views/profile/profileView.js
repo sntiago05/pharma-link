@@ -1,4 +1,4 @@
-import { homeFor } from "../services/roles.js";
+import { homeFor } from "../../services/roles.js";
 
 /**
  * Legacy `/profile` route.
