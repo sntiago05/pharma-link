@@ -1,5 +1,4 @@
 import './style.css'
-import { adminView } from './views/admin_view'
+import { admin_controller } from './views/admin/admin_controller'
 
-
-adminView();
+admin_controller();

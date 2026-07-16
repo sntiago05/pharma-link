@@ -4,13 +4,60 @@ export function admin_controller(){
     const form_add_user = getElementById("add_user_form");
     const form_disable_user = getElementById("disable_user_form");
     const form_enable_user = getElementById("enable_user_form");
+    const searchInput = getElementById("user_search_input");
+    const searchButton = getElementById("user_search_btn");
+    const searchResult = getElementById("user_search_result");
     const users = [];
+
+    const searchUserById = () => {
+        if (!searchResult) return;
+        const query = (searchInput?.value || "").trim();
+        if (!query) {
+            searchResult.innerHTML = `<span class="border border-yellow-600 bg-yellow-400 text-yellow-700">Ingrese un ID para buscar.</span>`;
+            return;
+        }
+
+        const userId = query;
+        if (!/^\d{10}$/.test(userId)) {
+            searchResult.innerHTML = `<span class="border border-red-600 bg-red-400 text-red-700">La cédula debe contener exactamente 10 números.</span>`;
+            return;
+        }
+
+        const user = users.find((item) => String(item.userId || item.user_id) === userId);
+        if (!user) {
+            searchResult.innerHTML = `<span class="border border-red-600 bg-red-400 text-red-700">No se encontró ningún usuario con esa cédula.</span>`;
+            return;
+        }
+
+        searchResult.innerHTML = `<div class="border border-slate-500 bg-slate-700 p-2">
+            <p><strong>Cédula:</strong> ${user.userId || user.user_id}</p>
+            <p><strong>Nombre:</strong> ${user.name}</p>
+            <p><strong>Email:</strong> ${user.email}</p>
+            <p><strong>Estado:</strong> ${user.active ? "Activo" : "Inactivo"}</p>
+        </div>`;
+    };
+
+    if (searchButton) {
+        searchButton.addEventListener("click", searchUserById);
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                searchUserById();
+            }
+        });
+    }
 
     form_add_user.addEventListener("submit", async (e)=>{
         e.preventDefault();
         const userData = Object.fromEntries(new FormData(form_add_user).entries());
-        if (!userData.name || !userData.role || !userData.email || !userData.password) {
+        if (!userData.name || !userData.user_id || !userData.role || !userData.email || !userData.password) {
             getElementById("add_message").innerHTML = `<span class="border border-red-600 bg-red-400 text-red-700">You need to fill everything!</span>`;
+            setTimeout(()=>{getElementById("add_message").innerHTML = ``;}, 1500);
+        } else if (!/^\d{10}$/.test(userData.user_id)) {
+            getElementById("add_message").innerHTML = `<span class="border border-red-600 bg-red-400 text-red-700">The ID must contain exactly 10 numbers.</span>`;
             setTimeout(()=>{getElementById("add_message").innerHTML = ``;}, 1500);
         } else if (hasNumberORSymbol(userData.name)){
             getElementById("add_message").innerHTML = `<span class="border border-red-600 bg-red-400 text-red-700">User name can't have any number or symbols!</span>`;
@@ -37,9 +84,14 @@ export function admin_controller(){
                     setTimeout(()=>{getElementById("add_message").innerHTML = ``;}, 1500);
                     return;
                 }
+            } else {
+                getElementById("add_message").innerHTML = `<span class="border border-red-600 bg-red-400 text-red-700">Only admin users can perform this action.</span>`;
+                setTimeout(()=>{getElementById("add_message").innerHTML = ``;}, 1500);
+                return;
             }
 
             const userToSave = {
+                userId: userData.user_id,
                 ...userData,
                 role: Number(userData.role),
                 active: true

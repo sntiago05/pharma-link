@@ -4,6 +4,9 @@ export function pharmacy_controller(){
     const form_add_pharmacy = getElementById("add_pharmacy_form");
     const form_add_branch = getElementById("add_branch_form");
     const branchSelect = getElementById("branch_pharmacy_select");
+    const searchInput = getElementById("pharmacy_search_input");
+    const searchButton = getElementById("pharmacy_search_btn");
+    const searchResult = getElementById("pharmacy_search_result");
     const pharmacies = [];
     const branches = []; // almacenar sedes por separado, relacionadas por `pharmacyNit`
     const printBtn = getElementById("print_pharmacies_btn");
@@ -22,6 +25,59 @@ export function pharmacy_controller(){
             opt.value = p.nit || p.name;
             opt.textContent = p.name;
             branchSelect.appendChild(opt);
+        });
+    }
+
+    const searchPharmaciesAndBranches = () => {
+        if (!searchResult) return;
+        const query = (searchInput?.value || "").trim().toLowerCase();
+        if (!query) {
+            searchResult.innerHTML = `<span class="border border-yellow-600 bg-yellow-400 text-yellow-700">Ingrese un nombre de farmacia o sede para buscar.</span>`;
+            return;
+        }
+
+        const pharmacyMatches = pharmacies.filter((pharmacy) => String(pharmacy.name || "").toLowerCase().includes(query));
+        const branchMatches = branches.filter((branch) => {
+            const branchName = String(branch.name || branch.address || "").toLowerCase();
+            return branchName.includes(query);
+        });
+
+        if (pharmacyMatches.length === 0 && branchMatches.length === 0) {
+            searchResult.innerHTML = `<span class="border border-red-600 bg-red-400 text-red-700">No se encontró ninguna farmacia o sede con ese criterio.</span>`;
+            return;
+        }
+
+        const html = [];
+        if (pharmacyMatches.length > 0) {
+            html.push(`<div class="mb-2"><strong>Farmacias encontradas</strong></div>`);
+            pharmacyMatches.forEach((pharmacy) => {
+                const relatedBranches = branches.filter((branch) => String(branch.pharmacyNit) === String(pharmacy.nit));
+                const branchList = relatedBranches.length > 0 ? relatedBranches.map((branch) => `<li class="ml-4">${branch.name || branch.address}</li>`).join("") : "<li class=\"ml-4\">Sin sedes registradas</li>";
+                html.push(`<div class="mb-2 border border-slate-500 bg-slate-700 p-2"><strong>${pharmacy.name}</strong><ul>${branchList}</ul></div>`);
+            });
+        }
+
+        if (branchMatches.length > 0) {
+            html.push(`<div class="mb-2"><strong>Sedes encontradas</strong></div>`);
+            branchMatches.forEach((branch) => {
+                const pharmacy = pharmacies.find((item) => String(item.nit) === String(branch.pharmacyNit));
+                html.push(`<div class="mb-2 border border-slate-500 bg-slate-700 p-2"><strong>${branch.name || branch.address}</strong><div>Farmacéutica: ${pharmacy?.name || "No encontrada"}</div></div>`);
+            });
+        }
+
+        searchResult.innerHTML = html.join("");
+    };
+
+    if (searchButton) {
+        searchButton.addEventListener("click", searchPharmaciesAndBranches);
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                searchPharmaciesAndBranches();
+            }
         });
     }
 
@@ -114,6 +170,7 @@ export function pharmacy_controller(){
             e.preventDefault();
             const data = Object.fromEntries(new FormData(form_add_branch).entries());
             const pharmacyId = data.branch_pharmacy;
+            const branchName = (data.branch_name || "").trim();
             const address = (data.branch_address || "").trim();
 
             if (!pharmacyId) {
@@ -149,7 +206,7 @@ export function pharmacy_controller(){
                     return;
                 }
 
-                const newBranch = { pharmacyNit: pharmacy.nit, address };
+                const newBranch = { pharmacyNit: pharmacy.nit, name: branchName || address, address };
                 branches.push(newBranch);
             getElementById("add_branch_message").innerHTML = `<span class="border border-green-600 bg-green-400 text-green-700">Sede agregada a ${pharmacy.name}.</span>`;
             setTimeout(()=>{getElementById("add_branch_message").innerHTML = ``;}, 1500);
