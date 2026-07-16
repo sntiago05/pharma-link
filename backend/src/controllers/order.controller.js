@@ -36,13 +36,48 @@ export const createOrder = asyncHandler(async (req, res) => {
   return sendSuccess(res, { status: 201, message: 'Order created.', data: order });
 });
 
-/** GET /api/orders/me — the caller's orders, newest first. */
+/**
+ * GET /api/orders/me — the caller's orders, newest first.
+ *
+ * Every previously returned column is preserved; `items`, `eps_name` and
+ * `active_reservation` are added so a list can be rendered without one extra
+ * request per order.
+ */
 export const listMyOrders = asyncHandler(async (req, res) => {
   const result = await query(
-    `SELECT medical_orders.*
+    `SELECT medical_orders.*,
+            eps.name AS eps_name,
+            medical_orders.expiration_date < CURRENT_DATE AS is_expired,
+            COALESCE(
+              JSON_AGG(
+                JSON_BUILD_OBJECT('medicineId', medicines.id, 'code', medicines.code,
+                                  'name', medicines.name, 'presentation', medicines.presentation,
+                                  'quantity', order_details.quantity)
+                ORDER BY medicines.name
+              ) FILTER (WHERE medicines.id IS NOT NULL),
+              '[]'
+            ) AS items,
+            (
+              SELECT JSON_BUILD_OBJECT(
+                       'id', reservations.id,
+                       'pharmacyId', reservations.pharmacy_id,
+                       'pharmacyName', pharmacies.name,
+                       'reservationDate', reservations.reservation_date,
+                       'startTime', reservations.start_time,
+                       'status', reservations.status
+                     )
+              FROM reservations
+              INNER JOIN pharmacies ON pharmacies.id = reservations.pharmacy_id
+              WHERE reservations.order_id = medical_orders.id AND reservations.status = 'RESERVED'
+              LIMIT 1
+            ) AS active_reservation
      FROM medical_orders
      INNER JOIN patients ON patients.id = medical_orders.patient_id
+     LEFT JOIN eps ON eps.id = medical_orders.eps_id
+     LEFT JOIN order_details ON order_details.order_id = medical_orders.id
+     LEFT JOIN medicines ON medicines.id = order_details.medicine_id
      WHERE patients.user_id = $1
+     GROUP BY medical_orders.id, eps.name
      ORDER BY medical_orders.created_at DESC`,
     [req.auth.sub],
   );

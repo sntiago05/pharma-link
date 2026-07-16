@@ -43,9 +43,12 @@ const definition = {
   servers: [{ url: `http://localhost:${env.port}/api`, description: 'Local development' }],
   tags: [
     { name: 'Auth', description: 'Registration and login' },
+    { name: 'Session', description: 'Who am I and what am I attached to' },
+    { name: 'Directory', description: 'Read-only catalog for end users' },
     { name: 'Patients', description: 'Patient profile' },
     { name: 'Orders', description: 'Medical orders' },
-    { name: 'Pharmacies', description: 'Pharmacy availability' },
+    { name: 'EPS', description: 'Order issuing by an EPS operator' },
+    { name: 'Pharmacies', description: 'Pharmacy directory and availability' },
     { name: 'Reservations', description: 'Booking, cancelling and rescheduling' },
     { name: 'Deliveries', description: 'Delivery confirmation' },
     { name: 'Inventory', description: 'Pharmacy stock' },

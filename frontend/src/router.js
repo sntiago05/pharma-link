@@ -1,16 +1,24 @@
-import { getSession } from "./services/auth.js";
+import { getSession } from "./services/session.js";
+import { canAccess, homeFor } from "./services/roles.js";
 import { renderLanding } from "./views/ladingpage.js";
 import { renderLogin } from "./views/loginView.js";
 import { renderProfile } from "./views/profileView.js";
 import { renderRegister } from "./views/registerView.js";
 import { renderPatientDashboard } from "./views/patientRoutesView.js";
-import { adminView } from "./views/admin_view.js";
 import { renderWelcome } from "./views/welcomePage.js";
-import { renderOrders } from "./views/ordersView.js";
 import { renderEpsDashboard } from "./views/epsRoutesView.js";
 import { renderPharmacyDashboard } from "./views/pharmacyRoutesView.js";
 import { renderAdminDashboard } from "./views/adminRoutesView.js";
 import { renderNotFound } from "./views/notFoundView.js";
+
+/**
+ * Client-side router.
+ *
+ * Each role owns a URL prefix and one view function that switches on the path,
+ * which is why several routes map to the same renderer.
+ */
+
+const PUBLIC_ROUTES = new Set(["/", "/login", "/register", "/welcome"]);
 
 const routes = {
   "/": renderLanding,
@@ -18,110 +26,107 @@ const routes = {
   "/login": renderLogin,
   "/register": renderRegister,
   "/profile": renderProfile,
+
   "/patient": renderPatientDashboard,
-  "/orders": renderOrders,
   "/patient/dashboard": renderPatientDashboard,
   "/patient/orders": renderPatientDashboard,
   "/patient/availability": renderPatientDashboard,
-  "/patient/pharmacies": renderPatientDashboard,
   "/patient/reservations": renderPatientDashboard,
+  "/patient/notifications": renderPatientDashboard,
   "/patient/profile": renderPatientDashboard,
-  "/eps/dashboard": renderEpsDashboard,
-  "/eps/orders": renderEpsDashboard,
-  "/eps/orders/create": renderEpsDashboard,
-  "/eps/orders/history": renderEpsDashboard,
-  "/eps/profile": renderEpsDashboard,
+
+  "/pharmacy": renderPharmacyDashboard,
   "/pharmacy/dashboard": renderPharmacyDashboard,
   "/pharmacy/inventory": renderPharmacyDashboard,
   "/pharmacy/reservations": renderPharmacyDashboard,
   "/pharmacy/deliveries": renderPharmacyDashboard,
-  "/pharmacy/orders": renderPharmacyDashboard,
+  "/pharmacy/notifications": renderPharmacyDashboard,
   "/pharmacy/profile": renderPharmacyDashboard,
+
+  "/eps": renderEpsDashboard,
+  "/eps/dashboard": renderEpsDashboard,
+  "/eps/orders": renderEpsDashboard,
+  "/eps/orders/create": renderEpsDashboard,
+  "/eps/profile": renderEpsDashboard,
+
+  "/admin": renderAdminDashboard,
   "/admin/dashboard": renderAdminDashboard,
-  "/admin/users": renderAdminDashboard,
-  "/admin/roles": renderAdminDashboard,
   "/admin/eps": renderAdminDashboard,
   "/admin/pharmacies": renderAdminDashboard,
   "/admin/medicines": renderAdminDashboard,
-  "/admin/profile": renderAdminDashboard,
-  "/admin": adminView
+  "/admin/audit": renderAdminDashboard,
+  "/admin/profile": renderAdminDashboard
 };
 
 function normalizePath(pathname) {
   return pathname && pathname !== "/" ? pathname.replace(/\/+$/, "") || "/" : "/";
 }
 
-function resolveRoute(pathname, user) {
-  const normalizedPath = normalizePath(pathname);
+/** Resolves the view for a path, falling back to the section's own dashboard. */
+function resolveRoute(pathname) {
+  if (routes[pathname]) return routes[pathname];
 
-  if (normalizedPath.startsWith("/patient/order/")) {
-    return renderPatientDashboard;
-  }
+  const fallbacks = [
+    ["/patient/", renderPatientDashboard],
+    ["/pharmacy/", renderPharmacyDashboard],
+    ["/eps/", renderEpsDashboard],
+    ["/admin/", renderAdminDashboard]
+  ];
 
-  if (normalizedPath.startsWith("/patient/")) {
-    return routes[normalizedPath] || renderPatientDashboard;
-  }
-
-  if (normalizedPath.startsWith("/eps/")) {
-    return routes[normalizedPath] || renderEpsDashboard;
-  }
-
-  if (normalizedPath.startsWith("/pharmacy/")) {
-    return routes[normalizedPath] || renderPharmacyDashboard;
-  }
-
-  if (normalizedPath.startsWith("/admin/")) {
-    return routes[normalizedPath] || renderAdminDashboard;
-  }
-
-  if (user?.role === "ADMIN") {
-    return routes[normalizedPath] || renderAdminDashboard;
-  }
-
-  if (user?.role === "USUARIO") {
-    return routes[normalizedPath] || renderPatientDashboard;
-  }
-
-  return routes[normalizedPath] || renderNotFound;
+  const match = fallbacks.find(([prefix]) => pathname.startsWith(prefix));
+  return match ? match[1] : renderNotFound;
 }
 
-function navigate(path) {
-  history.pushState(null, null, path);
+function navigate(path, { replace = false } = {}) {
+  if (replace) history.replaceState(null, null, path);
+  else history.pushState(null, null, path);
   renderRoute();
 }
 
-function renderRoute() {
+/**
+ * Renders the view for the current URL, applying the auth and role guards.
+ *
+ * View functions may be async (most fetch their data), so failures are caught
+ * here: an unhandled rejection would otherwise leave the user on a blank page.
+ */
+async function renderRoute() {
   const user = getSession();
-  const currentPath = normalizePath(window.location.pathname || (user ? "/profile" : "/login"));
+  const currentPath = normalizePath(window.location.pathname);
 
-  if (currentPath === "/profile" && !user) {
-    history.replaceState(null, null, "/login");
-    renderRoute();
-    return;
+  // Signed out and asking for a private route.
+  if (!user && !PUBLIC_ROUTES.has(currentPath)) {
+    return navigate("/login", { replace: true });
   }
 
-  if (currentPath === "/" && user) {
-    const redirectPath = user.role === "ADMIN" ? "/admin/dashboard" : "/patient/dashboard";
-    history.replaceState(null, null, redirectPath);
-    renderRoute();
-    return;
+  // Signed in and sitting on an entry route: go to the role's home.
+  if (user && (currentPath === "/login" || currentPath === "/register" || currentPath === "/")) {
+    return navigate(homeFor(user.role), { replace: true });
   }
 
-  if ((currentPath === "/login" || currentPath === "/register") && user) {
-    const redirectPath = user.role === "ADMIN" ? "/admin/dashboard" : "/patient/dashboard";
-    history.replaceState(null, null, redirectPath);
-    renderRoute();
-    return;
+  // Signed in but reaching into another role's section.
+  if (user && !canAccess(user.role, currentPath)) {
+    return navigate(homeFor(user.role), { replace: true });
   }
 
-  if (currentPath === "/admin" && (!user || user.role !== "ADMIN")) {
-    history.replaceState(null, null, "/login");
-    renderRoute();
-    return;
-  }
+  const route = resolveRoute(currentPath);
 
-  const route = resolveRoute(currentPath, user);
-  route({ navigate, user, currentPath });
+  try {
+    await route({ navigate, user, currentPath });
+  } catch (error) {
+    // A 401 means the token expired; api.js already cleared the session.
+    if (error?.status === 401) return navigate("/login", { replace: true });
+
+    console.error("Error al renderizar la vista:", error);
+    document.getElementById("app").innerHTML = `
+      <main class="grid min-h-screen place-items-center bg-slate-50 px-4">
+        <div class="w-full max-w-md rounded-[28px] bg-white p-6 text-center shadow-xl ring-1 ring-slate-200">
+          <h1 class="text-lg font-semibold text-slate-900">No se pudo cargar la vista</h1>
+          <p class="mt-2 text-sm text-slate-500">${error?.message || "Error inesperado."}</p>
+          <a href="${user ? homeFor(user.role) : "/login"}" class="mt-4 inline-block rounded-full bg-emerald-700 px-4 py-2 text-sm font-semibold text-white">Volver</a>
+        </div>
+      </main>
+    `;
+  }
 }
 
 export function startRouter() {
@@ -141,3 +146,5 @@ export function startRouter() {
 
   renderRoute();
 }
+
+export { navigate };

@@ -9,6 +9,7 @@ import {
   releaseStock,
 } from '../repositories/inventory.repository.js';
 import {
+  findByPatientUser,
   findByPharmacy,
   findOrderDetails,
   findOrderForUpdate,
@@ -376,6 +377,9 @@ export const confirmDelivery = async ({ reservationId, deliveredBy }) =>
 
 /** Lists reservations for a pharmacy. */
 export const listPharmacyReservations = async (filters) => findByPharmacy(filters);
+
+/** Lists the authenticated patient's own reservations. */
+export const listMyReservations = async (filters) => findByPatientUser(filters);
 
 /** Resolves the pharmacy that owns a reservation (for access checks). */
 export const findReservationPharmacyId = async (reservationId) => {

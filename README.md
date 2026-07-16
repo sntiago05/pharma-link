@@ -1,7 +1,8 @@
 # PharmaLink
 
-Backend API connecting EPS, patients and pharmacies: medical orders, appointment
-slots, reservations, inventory and deliveries.
+Platform connecting EPS, patients and pharmacies: medical orders, appointment
+slots, reservations, inventory and deliveries. Express + PostgreSQL API with a
+vanilla-JS + Vite + Tailwind front end.
 
 ## Local setup
 
@@ -21,8 +22,37 @@ slots, reservations, inventory and deliveries.
    npm run dev
    ```
 
-The API listens on `http://localhost:4000` by default. `GET /health` verifies the
-API and the database connection.
+4. In another terminal, start the front end:
+
+   ```bash
+   cd frontend
+   npm install
+   npm run dev
+   ```
+
+The API listens on `http://localhost:4000` and the web app on
+`http://localhost:5173`. `GET /health` verifies the API and the database
+connection.
+
+The front end reads `VITE_API_BASE_URL` and falls back to
+`http://localhost:4000/api`. If you serve the API from another origin, set that
+variable *and* add the front end's origin to `CORS_ORIGINS` in `backend/.env`.
+
+### Roles and test flow
+
+The seed data creates `admin@pharmalink.local` / `Admin1234`, one EPS
+("EPS Demo"), one pharmacy and three medicines. To exercise the whole flow you
+need one user per role — an operator is only useful once an admin links it to a
+pharmacy (`user_pharmacies`) or an EPS (`user_eps`):
+
+1. Sign in as admin and register the pharmacies, medicines and EPS you need,
+   then associate each EPS with its pharmacies (**Farmacias → Asociar EPS y
+   farmacia**). Without that link a patient cannot reserve anywhere.
+2. Set the pharmacy's working hours (**Panel de farmacia → Perfil**): they define
+   the appointment grid.
+3. As the EPS operator, issue an order for a patient's document.
+4. As the patient, complete the profile (EPS + document), then reserve.
+5. As the pharmacy operator, confirm the delivery.
 
 > On a brand-new Docker volume, `db/01_ddl.sql` and the additive migrations run
 > automatically. `npm run db:migrate` is what brings an **existing** database up
@@ -52,7 +82,27 @@ db/
   01_ddl.sql              from-scratch schema (Docker entrypoint, fresh volume only)
   02_improvements.sql     notifications, audit_logs, indexes  (idempotent)
   03_user_eps.sql         EPS operator <-> EPS link            (idempotent)
+
+frontend/
+  src/
+    app.js                entry point
+    router.js             role-guarded client-side routing
+    services/
+      api.js              fetch client: bearer token, envelope, 401 handling
+      session.js          user + token + cached /me context
+      auth.js             login, register, loadContext
+      roles.js            role names, home route and access rules
+      patient.js | pharmacy.js | eps.js | admin.js | notifications.js
+    views/
+      components.js       design system (roleShell, statCard, tables, states...)
+      shell.js            shared panel chrome (user card, logout, quick links)
+      patientRoutesView.js | pharmacyRoutesView.js
+      epsRoutesView.js     | adminRoutesView.js
+      loginView.js | registerView.js | ladingpage.js | welcomePage.js
 ```
+
+Views build HTML with template literals, so any value coming from the API must
+go through `escapeHtml` from `components.js`.
 
 ## Response format
 
@@ -95,10 +145,13 @@ EPS's data returns 403.
 
 | Area | Endpoint |
 | --- | --- |
+| Session | `GET /api/me` — role plus the pharmacy / EPS / patient it is attached to |
+| Directory | `GET /api/eps`, `GET /api/medicines`, `GET /api/pharmacies` (public fields; a patient only sees their EPS's pharmacies) |
 | Patient profile | `GET/POST /api/patients/me` |
-| Orders | `GET /api/orders/me`, `POST /api/orders` |
+| Orders | `GET /api/orders/me`, `POST /api/orders`, `GET /api/orders/:orderId/pharmacies` |
+| EPS orders | `GET/POST /api/eps/:epsId/orders` |
 | Availability | `GET /api/pharmacies/:id/available-slots?date=YYYY-MM-DD` |
-| Reservations | `POST /api/reservations`, `DELETE /api/reservations/:id`, `PUT /api/reservations/:id/reschedule`, `POST /api/reservations/:id/no-show` |
+| Reservations | `POST /api/reservations`, `GET /api/reservations/me`, `DELETE /api/reservations/:id`, `PUT /api/reservations/:id/reschedule`, `POST /api/reservations/:id/no-show` |
 | Deliveries | `POST /api/deliveries/:reservationId` |
 | Inventory | `GET /api/inventory/:pharmacyId`, `POST /api/inventory/:pharmacyId/adjustments` |
 | Dashboards | `GET /api/dashboards/pharmacy/:pharmacyId`, `GET /api/dashboards/eps/:epsId` |

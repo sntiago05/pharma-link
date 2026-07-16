@@ -141,6 +141,53 @@ export const incrementRescheduleCount = async (orderId, client) => {
   );
 };
 
+/**
+ * A patient's own reservations, with pharmacy and order context.
+ *
+ * Includes the medicines held by each reservation so the list can be rendered in
+ * one request instead of one lookup per row.
+ */
+export const findByPatientUser = async ({ userId, status, limit = 50, offset = 0 }) => {
+  const conditions = ['patients.user_id = $1'];
+  const params = [userId];
+
+  if (status) { params.push(status); conditions.push(`reservations.status = $${params.length}`); }
+
+  params.push(limit, offset);
+  const result = await query(
+    `SELECT reservations.*,
+            medical_orders.order_number,
+            medical_orders.expiration_date,
+            medical_orders.cancellation_count,
+            medical_orders.reschedule_count,
+            pharmacies.name AS pharmacy_name,
+            pharmacies.address AS pharmacy_address,
+            pharmacies.city AS pharmacy_city,
+            COALESCE(
+              JSON_AGG(
+                JSON_BUILD_OBJECT('medicineId', medicines.id, 'code', medicines.code,
+                                  'name', medicines.name, 'quantity', reservation_inventory.quantity)
+                ORDER BY medicines.name
+              ) FILTER (WHERE medicines.id IS NOT NULL),
+              '[]'
+            ) AS items
+     FROM reservations
+     INNER JOIN medical_orders ON medical_orders.id = reservations.order_id
+     INNER JOIN patients ON patients.id = medical_orders.patient_id
+     INNER JOIN pharmacies ON pharmacies.id = reservations.pharmacy_id
+     LEFT JOIN reservation_inventory ON reservation_inventory.reservation_id = reservations.id
+     LEFT JOIN medicines ON medicines.id = reservation_inventory.medicine_id
+     WHERE ${conditions.join(' AND ')}
+     GROUP BY reservations.id, medical_orders.order_number, medical_orders.expiration_date,
+              medical_orders.cancellation_count, medical_orders.reschedule_count,
+              pharmacies.name, pharmacies.address, pharmacies.city
+     ORDER BY reservations.reservation_date DESC, reservations.start_time DESC
+     LIMIT $${params.length - 1} OFFSET $${params.length}`,
+    params,
+  );
+  return result.rows;
+};
+
 /** Reservations for a pharmacy, with patient and order context. */
 export const findByPharmacy = async ({ pharmacyId, status, date, limit = 50, offset = 0 }) => {
   const conditions = ['reservations.pharmacy_id = $1'];

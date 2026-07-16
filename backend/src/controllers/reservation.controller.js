@@ -41,6 +41,18 @@ export const listPharmacyReservations = asyncHandler(async (req, res) => {
   return sendSuccess(res, { message: 'Reservations retrieved.', data: reservations });
 });
 
+/** GET /api/reservations/me — the authenticated patient's reservations. */
+export const listMyReservations = asyncHandler(async (req, res) => {
+  const reservations = await reservationService.listMyReservations({
+    userId: req.auth.sub,
+    status: req.query.status,
+    limit: req.query.limit ?? 50,
+    offset: req.query.offset ?? 0,
+  });
+
+  return sendSuccess(res, { message: 'Reservations retrieved.', data: reservations });
+});
+
 /** DELETE /api/reservations/:id */
 export const cancelReservation = asyncHandler(async (req, res) => {
   const reservation = await reservationService.cancelReservation({
