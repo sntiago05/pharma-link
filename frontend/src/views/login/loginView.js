@@ -3,7 +3,10 @@ import { homeFor } from "../../services/roles.js";
 
 function loginTemplate() {
   return `
-  <main class="min-h-screen bg-slate-50 px-4 py-8 flex items-center justify-center">
+  <main class="relative flex min-h-screen items-center justify-center bg-slate-50 px-4 py-8">
+    <a href="/" class="absolute left-4 top-4 z-10 inline-flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-md transition hover:bg-slate-100 sm:left-6 sm:top-6" aria-label="Volver a la página principal">
+      <img class="h-7 w-7" src="/img/Back.png" alt="" />
+    </a>
     <section class="relative w-full max-w-[390px] overflow-hidden lg:max-w-[700px] lg:rounded-[32px] lg:bg-white lg:px-6 lg:py-8 lg:shadow-xl lg:ring-1 lg:ring-slate-200">
       <header class="mb-10 text-center">
         <img src="/img/logo%20horizontal.png" alt="Pharma Link logo" class="mx-auto h-14 w-26" />
@@ -30,6 +33,7 @@ function loginTemplate() {
             name="email"
             type="email"
             autocomplete="email"
+            placeholder="nombre@correo.com"
             required
             class="w-full rounded-sm border border-neutral-300 bg-transparent px-3 py-3 text-sm text-slate-900 outline-none focus:border-teal-700 focus:ring-2 focus:ring-teal-100"
           />
@@ -42,6 +46,7 @@ function loginTemplate() {
             name="password"
             type="password"
             autocomplete="current-password"
+            placeholder="Ingresa tu contraseña"
             required
             class="w-full rounded-sm border border-neutral-300 bg-transparent px-3 py-3 text-sm text-slate-900 outline-none focus:border-teal-700 focus:ring-2 focus:ring-teal-100"
           />
@@ -49,7 +54,7 @@ function loginTemplate() {
 
         <button
           type="submit"
-          class="w-full rounded-md bg-gradient-to-r from-emerald-800 to-emerald-600 px-4 py-3 text-base font-bold text-white shadow-lg shadow-emerald-200/50"
+          class="flex h-12 w-full items-center justify-center rounded-[28px] bg-gradient-to-r from-[#0D4D44] to-[#059E3E] text-sm font-semibold text-white shadow-lg shadow-emerald-900/10 transition hover:opacity-95"
         >
           LOGIN
         </button>

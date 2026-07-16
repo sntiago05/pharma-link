@@ -2,7 +2,7 @@ function landing_depTemplate() {
   return `
     <main class="min-h-screen overflow-x-hidden bg-white text-slate-800">
       <div class="mx-auto flex w-full max-w-none flex-col px-0 py-0 lg:px-0 xl:px-0">
-        <header class="border-b border-slate-200 bg-white/95 px-6 py-5 shadow-sm lg:px-10 xl:px-16">
+        <header id="landingHeader" class="border-b border-slate-200 bg-white/95 px-6 py-5 shadow-sm lg:px-10 xl:px-16">
           <div class="flex flex-wrap items-center justify-between gap-4">
             <div class="flex items-center gap-3">
               <img class="h-12 w-auto" src="/img/image%201.png" alt="Pharma Link logo" />
@@ -12,16 +12,23 @@ function landing_depTemplate() {
               </div>
             </div>
             <nav class="flex flex-wrap items-center gap-4 text-sm font-medium text-slate-700" aria-label="Navegación principal">
-              <a href="/" class="transition hover:text-emerald-600">Home</a>
-              <a href="/register" class="transition hover:text-emerald-600">Create</a>
-              <a href="/login" class="transition hover:text-emerald-600">Reservations</a>
-              <a href="/profile" class="transition hover:text-emerald-600">Profile</a>
+              <a href="/register" class="transition hover:text-emerald-600">Sign in</a>
+              <a href="/login" class="transition hover:text-emerald-600">Log in</a>
+              <a href="#landingFooter" class="transition hover:text-emerald-600">Contact us</a>
             </nav>
-            <div class="flex min-w-[280px] items-center gap-3 rounded-full border border-slate-200 bg-slate-50 px-4 py-2 shadow-sm">
-              <img class="h-4 w-4" src="/img/Search.png" alt="Buscar" />
-              <span class="text-sm text-slate-400">Search</span>
-            </div>
+            <button id="landingMenuButton" class="inline-flex items-center justify-center rounded-lg p-2 text-teal-900 transition hover:bg-slate-100 lg:hidden" type="button" aria-label="Abrir menú" aria-expanded="false">
+              <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
           </div>
+          <style>
+            @media (max-width: 1023px) {
+              #landingMenuButton { order: 2; }
+              #landingHeader nav { display: none; order: 3; width: 100%; flex-direction: column; align-items: flex-start; gap: 0.75rem; border-top: 1px solid #e2e8f0; padding-top: 1rem; }
+              #landingHeader nav.is-open { display: flex; }
+            }
+          </style>
         </header>
 
         <section class="mt-0 overflow-hidden bg-teal-900 px-6 py-10 lg:px-10 lg:py-14 xl:px-16">
@@ -37,12 +44,6 @@ function landing_depTemplate() {
               <p class="mt-5 max-w-lg text-lg text-slate-200">
                 A reliable platform that connects laboratories, distributors, pharmacies and patients in one place.
               </p>
-              <div class="mt-8 flex items-center gap-4">
-                <img class="h-16 w-16" src="/img/Forward.png" alt="" />
-                <div class="rounded-full bg-emerald-600 px-5 py-3 text-sm font-semibold text-white">
-                  Explore our services
-                </div>
-              </div>
             </div>
             <div class="flex justify-center">
               <img class="w-full max-w-[420px] rounded-[1.5rem] object-cover shadow-2xl" src="/img/image%2014.png" alt="Plataforma Pharma Link" />
@@ -138,7 +139,7 @@ function landing_depTemplate() {
           </div>
         </section>
 
-        <footer class="mt-12 flex flex-col overflow-hidden bg-emerald-700 px-6 py-10 text-white lg:px-10 xl:px-16">
+        <footer id="landingFooter" class="mt-12 flex flex-col overflow-hidden bg-emerald-700 px-6 py-10 text-white lg:px-10 xl:px-16">
           <div class="mx-auto w-full max-w-7xl flex-1 grid gap-10 lg:grid-cols-[0.95fr_1.05fr]">
             <div class="max-w-md">
               <div class="flex items-center gap-3">
@@ -148,17 +149,6 @@ function landing_depTemplate() {
                   <div class="text-sm uppercase tracking-[0.25em]">Farmacia</div>
                 </div>
               </div>
-              <ul class="mt-6 space-y-2 text-sm text-emerald-50">
-                <li>Clients</li>
-                <li>Reservations</li>
-                <li>Create</li>
-                <li>Location</li>
-                <li>Profile</li>
-                <li>Register</li>
-                <li>Login</li>
-                <li>Delivery</li>
-                <li>Help Center</li>
-              </ul>
             </div>
             <div class="space-y-6">
               <div>
@@ -193,4 +183,21 @@ function landing_depTemplate() {
 
 export function renderLandingDep({ navigate, user }) {
   document.getElementById("app").innerHTML = landing_depTemplate(user);
+
+  const menuButton = document.getElementById("landingMenuButton");
+  const navigation = document.querySelector("#landingHeader nav");
+
+  menuButton.addEventListener("click", () => {
+    const isOpen = navigation.classList.toggle("is-open");
+    menuButton.setAttribute("aria-expanded", String(isOpen));
+    menuButton.setAttribute("aria-label", isOpen ? "Cerrar menú" : "Abrir menú");
+  });
+
+  document.getElementById("app").addEventListener("click", (event) => {
+    if (!navigation.classList.contains("is-open") || navigation.contains(event.target) || menuButton.contains(event.target)) return;
+
+    navigation.classList.remove("is-open");
+    menuButton.setAttribute("aria-expanded", "false");
+    menuButton.setAttribute("aria-label", "Abrir menú");
+  });
 }

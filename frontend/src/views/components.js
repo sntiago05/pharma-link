@@ -30,7 +30,7 @@ export function authShell(content) {
   `;
 }
 
-export function inputField({ id, label, type = "text", autocomplete = "", required = true }) {
+export function inputField({ id, label, type = "text", autocomplete = "", placeholder = "", required = true }) {
   return `
     <div>
       <label for="${id}" class="mb-2 block text-sm font-semibold text-slate-700">${label}</label>
@@ -38,6 +38,7 @@ export function inputField({ id, label, type = "text", autocomplete = "", requir
         id="${id}"
         type="${type}"
         ${autocomplete ? `autocomplete="${autocomplete}"` : ""}
+        ${placeholder ? `placeholder="${placeholder}"` : ""}
         ${required ? "required" : ""}
         class="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-base outline-none transition focus:border-emerald-600 focus:ring-4 focus:ring-emerald-100"
       >

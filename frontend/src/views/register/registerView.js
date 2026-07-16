@@ -4,7 +4,10 @@ import { inputField } from "../components.js";
 
 function registerTemplate() {
   return `
-    <main class="min-h-screen bg-[#F8FAFC] px-4 py-8 text-slate-900 sm:px-6 md:px-10 lg:px-16">
+    <main class="relative min-h-screen bg-[#F8FAFC] px-4 py-8 text-slate-900 sm:px-6 md:px-10 lg:px-16">
+      <a href="/" class="absolute left-4 top-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-md transition hover:bg-slate-100 sm:left-6 sm:top-6" aria-label="Volver a la página principal">
+        <img class="h-7 w-7" src="/img/Back.png" alt="" />
+      </a>
       <div class="mx-auto w-full max-w-md overflow-hidden rounded-[32px] bg-white p-6 shadow-xl shadow-emerald-900/10 md:max-w-xl md:p-8 lg:max-w-3xl">
       <div class="mb-8 flex flex-col items-center justify-center gap-3 text-center">
         <img class="h-14 w-14" src="/img/image%201.png" alt="PharmaLink logo" />
@@ -24,10 +27,10 @@ function registerTemplate() {
         register endpoint would silently discard them.
       -->
       <form id="registerForm" class="mt-8 space-y-4" aria-label="registration form">
-        ${inputField({ id: "fullname", label: "Nombre completo", type: "text", autocomplete: "name" })}
-        ${inputField({ id: "email", label: "Email", type: "email", autocomplete: "email" })}
-        ${inputField({ id: "password", label: "Contraseña (mínimo 8 caracteres)", type: "password", autocomplete: "new-password" })}
-        ${inputField({ id: "confirmPassword", label: "Confirmar contraseña", type: "password", autocomplete: "new-password" })}
+        ${inputField({ id: "fullname", label: "Nombre completo", type: "text", autocomplete: "name", placeholder: "Ej. Ana García" })}
+        ${inputField({ id: "email", label: "Email", type: "email", autocomplete: "email", placeholder: "nombre@correo.com" })}
+        ${inputField({ id: "password", label: "Contraseña (mínimo 8 caracteres)", type: "password", autocomplete: "new-password", placeholder: "Mínimo 8 caracteres" })}
+        ${inputField({ id: "confirmPassword", label: "Confirmar contraseña", type: "password", autocomplete: "new-password", placeholder: "Repite tu contraseña" })}
 
         <div class="flex items-start gap-3 rounded-[24px] bg-[#F1F5F9] p-4 text-[11px] text-slate-600">
           <label class="flex cursor-pointer items-center gap-3">
