@@ -73,13 +73,13 @@ export function renderLogin({ navigate }) {
     navigate("/register");
   });
 
-  document.getElementById("loginForm").addEventListener("submit", (event) => {
+  document.getElementById("loginForm").addEventListener("submit", async (event) => {
     event.preventDefault();
 
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
     const errorMessage = document.getElementById("errorMessage");
-    const result = login(email, password);
+    const result = await login(email, password);
 
     if (!result.success) {
       errorMessage.textContent = result.message;
@@ -88,10 +88,10 @@ export function renderLogin({ navigate }) {
 
     saveSession(result.user);
     if (result.user.role === "ADMIN") {
-      navigate("/admin");
+      navigate("/admin/dashboard");
       return;
     }
 
-    navigate("/profile");
+    navigate("/patient/dashboard");
   });
 }

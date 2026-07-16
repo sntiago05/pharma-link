@@ -45,12 +45,12 @@ function registerTemplate() {
 export function renderRegister({ navigate }) {
   document.getElementById("app").innerHTML = registerTemplate();
 
-document.getElementById("loginLink").addEventListener("click", (event) => {
-      event.preventDefault();
-      navigate("/login");
-    });
+  document.getElementById("loginLink").addEventListener("click", (event) => {
+    event.preventDefault();
+    navigate("/login");
+  });
 
-    document.getElementById("registerForm").addEventListener("submit", (event) => {
+  document.getElementById("registerForm").addEventListener("submit", async (event) => {
     event.preventDefault();
 
     const password = document.getElementById("password").value;
@@ -68,7 +68,7 @@ document.getElementById("loginLink").addEventListener("click", (event) => {
       return;
     }
 
-    const result = registerUser({
+    const result = await registerUser({
       fullname: document.getElementById("fullname").value,
       email: document.getElementById("email").value,
       phone: document.getElementById("phone").value,
@@ -81,6 +81,6 @@ document.getElementById("loginLink").addEventListener("click", (event) => {
     }
 
     saveSession(result.user);
-    navigate("/profile");
+    navigate("/patient/dashboard");
   });
 }

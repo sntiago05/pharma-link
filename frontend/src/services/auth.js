@@ -1,86 +1,65 @@
-// Usuarios temporales para probar el login.
-// Mas adelante esto se reemplaza por una consulta a la base de datos.
-const users = [
-  {
-    email: "admin@pharmalink.com",
-    password: "123456",
-    name: "Administrador",
-    role: "ADMIN",
-    enabled: true
-  },
-  {
-    email: "usuario@pharmalink.com",
-    password: "123456",
-    name: "Usuario de prueba",
-    role: "USUARIO",
-    enabled: true
-  },
-  {
-    email: "bloqueado@pharmalink.com",
-    password: "123456",
-    name: "Usuario bloqueado",
-    role: "USUARIO",
-    enabled: false
-  }
-];
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000/api";
 
-export function login(email, password) {
-  const user = users.find((item) => item.email === email.trim().toLowerCase());
+async function request(path, options = {}) {
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    headers: {
+      "Content-Type": "application/json",
+      ...(options.headers || {})
+    },
+    ...options
+  });
 
-  if (!user || user.password !== password) {
-    return {
-      success: false,
-      message: "Email o contrasena incorrectos."
-    };
+  const payload = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    throw new Error(payload.message || "Request failed.");
   }
 
-  if (!user.enabled) {
-    return {
-      success: false,
-      message: "Cuenta deshabilitada. Contacte a soporte."
-    };
-  }
-
-  return {
-    success: true,
-    user: {
-      email: user.email,
-      name: user.name,
-      role: user.role
-    }
-  };
+  return payload;
 }
 
-export function registerUser(data) {
-  const emailAlreadyExists = users.some(
-    (user) => user.email === data.email.trim().toLowerCase()
-  );
+export async function login(email, password) {
+  try {
+    const payload = await request("/auth/login", {
+      method: "POST",
+      body: JSON.stringify({ email, password })
+    });
 
-  if (emailAlreadyExists) {
+    return {
+      success: true,
+      user: payload.user || payload.data?.user,
+      token: payload.token || payload.data?.token
+    };
+  } catch (error) {
     return {
       success: false,
-      message: "Este email ya esta registrado."
+      message: error.message || "Email o contrasena incorrectos."
     };
   }
+}
 
-  const newUser = {
-    email: data.email.trim().toLowerCase(),
-    password: data.password,
-    name: data.fullname.trim(),
-    role: "USUARIO",
-    enabled: true
-  };
+export async function registerUser(data) {
+  try {
+    const payload = await request("/auth/register", {
+      method: "POST",
+      body: JSON.stringify({
+        fullName: data.fullname,
+        email: data.email,
+        password: data.password
+      })
+    });
 
-  users.push(newUser);
-
-  return {
-    success: true,
-    user: {
-      email: newUser.email,
-      name: newUser.name,
-      role: newUser.role
-    }
-  };
+    return {
+      success: true,
+      user: payload.user || payload.data?.user,
+      token: payload.token || payload.data?.token
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error.message || "No se pudo crear la cuenta."
+    };
+  }
 }
 
 export function saveSession(user) {
