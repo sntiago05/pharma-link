@@ -1,6 +1,7 @@
 # PharmaLink
 
-Backend API for medical orders, reservations and pharmacy deliveries.
+Backend API connecting EPS, patients and pharmacies: medical orders, appointment
+slots, reservations, inventory and deliveries.
 
 ## Local setup
 
@@ -11,30 +12,172 @@ Backend API for medical orders, reservations and pharmacy deliveries.
    ```
 
 2. In `backend`, copy `.env.example` to `.env` and set the local values.
-3. Install dependencies, seed the roles and start the API:
+3. Install dependencies, apply migrations and start the API:
 
    ```bash
    cd backend
    npm install
-   npm run db:seed
+   npm run db:migrate
    npm run dev
    ```
 
-The API listens on `http://localhost:4000` by default. Use `GET /health` to verify the API and database connection.
+The API listens on `http://localhost:4000` by default. `GET /health` verifies the
+API and the database connection.
 
-## Authentication
+> On a brand-new Docker volume, `db/01_ddl.sql` and the additive migrations run
+> automatically. `npm run db:migrate` is what brings an **existing** database up
+> to date; it is idempotent, so running it twice is safe.
 
-- `POST /api/auth/register` creates a patient user. Body: `fullName`, `email`, `password` (minimum 8 characters).
+## Documentation
+
+Interactive API docs (OpenAPI 3.0) at **`http://localhost:4000/api/docs`**; the
+raw spec is at `/api/docs.json`. Use the *Authorize* button to paste a JWT.
+
+## Architecture
+
+```
+backend/
+  app.js                  Express wiring: security, logging, routes, error handling
+  scripts/                migrate.js, seed-roles.js
+  src/
+    config/               env, db, cors, roles, logger, swagger
+    routes/               HTTP routing + validation + authorization + @openapi docs
+    controllers/          HTTP <-> service translation only
+    services/             business rules and transactions
+    repositories/         SQL
+    middleware/           auth, roles, validation, pharmacy/EPS scoping, audit, errors, rate limit
+    validators/           express-validator rules per endpoint
+    utils/                ApiError, response envelope, asyncHandler, transactions, dates
+db/
+  01_ddl.sql              from-scratch schema (Docker entrypoint, fresh volume only)
+  02_improvements.sql     notifications, audit_logs, indexes  (idempotent)
+  03_user_eps.sql         EPS operator <-> EPS link            (idempotent)
+```
+
+## Response format
+
+Successful responses:
+
+```json
+{ "success": true, "message": "...", "data": {} }
+```
+
+Errors:
+
+```json
+{ "success": false, "message": "...", "errors": [] }
+```
+
+`POST /api/auth/login` and `/register` additionally repeat `token` / `user` at the
+top level, and `/health` repeats `status` / `database`, for backwards
+compatibility with existing clients. Prefer reading `data`.
+
+## Authentication and roles
+
+- `POST /api/auth/register` creates a patient user. Body: `fullName`, `email`,
+  `password` (minimum 8 characters).
 - `POST /api/auth/login` returns a JWT. Body: `email`, `password`.
 
-Set a unique, long `JWT_SECRET` in production. Passwords are stored with bcrypt hashes.
+Send `Authorization: Bearer <token>` on protected endpoints. Set a unique, long
+`JWT_SECRET`; the API refuses to start without one. Passwords are bcrypt hashes.
 
-## Protected API
+| Role | Scope |
+| --- | --- |
+| `ADMIN` | Everything. Bypasses pharmacy/EPS scoping. |
+| `PATIENT` | Own profile, orders, reservations and notifications. |
+| `PHARMACY_OPERATOR` | Only the pharmacy they are linked to via `user_pharmacies`. |
+| `EPS_OPERATOR` | Only the EPS they are linked to via `user_eps`. |
 
-Send `Authorization: Bearer <token>` for protected endpoints. The API includes catalog endpoints (`/api/catalog`), patient profile (`/api/patients/me`), medical orders (`/api/orders`) and reservations (`/api/reservations`).
+Operators are scoped to their own organisation: requesting another pharmacy's or
+EPS's data returns 403.
 
-Administrative catalog endpoints include EPS, pharmacies, medicines, EPS-pharmacy associations and working hours. Delivery confirmation is available at `POST /api/deliveries/:reservationId`.
+## Endpoints
+
+| Area | Endpoint |
+| --- | --- |
+| Patient profile | `GET/POST /api/patients/me` |
+| Orders | `GET /api/orders/me`, `POST /api/orders` |
+| Availability | `GET /api/pharmacies/:id/available-slots?date=YYYY-MM-DD` |
+| Reservations | `POST /api/reservations`, `DELETE /api/reservations/:id`, `PUT /api/reservations/:id/reschedule`, `POST /api/reservations/:id/no-show` |
+| Deliveries | `POST /api/deliveries/:reservationId` |
+| Inventory | `GET /api/inventory/:pharmacyId`, `POST /api/inventory/:pharmacyId/adjustments` |
+| Dashboards | `GET /api/dashboards/pharmacy/:pharmacyId`, `GET /api/dashboards/eps/:epsId` |
+| Notifications | `GET /api/notifications`, `GET /api/notifications/unread-count`, `PATCH /api/notifications/:id/read`, `PATCH /api/notifications/read-all` |
+| Audit (ADMIN) | `GET /api/audit-logs` |
+| Catalog (ADMIN) | `/api/catalog/{eps,pharmacies,medicines}`, `/api/catalog/eps-pharmacies`, `/api/catalog/working-hours` |
+| EPS integration | `POST /api/integrations/eps/orders` (`X-API-Key`) |
+
+`GET /api/reservations/pharmacy/:pharmacyId/availability` still works and returns
+the same payload as the `available-slots` route above.
+
+## Appointment slots
+
+Each pharmacy has working hours (`POST /api/catalog/working-hours`): an opening
+and closing time, a `slotDuration` in minutes and a `capacityPerSlot`. The day is
+divided into fixed blocks from the opening time, and a block disappears from
+availability once it holds `capacityPerSlot` reservations.
+
+`startTime` on a reservation must match a slot returned by the availability
+endpoint — arbitrary times are rejected, because slot capacity is counted per
+start time.
+
+## Business rules
+
+| Rule | Behaviour |
+| --- | --- |
+| Expired order | Cannot be reserved (400). |
+| Delivered order | Cannot be reserved again (409). |
+| Order already reserved | Must be cancelled first (409). |
+| Unknown or unstocked medicine | Rejected, naming the medicine (409). |
+| Insufficient stock | Rejected with available vs required (409). |
+| Cancellations | Maximum 3 per order. |
+| Reschedules | Maximum 2 per order. |
+| Past dates | Rejected (422). |
+| Outside working hours | Rejected (400). |
+
+Orders past their expiration date are swept hourly: their reservations are
+expired, the held stock is released and the patient is notified.
 
 ## Inventory
 
-Pharmacy staff can list stock with `GET /api/inventory/:pharmacyId` and register an entry or adjustment with `POST /api/inventory/:pharmacyId/adjustments`. A reservation holds the required stock; cancelling releases it and confirming delivery deducts it.
+`stock_quantity` is physical stock; `reserved_quantity` is what is promised to
+patients; `available_quantity` is the difference and is what can still be
+reserved. A reservation holds stock, cancelling or a no-show releases it, and
+confirming delivery deducts it. Every change is appended to
+`inventory_movements`. An adjustment that would push stock below what is already
+reserved is rejected.
+
+## Notifications
+
+Created automatically when a reservation is made, cancelled, rescheduled,
+delivered or marked no-show, and when an order expires. The patient is always
+notified; operators of the pharmacy involved are notified too. Notifications are
+written in the same transaction as the event that caused them.
+
+## Auditing
+
+Creates, updates, deletes, delivery confirmations, reservation cancellations and
+inventory changes are recorded in `audit_logs` with the acting user, action,
+table, record id, IP, endpoint, HTTP method, status code and timestamp. Only
+successful requests are recorded; failures are captured by the error logs.
+
+## Security
+
+Helmet, configurable CORS (`CORS_ORIGINS`; `*` when unset), rate limiting
+(stricter on `/api/auth`), request sanitisation, a 100 kB body cap, and
+role-plus-tenant authorization on every route. Secrets live in `.env`, which is
+git-ignored. API keys are stored as SHA-256 digests and are never returned by the
+API.
+
+## Logging
+
+Winston + Morgan. Human-readable in development, JSON in production. Requests,
+response times and errors go to the console, `logs/error.log` and
+`logs/combined.log` (git-ignored). Unexpected errors are logged with a stack but
+answered with a generic message, so internals never reach clients.
+
+## Environment variables
+
+See `backend/.env.example`. Required: `DB_*` and `JWT_SECRET`. Everything else has
+a safe default, including `APP_TIMEZONE` (default `America/Bogota`), which
+determines what "today" means for past-date checks and dashboards.

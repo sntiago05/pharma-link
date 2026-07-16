@@ -1,15 +1,85 @@
-import { pool } from '../config/db.js';
+import { logger } from '../config/logger.js';
+import {
+  findReservationItems,
+  recordMovement,
+  releaseStock,
+} from '../repositories/inventory.repository.js';
+import { withTransaction } from '../utils/transaction.js';
+import { notifyOrdersExpired } from './notification.service.js';
 
-export const expireOrders = async () => {
-  const client = await pool.connect();
-  try {
-    await client.query('BEGIN');
-    const reservations = await client.query(`UPDATE reservations SET status = 'EXPIRED' WHERE status = 'RESERVED' AND order_id IN (SELECT id FROM medical_orders WHERE expiration_date < CURRENT_DATE) RETURNING id, pharmacy_id`);
+/**
+ * Expires medical orders past their expiration date and frees any stock their
+ * reservations were holding.
+ *
+ * Runs hourly from app.js. The whole sweep is one transaction so stock is never
+ * left held by a reservation that has already been marked EXPIRED.
+ *
+ * @returns {Promise<{ expiredOrders: number, releasedReservations: number }>}
+ */
+export const expireOrders = async () =>
+  withTransaction(async (client) => {
+    // Reservations first: their stock must be released before the orders they
+    // belong to are closed.
+    const reservations = await client.query(
+      `UPDATE reservations SET status = 'EXPIRED'
+       WHERE status = 'RESERVED'
+         AND order_id IN (SELECT id FROM medical_orders WHERE expiration_date < CURRENT_DATE)
+       RETURNING id, pharmacy_id`,
+    );
+
     for (const reservation of reservations.rows) {
-      const items = await client.query('SELECT medicine_id, quantity FROM reservation_inventory WHERE reservation_id = $1', [reservation.id]);
-      for (const item of items.rows) await client.query('UPDATE pharmacy_inventory SET reserved_quantity = reserved_quantity - $1 WHERE pharmacy_id = $2 AND medicine_id = $3', [item.quantity, reservation.pharmacy_id, item.medicine_id]);
+      const items = await findReservationItems(reservation.id, client);
+      for (const item of items) {
+        await releaseStock(
+          {
+            pharmacyId: reservation.pharmacy_id,
+            medicineId: item.medicine_id,
+            quantity: item.quantity,
+          },
+          client,
+        );
+        // The original sweep decremented reserved_quantity without recording a
+        // movement, so expired holds vanished from the ledger and the movement
+        // history no longer reconciled with the stock figures.
+        await recordMovement(
+          {
+            pharmacyId: reservation.pharmacy_id,
+            medicineId: item.medicine_id,
+            movementType: 'RELEASE',
+            quantity: item.quantity,
+            reservationId: reservation.id,
+          },
+          client,
+        );
+      }
     }
-    await client.query("UPDATE medical_orders SET status = 'EXPIRED' WHERE expiration_date < CURRENT_DATE AND status <> 'DELIVERED'");
-    await client.query('COMMIT');
-  } catch (error) { await client.query('ROLLBACK'); throw error; } finally { client.release(); }
-};
+
+    const orders = await client.query(
+      `UPDATE medical_orders SET status = 'EXPIRED'
+       WHERE expiration_date < CURRENT_DATE AND status <> 'DELIVERED' AND status <> 'EXPIRED'
+       RETURNING id, order_number, patient_id`,
+    );
+
+    if (orders.rowCount) {
+      // Resolve the notification recipients (the patients' user accounts).
+      const recipients = await client.query(
+        `SELECT medical_orders.id, medical_orders.order_number, patients.user_id
+         FROM medical_orders
+         INNER JOIN patients ON patients.id = medical_orders.patient_id
+         WHERE medical_orders.id = ANY($1::int[])`,
+        [orders.rows.map((order) => order.id)],
+      );
+      await notifyOrdersExpired(recipients.rows, client);
+    }
+
+    const summary = {
+      expiredOrders: orders.rowCount,
+      releasedReservations: reservations.rowCount,
+    };
+
+    if (summary.expiredOrders || summary.releasedReservations) {
+      logger.info('Order expiration sweep completed', summary);
+    }
+
+    return summary;
+  });
