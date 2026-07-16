@@ -138,8 +138,8 @@ function landing_depTemplate() {
           </div>
         </section>
 
-        <footer class="mt-12 overflow-hidden bg-emerald-700 px-6 py-10 text-white lg:px-10 xl:px-16">
-          <div class="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.95fr_1.05fr]">
+        <footer class="mt-12 flex flex-col overflow-hidden bg-emerald-700 px-6 py-10 text-white lg:px-10 xl:px-16">
+          <div class="mx-auto w-full max-w-7xl flex-1 grid gap-10 lg:grid-cols-[0.95fr_1.05fr]">
             <div class="max-w-md">
               <div class="flex items-center gap-3">
                 <img class="h-16 w-auto" src="/img/image%201.png" alt="Pharma Link logo" />
@@ -184,9 +184,6 @@ function landing_depTemplate() {
                 <p class="mt-2 text-emerald-50">employmentcertificates@pharmalink.com.co</p>
               </div>
             </div>
-          </div>
-          <div class="mt-8 flex justify-end">
-            <img class="h-20 w-auto rounded-full object-cover" src="/img/image%2016.png" alt="Imagen final" />
           </div>
         </footer>
       </div>
