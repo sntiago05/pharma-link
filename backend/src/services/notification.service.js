@@ -56,7 +56,25 @@ const resolveReservationAudience = async (reservationId, client) => {
   };
 };
 
-const formatDate = (date) => (date instanceof Date ? date.toISOString().slice(0, 10) : String(date));
+/**
+ * Formats a reservation date as `DD/MM/YYYY` for the message body.
+ *
+ * `pg` returns a DATE column as a Date at local midnight, so `toISOString()`
+ * would convert it to UTC and report the previous day for any timezone behind
+ * UTC — a reservation for the 20th would be announced as the 19th. Local
+ * components are read instead.
+ */
+const formatDate = (date) => {
+  if (!date) return "";
+
+  if (date instanceof Date) {
+    return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
+  }
+
+  const [year, month, day] = String(date).slice(0, 10).split('-');
+  return day && month && year ? `${day}/${month}/${year}` : String(date);
+};
+
 const formatTime = (time) => String(time).slice(0, 5);
 
 /** Message templates, one per event. */

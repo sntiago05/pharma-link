@@ -20,6 +20,8 @@ import authRoutes from './src/routes/auth.routes.js';
 import catalogRoutes from './src/routes/catalog.routes.js';
 import dashboardRoutes from './src/routes/dashboard.routes.js';
 import deliveryRoutes from './src/routes/delivery.routes.js';
+import { meRouter, medicineRouter } from './src/routes/directory.routes.js';
+import epsRoutes from './src/routes/eps.routes.js';
 import epsIntegrationRoutes from './src/routes/eps-integration.routes.js';
 import inventoryRoutes from './src/routes/inventory.routes.js';
 import notificationRoutes from './src/routes/notification.routes.js';
@@ -73,9 +75,12 @@ app.use('/api/auth', authRoutes);
 app.use('/api/integrations/eps', epsIntegrationRoutes);
 
 // JWT-protected.
+app.use('/api/me', authenticate, meRouter);
 app.use('/api/catalog', authenticate, catalogRoutes);
 app.use('/api/patients', authenticate, patientRoutes);
 app.use('/api/orders', authenticate, orderRoutes);
+app.use('/api/medicines', authenticate, medicineRouter);
+app.use('/api/eps', authenticate, epsRoutes);
 app.use('/api/pharmacies', authenticate, pharmacyRoutes);
 app.use('/api/reservations', authenticate, reservationRoutes);
 app.use('/api/deliveries', authenticate, deliveryRoutes);

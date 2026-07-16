@@ -1,4 +1,5 @@
-import { registerUser, saveSession } from "../services/auth.js";
+import { loadContext, login, registerUser } from "../services/auth.js";
+import { homeFor } from "../services/roles.js";
 import { inputField } from "./components.js";
 
 function registerTemplate() {
@@ -17,13 +18,16 @@ function registerTemplate() {
         <p class="text-sm leading-6 text-slate-600">Fill in the form to access your pharmacy, orders, and promotions on a secure platform.</p>
       </div>
 
+      <!--
+        Document and phone are collected in the patient profile step, not here:
+        they belong to the patient record (together with the EPS), and the
+        register endpoint would silently discard them.
+      -->
       <form id="registerForm" class="mt-8 space-y-4" aria-label="registration form">
-        ${inputField({ id: "userId", label: "ID", type: "text", autocomplete: "off" })}
-        ${inputField({ id: "fullname", label: "Full name", type: "text", autocomplete: "name" })}
+        ${inputField({ id: "fullname", label: "Nombre completo", type: "text", autocomplete: "name" })}
         ${inputField({ id: "email", label: "Email", type: "email", autocomplete: "email" })}
-        ${inputField({ id: "phone", label: "Phone", type: "tel", autocomplete: "tel" })}
-        ${inputField({ id: "password", label: "Password", type: "password", autocomplete: "new-password" })}
-        ${inputField({ id: "confirmPassword", label: "Confirm Password", type: "password", autocomplete: "new-password" })}
+        ${inputField({ id: "password", label: "Contraseña (mínimo 8 caracteres)", type: "password", autocomplete: "new-password" })}
+        ${inputField({ id: "confirmPassword", label: "Confirmar contraseña", type: "password", autocomplete: "new-password" })}
 
         <div class="flex items-start gap-3 rounded-[24px] bg-[#F1F5F9] p-4 text-[11px] text-slate-600">
           <label class="flex cursor-pointer items-center gap-3">
@@ -68,19 +72,40 @@ export function renderRegister({ navigate }) {
       return;
     }
 
+    const email = document.getElementById("email").value;
+    const submitButton = event.target.querySelector("button[type=submit]");
+    submitButton.disabled = true;
+    submitButton.textContent = "Creando cuenta...";
+
     const result = await registerUser({
       fullname: document.getElementById("fullname").value,
-      email: document.getElementById("email").value,
-      phone: document.getElementById("phone").value,
+      email,
       password
     });
 
     if (!result.success) {
       errorMessage.textContent = result.message;
+      submitButton.disabled = false;
+      submitButton.textContent = "Create account";
       return;
     }
 
-    saveSession(result.user);
-    navigate("/patient/dashboard");
+    // Register does not issue a token, so signing in here is what actually
+    // establishes the session. Storing the user alone (as before) produced a
+    // "logged in" state with no credential, and every request answered 401.
+    const session = await login(email, password);
+    if (!session.success) {
+      errorMessage.textContent = "Cuenta creada. Inicia sesión para continuar.";
+      setTimeout(() => navigate("/login"), 1200);
+      return;
+    }
+
+    try {
+      await loadContext();
+    } catch (error) {
+      console.warn("No se pudo cargar el contexto de sesión:", error);
+    }
+
+    navigate(homeFor(session.user.role));
   });
 }

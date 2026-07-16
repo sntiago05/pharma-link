@@ -4,6 +4,7 @@ import {
   availableSlots,
   cancelReservation,
   createReservation,
+  listMyReservations,
   listPharmacyReservations,
   markNoShow,
   rescheduleReservation,
@@ -27,6 +28,51 @@ const router = Router();
 
 /** Resolves the pharmacy owning the reservation in `:id`, for access checks. */
 const pharmacyOfReservation = (req) => findReservationPharmacyId(req.params.id);
+
+/**
+ * @openapi
+ * /reservations/me:
+ *   get:
+ *     tags: [Reservations]
+ *     summary: List the caller's own reservations
+ *     description: >
+ *       Newest first, including the pharmacy, the order number and the medicines
+ *       held by each reservation, plus the cancellation and reschedule counters
+ *       so the UI can disable those actions once a limit is reached.
+ *     parameters:
+ *       - in: query
+ *         name: status
+ *         schema: { $ref: '#/components/schemas/ReservationStatus' }
+ *       - $ref: '#/components/parameters/LimitParam'
+ *       - $ref: '#/components/parameters/OffsetParam'
+ *     responses:
+ *       200:
+ *         description: Reservations.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       type: array
+ *                       items: { $ref: '#/components/schemas/Reservation' }
+ *       401: { $ref: '#/components/responses/Unauthorized' }
+ *       403: { $ref: '#/components/responses/Forbidden' }
+ *       422: { $ref: '#/components/responses/ValidationError' }
+ */
+router.get(
+  '/me',
+  authorize([ROLES.PATIENT]),
+  validate([
+    ...paginationQuery(),
+    query('status').optional()
+      .isIn(['RESERVED', 'CANCELLED', 'COMPLETED', 'NO_SHOW', 'EXPIRED'])
+      .withMessage('status must be a valid reservation status.'),
+  ]),
+  listMyReservations,
+);
 
 /**
  * @openapi

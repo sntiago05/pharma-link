@@ -1,4 +1,5 @@
-import { login, saveSession } from "../services/auth.js";
+import { loadContext, login } from "../services/auth.js";
+import { homeFor } from "../services/roles.js";
 
 function loginTemplate() {
   return `
@@ -73,25 +74,41 @@ export function renderLogin({ navigate }) {
     navigate("/register");
   });
 
-  document.getElementById("loginForm").addEventListener("submit", async (event) => {
+  const form = document.getElementById("loginForm");
+
+  form.addEventListener("submit", async (event) => {
     event.preventDefault();
 
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
     const errorMessage = document.getElementById("errorMessage");
+    const submitButton = form.querySelector("button[type=submit]");
+
+    errorMessage.textContent = "";
+    submitButton.disabled = true;
+    submitButton.textContent = "INGRESANDO...";
+
+    // `login` stores both the user and the token; the token used to be dropped
+    // here, which left every later request unauthenticated.
     const result = await login(email, password);
 
     if (!result.success) {
       errorMessage.textContent = result.message;
+      submitButton.disabled = false;
+      submitButton.textContent = "LOGIN";
       return;
     }
 
-    saveSession(result.user);
-    if (result.user.role === "ADMIN") {
-      navigate("/admin/dashboard");
-      return;
+    // Resolve which pharmacy / EPS / patient profile this user is attached to.
+    // A failure here is not fatal: each panel reloads its own context.
+    try {
+      await loadContext();
+    } catch (error) {
+      console.warn("No se pudo cargar el contexto de sesión:", error);
     }
 
-    navigate("/patient/dashboard");
+    // Route by the role the backend actually returned, instead of assuming
+    // "not ADMIN" means patient — that sent operators to the patient panel.
+    navigate(homeFor(result.user.role));
   });
 }
