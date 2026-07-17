@@ -48,34 +48,51 @@ export function inputField({ id, label, type = "text", autocomplete = "", placeh
 
 export function roleShell({ title, subtitle, navItems = [], content, sideContent }) {
   const navHtml = navItems.length
-    ? `<nav class="flex justify-center flex-wrap gap-2">${navItems
+    ? `<nav class="hidden flex-wrap justify-center gap-2 sm:flex">${navItems
         .map(({ label, href, active = false }) => {
           return `
-            <a href="${href}" class="rounded-full border px-3 py-2 text-sm font-medium transition ${active ? "border-emerald-600 bg-emerald-50 text-emerald-700" : "border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-700"}">
+            <a href="${href}" class="rounded-full border px-3 py-2 text-sm font-medium transition ${active ? "border-[#0D4D44] bg-[#0D4D44] text-white shadow-sm" : "border-emerald-100 bg-emerald-50/60 text-[#0D4D44] hover:border-emerald-300 hover:bg-emerald-100"}">
               ${label}
             </a>`;
         })
-        .join("")}</nav>`
+        .join("")}<button type="button" data-logout-button class="rounded-full border border-red-200 bg-red-50 px-3 py-2 text-sm font-semibold text-red-700 transition hover:bg-red-100">Cerrar sesión</button></nav>
+        <details class="relative sm:hidden">
+          <summary class="flex h-11 w-11 cursor-pointer list-none items-center justify-center rounded-lg border border-emerald-200 bg-emerald-50 text-[#0D4D44] transition hover:bg-emerald-100" aria-label="Abrir menú de navegación">
+            <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </summary>
+          <nav class="absolute right-0 z-10 mt-2 flex w-52 flex-col gap-2 rounded-[20px] border border-emerald-100 bg-white p-3 shadow-xl shadow-emerald-950/15">${navItems
+            .map(({ label, href, active = false }) => {
+              return `<a href="${href}" class="rounded-xl px-3 py-2 text-sm font-medium transition ${active ? "bg-[#0D4D44] text-white" : "bg-emerald-50 text-[#0D4D44] hover:bg-emerald-100"}">${label}</a>`;
+            })
+            .join("")}<button type="button" data-logout-button class="rounded-xl bg-red-50 px-3 py-2 text-left text-sm font-semibold text-red-700 transition hover:bg-red-100">Cerrar sesión</button></nav>
+        </details>`
     : "";
 
   return `
-    <main class="min-h-screen bg-slate-50 px-4 py-4 text-slate-900 sm:px-6 lg:px-8">
-      <section class="mx-auto flex w-full max-w-[90%] flex-col gap-4 lg:flex-row lg:items-start">
-        <div class="w-full rounded-[32px] bg-white p-4 shadow-xl shadow-emerald-900/10 ring-1 ring-slate-200 sm:p-6 lg:flex-1">
-          <header class="flex flex-col gap-4 border-b border-slate-200 pb-4 sm:flex-row sm:items-start sm:justify-between">
-            <div class="flex flex-col items-center gap-1 sm:items-start">
-              <img src="/img/logo%20horizontal.png" alt="Pharma Link logo" class="h-[90px] w-[260px]" />
+    <main class="min-h-screen bg-[#eef8f4] text-slate-900">
+      <header class="w-full border-b border-emerald-100 bg-white px-4 py-4 shadow-sm sm:px-6 lg:px-8">
+        <div class="mx-auto flex w-full max-w-7xl items-start justify-between gap-4">
+          <div class="flex min-w-0 items-center gap-4">
+              <img src="/img/image%201.png" alt="Pharma Link logo" class="h-12 w-auto shrink-0 sm:hidden" />
+              <img src="/img/logo%20horizontal.png" alt="Pharma Link logo" class="hidden h-[63px] w-[182px] shrink-0 sm:block" />
+            <div class="min-w-0">
               <h1 class="mt-1 text-2xl font-semibold text-[#0D4D44]">${title}</h1>
               <p class="mt-1 text-sm text-slate-500">${subtitle}</p>
             </div>
-            ${navHtml}
-          </header>
-          ${content}
+          </div>
+          ${navHtml}
         </div>
-
-        <aside class="w-full rounded-[32px] bg-white p-4 shadow-xl shadow-emerald-900/10 ring-1 ring-slate-200 sm:p-6 lg:max-w-sm">
+      </header>
+      <section class="mx-auto flex w-full max-w-7xl flex-col gap-5 px-4 py-5 sm:px-6 lg:flex-row lg:items-start lg:px-8">
+        <aside class="order-1 w-full rounded-[32px] border border-emerald-100 bg-white p-4 shadow-xl shadow-emerald-950/10 sm:p-6 lg:max-w-sm">
           ${sideContent}
         </aside>
+
+        <div class="order-2 w-full rounded-[32px] border border-emerald-100 bg-white p-4 shadow-xl shadow-emerald-950/10 sm:p-6 lg:order-2 lg:flex-1">
+          ${content}
+        </div>
       </section>
     </main>
   `;
@@ -83,10 +100,10 @@ export function roleShell({ title, subtitle, navItems = [], content, sideContent
 
 export function statCard(label, value, hint) {
   return `
-    <article class="rounded-[24px] border border-slate-200 bg-slate-50 p-4">
-      <p class="text-sm font-semibold text-slate-700">${label}</p>
-      <p class="mt-3 text-2xl font-semibold text-[#0D4D44]">${value}</p>
-      <p class="mt-2 text-sm text-slate-500">${hint}</p>
+    <article class="rounded-[24px] border border-emerald-700 bg-emerald-700 p-4 shadow-sm shadow-emerald-900/20">
+      <p class="text-sm font-semibold text-emerald-50">${label}</p>
+      <p class="mt-3 text-2xl font-semibold text-white">${value}</p>
+      <p class="mt-2 text-sm text-emerald-100">${hint}</p>
     </article>
   `;
 }
@@ -104,9 +121,9 @@ export function statusBadge(text, tone = "emerald") {
 
 export function infoRow(label, value) {
   return `
-    <div class="flex items-center justify-between rounded-[20px] bg-slate-50 px-4 py-3">
-      <span class="text-sm text-slate-500">${label}</span>
-      <span class="text-sm font-semibold text-slate-900">${value}</span>
+    <div class="flex items-center justify-between rounded-[20px] bg-emerald-50/60 px-4 py-3">
+      <span class="text-sm text-slate-600">${label}</span>
+      <span class="text-sm font-semibold text-[#0D4D44]">${value}</span>
     </div>
   `;
 }
@@ -165,7 +182,7 @@ export function emptyState(message, hint = "") {
 export function primaryButton(label, { id = "", type = "button", attrs = "", full = false } = {}) {
   return `
     <button ${id ? `id="${id}"` : ""} type="${type}" ${attrs}
-      class="${full ? "w-full " : ""}rounded-full bg-gradient-to-r from-emerald-800 to-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50">
+      class="${full ? "w-full " : ""}rounded-full bg-gradient-to-r from-[#0D4D44] to-[#059E3E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50">
       ${label}
     </button>
   `;
@@ -220,10 +237,10 @@ export function dataTable({ headers, rows }) {
   if (!rows.length) return emptyState("Sin registros para mostrar.");
 
   return `
-    <div class="overflow-x-auto rounded-[20px] border border-slate-200">
+    <div class="overflow-x-auto rounded-[20px] border border-emerald-100">
       <table class="w-full min-w-[520px] border-collapse text-left text-sm">
-        <thead class="bg-slate-50">
-          <tr>${headers.map((header) => `<th class="px-4 py-3 font-semibold text-slate-600">${escapeHtml(header)}</th>`).join("")}</tr>
+        <thead class="bg-[#0D4D44]">
+          <tr>${headers.map((header) => `<th class="px-4 py-3 font-semibold text-white">${escapeHtml(header)}</th>`).join("")}</tr>
         </thead>
         <tbody class="divide-y divide-slate-100">
           ${rows.map((cells) => `<tr class="hover:bg-slate-50">${cells.map((cell) => `<td class="px-4 py-3 text-slate-700">${cell}</td>`).join("")}</tr>`).join("")}
@@ -236,12 +253,12 @@ export function dataTable({ headers, rows }) {
 /** Section wrapper matching the card style used across the panels. */
 export function panel({ title, action = "", body }) {
   return `
-    <section class="mt-5 rounded-[28px] border border-slate-200 bg-white p-4 shadow-sm">
+    <section class="mt-5 rounded-[28px] border border-emerald-800 bg-emerald-700 p-4 shadow-sm shadow-emerald-900/20">
       <div class="flex flex-wrap items-center justify-between gap-3">
-        <p class="text-sm font-semibold text-slate-900">${escapeHtml(title)}</p>
+        <p class="text-sm font-semibold text-white">${escapeHtml(title)}</p>
         ${action}
       </div>
-      <div class="mt-4">${body}</div>
+      <div class="mt-4 rounded-[20px] bg-emerald-500 p-4">${body}</div>
     </section>
   `;
 }
