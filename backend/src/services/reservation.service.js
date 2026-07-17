@@ -152,6 +152,14 @@ export const createReservation = async ({
       throw ApiError.badRequest('Pharmacy is not associated with the order EPS.');
     }
 
+    const branch = await client.query(
+      'SELECT parent_pharmacy_id FROM pharmacies WHERE id = $1 AND active = TRUE',
+      [pharmacyId],
+    );
+    if (!branch.rowCount || !branch.rows[0].parent_pharmacy_id) {
+      throw ApiError.badRequest('Reservations must be made at an active pharmacy branch.');
+    }
+
     await lockPharmacy(pharmacyId, client);
     await assertSlotIsBookable({ pharmacyId, date: reservationDate, startTime, endTime }, client);
 

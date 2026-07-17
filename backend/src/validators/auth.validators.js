@@ -6,6 +6,8 @@ export const registerRules = [
     .withMessage('Full name must contain at least 3 characters.'),
   emailBody(),
   passwordBody(),
+  stringBody('document', { min: 3, max: 30 }),
+  body('phone').optional({ values: 'null' }).isString().trim().isLength({ max: 20 }),
 ];
 
 export const loginRules = [emailBody(), passwordBody()];

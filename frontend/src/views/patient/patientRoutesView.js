@@ -441,11 +441,19 @@ async function renderAvailability({ navigate }) {
       return;
     }
 
+    const pharmacyGroups = pharmacies.reduce((groups, branch) => {
+      const id = branch.parentPharmacyId;
+      if (!groups.has(id)) groups.set(id, { id, name: branch.parentPharmacyName, branches: [] });
+      groups.get(id).branches.push(branch);
+      return groups;
+    }, new Map());
+
     pharmacyStep.innerHTML = `
-      <p class="mb-2 text-sm font-semibold text-slate-700">2. Escoge la farmacia</p>
+      <p class="mb-2 text-sm font-semibold text-slate-700">2. Escoge la farmacia y su sede</p>
       <div class="space-y-2">
-        ${pharmacies
-          .map((pharmacy) => {
+        ${Array.from(pharmacyGroups.values())
+          .map((group) => {
+            const branches = group.branches.map((pharmacy) => {
             // Only offer what the API would actually accept: the whole order in
             // stock and a configured slot grid.
             const bookable = pharmacy.isComplete && pharmacy.hasWorkingHours;
@@ -463,6 +471,12 @@ async function renderAvailability({ navigate }) {
                   ${pharmacy.items.map((item) => `${escapeHtml(item.name)}: ${item.available}/${item.required}`).join(" · ")}
                 </p>
               </button>`;
+            }).join("");
+            return `
+              <section class="rounded-[20px] border border-slate-200 bg-slate-50 p-3">
+                <p class="mb-2 text-sm font-semibold text-slate-900">${escapeHtml(group.name)}</p>
+                <div class="space-y-2">${branches}</div>
+              </section>`;
           })
           .join("")}
       </div>

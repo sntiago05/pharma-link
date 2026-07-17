@@ -6,6 +6,15 @@ import {
   getCatalogItem,
   linkEpsPharmacy,
   listCatalog,
+  listBranches,
+  createBranch,
+  requestBranchChange,
+  listBranchChangeRequests,
+  listMyBranchChangeRequests,
+  listEpsPharmacies,
+  reviewBranchChangeRequest,
+  updateUserRole,
+  updateUserStatus,
   listUsers,
   setWorkingHours,
   updateCatalog,
@@ -309,7 +318,17 @@ const registerCrud = (type) => {
 
 ['eps', 'pharmacies', 'medicines'].forEach(registerCrud);
 
+router.get('/pharmacies/:id/branches', authorize([ROLES.ADMIN, ROLES.PHARMACY]), requirePharmacyAccess((req) => Number(req.params.id)), listBranches);
+router.get('/eps/:id/pharmacies', admin, listEpsPharmacies);
+router.post('/pharmacies/:id/branches', authorize([ROLES.ADMIN, ROLES.PHARMACY]), requirePharmacyAccess((req) => Number(req.params.id)), createBranch);
+router.post('/pharmacies/:id/branches/:branchId/requests', authorize([ROLES.ADMIN, ROLES.PHARMACY]), requirePharmacyAccess((req) => Number(req.params.id)), requestBranchChange);
+router.get('/branch-change-requests', admin, listBranchChangeRequests);
+router.get('/my-branch-change-requests', authorize([ROLES.ADMIN, ROLES.PHARMACY]), listMyBranchChangeRequests);
+router.put('/branch-change-requests/:id', admin, reviewBranchChangeRequest);
+
 router.get('/users', admin, listUsers);
+router.put('/users/:id/role', admin, updateUserRole);
+router.put('/users/:id/status', admin, updateUserStatus);
 router.delete(
   '/users/:id',
   admin,

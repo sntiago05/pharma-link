@@ -32,7 +32,10 @@ export const findOrderForUpdate = async ({ orderId, userId }, client) => {
 /** True when the pharmacy is contracted by the EPS that issued the order. */
 export const isPharmacyLinkedToEps = async ({ epsId, pharmacyId }, client) => {
   const result = await client.query(
-    'SELECT 1 FROM eps_pharmacies WHERE eps_id = $1 AND pharmacy_id = $2 AND active = TRUE',
+    `SELECT 1
+     FROM pharmacies branch
+     INNER JOIN eps_pharmacies ON eps_pharmacies.pharmacy_id = branch.parent_pharmacy_id
+     WHERE eps_pharmacies.eps_id = $1 AND branch.id = $2 AND eps_pharmacies.active = TRUE`,
     [epsId, pharmacyId],
   );
   return result.rowCount > 0;

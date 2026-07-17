@@ -21,3 +21,7 @@ export const markNoShow = (reservationId) => apiPost(`/reservations/${reservatio
 export const listMedicines = (params) => apiGet("/medicines", params);
 
 export const setWorkingHours = (payload) => apiPost("/catalog/working-hours", payload);
+export const listBranches = (pharmacyId) => apiGet(`/catalog/pharmacies/${pharmacyId}/branches`);
+export const createBranch = (pharmacyId, payload) => apiPost(`/catalog/pharmacies/${pharmacyId}/branches`, payload);
+export const requestBranchChange = (pharmacyId, branchId, action) => apiPost(`/catalog/pharmacies/${pharmacyId}/branches/${branchId}/requests`, { action });
+export const listMyBranchChangeRequests = () => apiGet('/catalog/my-branch-change-requests');

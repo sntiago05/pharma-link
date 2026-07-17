@@ -9,7 +9,6 @@ import { today } from '../utils/dates.js';
 
 export const createEpsOrderRules = [
   idParam('epsId'),
-  stringBody('orderNumber', { min: 1, max: 100 }),
   stringBody('patientDocument', { min: 3, max: 30 }),
   // Only required when the patient is unknown; the service decides, since that
   // depends on database state.

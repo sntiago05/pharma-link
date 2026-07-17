@@ -22,7 +22,6 @@ export const createOrder = asyncHandler(async (req, res) => {
     // From the path, which requireEpsAccess has already checked against the
     // operator's link — never from the body.
     epsId: Number(req.params.epsId),
-    orderNumber: req.body.orderNumber,
     patientDocument: req.body.patientDocument,
     patientFullName: req.body.patientFullName,
     patientEmail: req.body.patientEmail,

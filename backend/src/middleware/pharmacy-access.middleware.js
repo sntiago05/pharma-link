@@ -28,3 +28,20 @@ export const requirePharmacyAccess = (getPharmacyId) =>
 
     return next();
   });
+
+/** Read-only parent access: a matrix operator may inspect, never mutate, a branch. */
+export const requirePharmacyOrParentAccess = (getPharmacyId) =>
+  asyncHandler(async (req, _res, next) => {
+    if (req.auth.role === ROLES.ADMIN) return next();
+    const pharmacyId = await getPharmacyId(req);
+    const result = await query(
+      `SELECT 1 FROM pharmacies target
+       INNER JOIN user_pharmacies assignment
+         ON assignment.user_id = $1
+        AND (assignment.pharmacy_id = target.id OR assignment.pharmacy_id = target.parent_pharmacy_id)
+       WHERE target.id = $2`,
+      [req.auth.sub, pharmacyId],
+    );
+    if (!result.rowCount) throw ApiError.forbidden('You are not assigned to this pharmacy or its matrix.');
+    return next();
+  });

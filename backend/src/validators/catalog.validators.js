@@ -36,6 +36,10 @@ export const createRules = {
       .withMessage('parentPharmacyId must be a valid pharmacy id.').toInt(),
     body('epsIds').optional().isArray().withMessage('epsIds must be an array.'),
     body('epsIds.*').optional().isInt({ min: 1 }).withMessage('Each epsIds item must be valid.').toInt(),
+    body('openingTime').optional().matches(/^([01]\d|2[0-3]):[0-5]\d$/).withMessage('openingTime must use HH:MM.'),
+    body('closingTime').optional().matches(/^([01]\d|2[0-3]):[0-5]\d$/).withMessage('closingTime must use HH:MM.'),
+    body('slotDuration').optional().isInt({ min: 5, max: 480 }).toInt(),
+    body('capacityPerSlot').optional().isInt({ min: 1, max: 1000 }).toInt(),
   ],
   medicines: [
     stringBody('code', { min: 1, max: 40 }),

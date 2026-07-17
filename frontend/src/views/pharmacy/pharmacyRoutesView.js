@@ -33,7 +33,7 @@ import { bindLogout, quickLinks, sectionFromPath, userCard } from "../shell.js";
  * UI cannot even ask for another pharmacy's data.
  */
 
-const SECTIONS = ["dashboard", "inventory", "reservations", "deliveries", "notifications", "profile"];
+const SECTIONS = ["dashboard", "inventory", "branches", "requests", "reservations", "deliveries", "notifications", "profile"];
 const ADMIN_PHARMACY_KEY = "pharmaLink.adminPharmacyId";
 
 const appendPharmacyId = (path, pharmacyId) => {
@@ -48,6 +48,8 @@ const appendPharmacyId = (path, pharmacyId) => {
 const NAV = (active, pharmacyId) => [
   { label: "Dashboard", href: appendPharmacyId("/pharmacy/dashboard", pharmacyId), active: active === "dashboard" },
   { label: "Inventario", href: appendPharmacyId("/pharmacy/inventory", pharmacyId), active: active === "inventory" },
+  { label: "Sedes", href: appendPharmacyId("/pharmacy/branches", pharmacyId), active: active === "branches" },
+  { label: "Peticiones", href: appendPharmacyId("/pharmacy/requests", pharmacyId), active: active === "requests" },
   { label: "Reservas", href: appendPharmacyId("/pharmacy/reservations", pharmacyId), active: active === "reservations" },
   { label: "Entregas", href: appendPharmacyId("/pharmacy/deliveries", pharmacyId), active: active === "deliveries" },
   { label: "Notificaciones", href: appendPharmacyId("/pharmacy/notifications", pharmacyId), active: active === "notifications" },
@@ -156,6 +158,37 @@ async function renderInventory(ctx) {
   const { pharmacyId } = ctx;
   setContent(loadingState("Cargando inventario..."));
 
+  const branches = await pharmacyApi.listBranches(pharmacyId);
+  if (branches.length) {
+    const branchInventories = await Promise.all(
+      branches.map(async (branch) => ({ branch, inventory: await pharmacyApi.listInventory(branch.id) }))
+    );
+    setContent(
+      branchInventories
+        .map(({ branch, inventory }) =>
+          panel({
+            title: `Inventario de ${escapeHtml(branch.name)}`,
+            action: statusBadge(branch.active ? "Sede activa" : "Sede inactiva", branch.active ? "emerald" : "red"),
+            body: inventory.length
+              ? dataTable({
+                  headers: ["Código", "Medicamento", "Stock", "Reservado", "Disponible", "Alerta"],
+                  rows: inventory.map((item) => {
+                    const lowStock = item.available_quantity <= 10;
+                    return [
+                      escapeHtml(item.code), escapeHtml(item.name), String(item.stock_quantity),
+                      String(item.reserved_quantity), String(item.available_quantity),
+                      lowStock ? statusBadge("Stock bajo", "amber") : statusBadge("Normal", "emerald")
+                    ];
+                  })
+                })
+              : emptyState("Esta sede no tiene inventario cargado.")
+          })
+        )
+        .join("")
+    );
+    return;
+  }
+
   const [inventory, medicines] = await Promise.all([
     pharmacyApi.listInventory(pharmacyId),
     pharmacyApi.listMedicines()
@@ -253,6 +286,40 @@ async function renderReservations(ctx) {
   const statusFilter = params.get("status") || "";
 
   setContent(loadingState("Cargando reservas..."));
+
+  const branches = await pharmacyApi.listBranches(pharmacyId);
+  if (branches.length) {
+    const histories = await Promise.all(
+      branches.map(async (branch) => ({
+        branch,
+        reservations: await pharmacyApi.listReservations(branch.id, { date: dateFilter, status: statusFilter, limit: 100 })
+      }))
+    );
+    setContent(
+      histories
+        .map(({ branch, reservations }) =>
+          panel({
+            title: `Reservas — ${escapeHtml(branch.name)}`,
+            action: statusBadge(`${reservations.length} registro(s)`, "slate"),
+            body: reservations.length
+              ? dataTable({
+                  headers: ["Fecha", "Hora", "Paciente", "Documento", "Orden", "Estado"],
+                  rows: reservations.map((reservation) => [
+                    formatDate(reservation.reservation_date),
+                    `${formatTime(reservation.start_time)} - ${formatTime(reservation.end_time)}`,
+                    escapeHtml(reservation.patient_name),
+                    escapeHtml(reservation.patient_document),
+                    escapeHtml(reservation.order_number),
+                    statusBadge(statusLabel(reservation.status), statusTone(reservation.status))
+                  ])
+                })
+              : emptyState("Esta sede no tiene reservas.")
+          })
+        )
+        .join("")
+    );
+    return;
+  }
 
   const reservations = await pharmacyApi.listReservations(pharmacyId, {
     date: dateFilter,
@@ -429,6 +496,50 @@ async function renderNotificationsSection(ctx) {
 /* Profile / working hours                                                     */
 /* -------------------------------------------------------------------------- */
 
+async function renderBranches({ pharmacyId }) {
+  setContent(loadingState("Cargando sedes..."));
+  const branches = await pharmacyApi.listBranches(pharmacyId);
+  setContent(`
+    ${panel({ title: "Agregar sede", body: `
+      <form id="branchForm" class="grid gap-3 md:grid-cols-2" novalidate>
+        ${textField({ id: "branchName", label: "Nombre", type: "text" })}
+        ${textField({ id: "branchNit", label: "NIT", type: "text" })}
+        ${textField({ id: "branchAddress", label: "Dirección", type: "text" })}
+        ${textField({ id: "branchCity", label: "Ciudad", type: "text" })}
+        ${textField({ id: "branchOpening", label: "Hora de apertura", type: "time", value: "08:00" })}
+        ${textField({ id: "branchClosing", label: "Hora de cierre", type: "time", value: "17:00" })}
+        ${textField({ id: "branchDuration", label: "Duración de bloque (min)", type: "number", value: "30", min: "5" })}
+        ${textField({ id: "branchCapacity", label: "Capacidad por bloque", type: "number", value: "3", min: "1" })}
+        <div class="md:col-span-2"><p id="branchError" class="min-h-5 text-sm text-red-600"></p>${primaryButton("Crear sede", { type: "submit" })}</div>
+      </form>` })}
+    ${panel({ title: "Sedes existentes", body: branches.length ? dataTable({
+      headers: ["Sede", "Ciudad", "Dirección", "Estado", "Acciones"],
+      rows: branches.map((branch) => [escapeHtml(branch.name), escapeHtml(branch.city), escapeHtml(branch.address), statusBadge(branch.active ? "Activa" : "Inactiva", branch.active ? "emerald" : "red"), `<div class="flex gap-2">${secondaryButton(branch.active ? "Solicitar desactivación" : "Solicitar activación", { attrs: `${branch.active ? "data-deactivate-branch" : "data-activate-branch"}="${branch.id}"` })}${secondaryButton("Solicitar eliminación", { tone: "red", attrs: `data-delete-branch-request="${branch.id}"` })}</div>`])
+    }) : emptyState("No hay sedes registradas.") })}
+  `);
+  document.getElementById("branchForm").addEventListener("submit", async (event) => {
+    event.preventDefault(); const error = document.getElementById("branchError"); error.textContent = "";
+    try { await pharmacyApi.createBranch(pharmacyId, { name: branchName.value.trim(), nit: branchNit.value.trim(), address: branchAddress.value.trim(), city: branchCity.value.trim(), openingTime: branchOpening.value, closingTime: branchClosing.value, slotDuration: Number(branchDuration.value), capacityPerSlot: Number(branchCapacity.value) }); toast("Sede creada."); await renderBranches({ pharmacyId }); } catch (e) { error.textContent = e.detail || e.message; }
+  });
+  const bindChangeRequest = (selector, action, datasetKey) => {
+    document.querySelectorAll(selector).forEach((button) => button.addEventListener("click", async () => {
+      try { await pharmacyApi.requestBranchChange(pharmacyId, button.dataset[datasetKey], action); toast("Solicitud enviada al administrador."); } catch (e) { toast(e.detail || e.message, "red"); }
+    }));
+  };
+  bindChangeRequest("[data-deactivate-branch]", "DEACTIVATE", "deactivateBranch");
+  bindChangeRequest("[data-activate-branch]", "ACTIVATE", "activateBranch");
+  bindChangeRequest("[data-delete-branch-request]", "DELETE", "deleteBranchRequest");
+}
+
+async function renderRequests() {
+  setContent(loadingState("Cargando peticiones..."));
+  const requests = await pharmacyApi.listMyBranchChangeRequests();
+  setContent(panel({ title: "Mis peticiones", body: requests.length ? dataTable({
+    headers: ["Sede", "Acción", "Hora de envío", "Estado", "Hora de respuesta"],
+    rows: requests.map((request) => [escapeHtml(request.branch_name), escapeHtml(request.action), formatDate(request.created_at), statusBadge(request.status, request.status === "PENDING" ? "amber" : request.status === "APPROVED" ? "emerald" : "red"), request.reviewed_at ? formatDate(request.reviewed_at) : "-"])
+  }) : emptyState("No has enviado peticiones.") }));
+}
+
 /**
  * Working hours define the slot grid patients book against, so this form is the
  * pharmacy's most consequential setting: `slotDuration` and `capacityPerSlot`
@@ -513,6 +624,8 @@ async function renderProfileSection(ctx) {
 const RENDERERS = {
   dashboard: renderDashboard,
   inventory: renderInventory,
+  branches: renderBranches,
+  requests: renderRequests,
   reservations: renderReservations,
   deliveries: renderDeliveries,
   notifications: renderNotificationsSection,

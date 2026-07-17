@@ -230,7 +230,7 @@ async function renderCreate(ctx) {
       body: `
         <form id="orderForm" class="space-y-4" novalidate>
           <div class="grid gap-3 md:grid-cols-2">
-            ${textField({ id: "orderNumber", label: "Número de orden", placeholder: "ORD-2026-001" })}
+            <div class="rounded-lg bg-slate-50 px-4 py-3 text-sm text-slate-600">El número de orden se asigna automáticamente al crearla.</div>
             ${textField({ id: "patientDocument", label: "Documento del paciente", placeholder: "1020304050" })}
             ${textField({ id: "issueDate", label: "Fecha de emisión", type: "date", value: todayIso() })}
             ${textField({ id: "expirationDate", label: "Fecha de vencimiento", type: "date", value: inThirtyDays() })}
@@ -321,7 +321,6 @@ async function renderCreate(ctx) {
     submitButton.textContent = "Generando...";
 
     const payload = {
-      orderNumber: document.getElementById("orderNumber").value.trim(),
       patientDocument: document.getElementById("patientDocument").value.trim(),
       issueDate,
       expirationDate,

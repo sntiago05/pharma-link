@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { env } from '../config/env.js';
 import { ROLES } from '../config/roles.js';
+import { query } from '../config/db.js';
 import {
   findByEmailWithPassword,
   findRoleIdByName,
@@ -36,16 +37,19 @@ const createToken = (user) => {
  * Registers a patient account.
  * @returns {Promise<object>} The created user, without the password.
  */
-export const register = async ({ fullName, email, password }) => {
+export const register = async ({ fullName, email, password, document, phone }) => {
   const roleId = await findRoleIdByName(ROLES.PATIENT);
   if (!roleId) throw ApiError.internal('PATIENT role is not configured in the database.');
 
-  return insertUser({
+  const user = await insertUser({
     roleId,
     fullName: fullName.trim(),
     email: normalizeEmail(email),
     passwordHash: await bcrypt.hash(password, BCRYPT_ROUNDS),
   });
+  const patient = await query('SELECT id FROM patients WHERE document = $1 AND user_id IS NULL', [document]);
+  if (patient.rowCount) await query('UPDATE patients SET user_id = $1, phone = COALESCE(phone, $2) WHERE id = $3', [user.id, phone ?? null, patient.rows[0].id]);
+  return user;
 };
 
 /**

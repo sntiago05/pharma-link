@@ -14,6 +14,8 @@ export const registerController = asyncHandler(async (req, res) => {
     fullName: req.body.fullName,
     email: req.body.email,
     password: req.body.password,
+    document: req.body.document,
+    phone: req.body.phone,
   });
 
   res.locals.auditRecordId = user.id;

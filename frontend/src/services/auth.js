@@ -36,6 +36,7 @@ export async function registerUser(data) {
         fullName: data.fullname || data.fullName,
         email: data.email,
         password: data.password
+        ,document: data.document, phone: data.phone || null
       },
       auth: false
     });

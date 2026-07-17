@@ -29,6 +29,8 @@ function registerTemplate() {
       <form id="registerForm" class="mt-8 space-y-4" aria-label="registration form">
         ${inputField({ id: "fullname", label: "Nombre completo", type: "text", autocomplete: "name", placeholder: "Ej. Ana García" })}
         ${inputField({ id: "email", label: "Email", type: "email", autocomplete: "email", placeholder: "nombre@correo.com" })}
+        ${inputField({ id: "document", label: "CC", type: "text", placeholder: "Número de identidad" })}
+        ${inputField({ id: "phone", label: "Teléfono (opcional)", type: "tel", placeholder: "3001234567", required: false })}
         ${inputField({ id: "password", label: "Contraseña (mínimo 8 caracteres)", type: "password", autocomplete: "new-password", placeholder: "Mínimo 8 caracteres" })}
         ${inputField({ id: "confirmPassword", label: "Confirmar contraseña", type: "password", autocomplete: "new-password", placeholder: "Repite tu contraseña" })}
 
@@ -83,7 +85,9 @@ export function renderRegister({ navigate }) {
     const result = await registerUser({
       fullname: document.getElementById("fullname").value,
       email,
-      password
+      password,
+      document: document.value,
+      phone: phone.value
     });
 
     if (!result.success) {

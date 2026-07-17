@@ -102,7 +102,7 @@ export const findPharmaciesForOrder = async (orderId) => {
      eps_of_order AS (
        SELECT eps_id FROM medical_orders WHERE id = $1
      )
-     SELECT pharmacies.id,
+     SELECT pharmacies.id, parent.id AS parent_pharmacy_id, parent.name AS parent_pharmacy_name,
             pharmacies.name,
             pharmacies.address,
             pharmacies.city,
@@ -122,15 +122,17 @@ export const findPharmaciesForOrder = async (orderId) => {
             ) AS items
      FROM eps_pharmacies
      INNER JOIN eps_of_order ON eps_of_order.eps_id = eps_pharmacies.eps_id
-     INNER JOIN pharmacies ON pharmacies.id = eps_pharmacies.pharmacy_id AND pharmacies.active = TRUE
+     INNER JOIN pharmacies parent ON parent.id = eps_pharmacies.pharmacy_id AND parent.active = TRUE
+     INNER JOIN pharmacies ON pharmacies.parent_pharmacy_id = parent.id AND pharmacies.active = TRUE
      CROSS JOIN order_lines
      INNER JOIN medicines ON medicines.id = order_lines.medicine_id
      LEFT JOIN pharmacy_inventory ON pharmacy_inventory.pharmacy_id = pharmacies.id
        AND pharmacy_inventory.medicine_id = order_lines.medicine_id
      LEFT JOIN working_hours ON working_hours.pharmacy_id = pharmacies.id
      WHERE eps_pharmacies.active = TRUE
-     GROUP BY pharmacies.id, pharmacies.name, pharmacies.address, pharmacies.city, working_hours.pharmacy_id
-     ORDER BY is_complete DESC, pharmacies.name`,
+     GROUP BY pharmacies.id, pharmacies.name, pharmacies.address, pharmacies.city, working_hours.pharmacy_id,
+              parent.id, parent.name
+     ORDER BY is_complete DESC, parent.name, pharmacies.name`,
     [orderId],
   );
   return result.rows;

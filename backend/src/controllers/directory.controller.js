@@ -81,6 +81,8 @@ export const getPharmaciesForOrder = asyncHandler(async (req, res) => {
     message: 'Pharmacies for order retrieved.',
     data: pharmacies.map((pharmacy) => ({
       id: pharmacy.id,
+      parentPharmacyId: pharmacy.parent_pharmacy_id,
+      parentPharmacyName: pharmacy.parent_pharmacy_name,
       name: pharmacy.name,
       address: pharmacy.address,
       city: pharmacy.city,

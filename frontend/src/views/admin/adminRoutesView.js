@@ -28,7 +28,7 @@ import { bindLogout, quickLinks, sectionFromPath, userCard } from "../shell.js";
  * reserve, and the audit trail.
  */
 
-const SECTIONS = ["dashboard", "eps", "pharmacies", "medicines", "users", "audit", "profile"];
+const SECTIONS = ["dashboard", "eps", "pharmacies", "medicines", "users", "requests", "audit", "profile"];
 
 const NAV = (active) => [
   { label: "Dashboard", href: "/admin/dashboard", active: active === "dashboard" },
@@ -36,6 +36,7 @@ const NAV = (active) => [
   { label: "Farmacias", href: "/admin/pharmacies", active: active === "pharmacies" },
   { label: "Medicamentos", href: "/admin/medicines", active: active === "medicines" },
   { label: "Usuarios", href: "/admin/users", active: active === "users" },
+  { label: "Peticiones", href: "/admin/requests", active: active === "requests" },
   { label: "Auditoría", href: "/admin/audit", active: active === "audit" },
   { label: "Perfil", href: "/admin/profile", active: active === "profile" }
 ];
@@ -198,7 +199,8 @@ const CATALOG_FORMS = {
  * The three catalogs share this renderer because the backend exposes them
  * through one parameterised controller with the same contract.
  */
-async function renderCatalog(type, ctx) {
+async function renderCatalog(type, ctx, selectedPharmacyId = null, preserveScroll = false) {
+  const scrollPosition = preserveScroll ? window.scrollY : null;
   const config = CATALOG_FORMS[type];
   setContent(loadingState(`Cargando ${config.title.toLowerCase()}...`));
 
@@ -207,6 +209,8 @@ async function renderCatalog(type, ctx) {
     type === "pharmacies" ? adminApi.listCatalog("eps") : Promise.resolve([])
   ]);
   const parentPharmacies = type === "pharmacies" ? items.filter((item) => !item.parent_pharmacy_id) : [];
+  const selectedPharmacy = parentPharmacies.find((item) => String(item.id) === String(selectedPharmacyId));
+  const visibleItems = type === "pharmacies" ? (selectedPharmacy ? items.filter((item) => String(item.parent_pharmacy_id) === String(selectedPharmacy.id)) : parentPharmacies) : items;
 
   setContent(`
     ${panel({
@@ -239,6 +243,15 @@ async function renderCatalog(type, ctx) {
                     ${epsList.map((eps) => `<option value="${eps.id}">${escapeHtml(eps.name)}</option>`).join("")}
                   </select>
                 </div>
+                <div id="branchHoursFields" class="hidden md:col-span-2">
+                  <p class="mb-2 text-sm font-semibold text-slate-700">Horas de trabajo de la sede</p>
+                  <div class="grid gap-3 md:grid-cols-2">
+                    ${textField({ id: "openingTime", label: "Hora de apertura", type: "time", value: "08:00" })}
+                    ${textField({ id: "closingTime", label: "Hora de cierre", type: "time", value: "17:00" })}
+                    ${textField({ id: "slotDuration", label: "Duración del bloque (min)", type: "number", value: "30", min: "5" })}
+                    ${textField({ id: "capacityPerSlot", label: "Capacidad por bloque", type: "number", value: "3", min: "1" })}
+                  </div>
+                </div>
               `
               : ""
           }
@@ -251,14 +264,20 @@ async function renderCatalog(type, ctx) {
     })}
 
     ${panel({
-      title: config.title,
-      action: `<span class="text-sm text-slate-400">${items.length} registro(s)</span>`,
-      body: items.length
+      title: selectedPharmacy ? selectedPharmacy.name : config.title,
+      action: selectedPharmacy
+        ? secondaryButton("← Regresar a farmacias", { attrs: "data-back-to-pharmacies" })
+        : `<span class="text-sm text-slate-400">${items.length} registro(s)</span>`,
+      body: visibleItems.length
         ? dataTable({
             headers: [...config.columns, "Acciones"],
-            rows: items.map((item) => [
-              ...config.toRow(item),
-              secondaryButton("Eliminar", { tone: "red", attrs: `data-delete="${item.id}"` })
+            rows: visibleItems.map((item) => [
+              ...(type === "pharmacies" && !selectedPharmacy ? [
+                `<span data-open-pharmacy="${item.id}" class="font-medium text-emerald-700">${escapeHtml(item.name)}</span>`,
+                `Matriz (${item.branch_count || 0} sedes)`, escapeHtml(item.city || "-"), escapeHtml(item.address || "-"), escapeHtml(item.nit || "-"), statusBadge(item.active ? "Activa" : "Inactiva", item.active ? "emerald" : "red")
+              ] : config.toRow(item)),
+              `${["eps", "pharmacies"].includes(type) && item.active ? secondaryButton("Desactivar", { attrs: `data-deactivate-catalog="${item.id}"` }) : ""}
+              ${secondaryButton("Eliminar", { tone: "red", attrs: `data-delete="${item.id}"` })}`
             ])
           })
         : emptyState(`Sin ${config.title.toLowerCase()} registrados.`)
@@ -266,6 +285,8 @@ async function renderCatalog(type, ctx) {
 
     ${type === "pharmacies" ? linkPanel(items) : ""}
   `);
+
+  if (scrollPosition !== null) requestAnimationFrame(() => window.scrollTo({ top: scrollPosition }));
 
   document.getElementById("catalogForm").addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -278,6 +299,12 @@ async function renderCatalog(type, ctx) {
     );
     if (type === "pharmacies") {
       payload.parentPharmacyId = document.getElementById("parentPharmacyId").value || null;
+      if (payload.parentPharmacyId) {
+        payload.openingTime = document.getElementById("openingTime").value;
+        payload.closingTime = document.getElementById("closingTime").value;
+        payload.slotDuration = Number(document.getElementById("slotDuration").value);
+        payload.capacityPerSlot = Number(document.getElementById("capacityPerSlot").value);
+      }
       payload.epsIds = Array.from(document.getElementById("epsIds").selectedOptions).map((option) =>
         Number(option.value)
       );
@@ -295,6 +322,26 @@ async function renderCatalog(type, ctx) {
       errorNode.textContent = error.detail || error.message;
     }
   });
+
+  document.querySelectorAll("[data-open-pharmacy]").forEach((name) => {
+    const row = name.closest("tr");
+    row.classList.add("cursor-pointer");
+    row.addEventListener("mouseenter", () => name.classList.add("underline"));
+    row.addEventListener("mouseleave", () => name.classList.remove("underline"));
+    row.addEventListener("click", (event) => {
+      if (event.target.closest("button")) return;
+      renderCatalog(type, ctx, name.dataset.openPharmacy, true);
+    });
+  });
+  document.querySelector("[data-back-to-pharmacies]")?.addEventListener("click", () => renderCatalog(type, ctx, null, true));
+
+  if (type === "pharmacies") {
+    const parentSelect = document.getElementById("parentPharmacyId");
+    const hoursFields = document.getElementById("branchHoursFields");
+    const toggleHours = () => hoursFields.classList.toggle("hidden", !parentSelect.value);
+    parentSelect.addEventListener("change", toggleHours);
+    toggleHours();
+  }
 
   document.querySelectorAll("[data-delete]").forEach((button) => {
     button.addEventListener("click", async () => {
@@ -320,12 +367,20 @@ async function renderCatalog(type, ctx) {
     });
   });
 
+  document.querySelectorAll("[data-deactivate-catalog]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      if (!window.confirm("¿Desactivar este registro?")) return;
+      try { await adminApi.updateCatalog(type, button.dataset.deactivateCatalog, { active: false }); toast("Registro desactivado."); await renderCatalog(type, ctx); }
+      catch (error) { toast(error.detail || error.message, "red"); }
+    });
+  });
+
   if (type === "pharmacies") await bindLinkPanel(items, () => renderCatalog(type, ctx));
 }
 
 async function renderUsers() {
   setContent(loadingState("Cargando usuarios..."));
-  const users = await adminApi.listUsers();
+  const [users, pharmacies, epsList] = await Promise.all([adminApi.listUsers(), adminApi.listCatalog("pharmacies"), adminApi.listCatalog("eps")]);
 
   setContent(
     panel({
@@ -333,18 +388,54 @@ async function renderUsers() {
       action: `<span class="text-sm text-slate-400">${users.length} registro(s)</span>`,
       body: users.length
         ? dataTable({
-            headers: ["Nombre", "Correo", "Rol", "Estado", "Acciones"],
+            headers: ["Nombre", "Correo", "CC", "Teléfono", "Rol", "Estado"],
             rows: users.map((account) => [
-              escapeHtml(account.full_name),
+              `<span data-open-user="${account.id}" class="font-medium text-emerald-700">${escapeHtml(account.full_name)}</span>`,
               escapeHtml(account.email),
-              escapeHtml(account.role),
-              statusBadge(account.active ? "Activo" : "Inactivo", account.active ? "emerald" : "red"),
-              secondaryButton("Eliminar", { tone: "red", attrs: `data-delete-user="${account.id}"` })
+              escapeHtml(account.document || "-"), escapeHtml(account.phone || "-"),
+              escapeHtml({ ADMIN: "Admin", PHARMACY_OPERATOR: "Operador de farmacia", EPS_OPERATOR: "Operador de EPS", PATIENT: "Paciente" }[account.role] || account.role),
+              statusBadge(account.active ? "Activo" : "Inactivo", account.active ? "emerald" : "red")
             ])
           })
         : emptyState("Sin usuarios registrados.")
     })
   );
+
+  document.querySelectorAll("[data-open-user]").forEach((name) => {
+    const account = users.find((item) => String(item.id) === name.dataset.openUser);
+    name.closest("tr").classList.add("cursor-pointer");
+    name.closest("tr").addEventListener("click", () => {
+      const node = document.getElementById("adminContent");
+      node.innerHTML = panel({ title: "Perfil de usuario", action: secondaryButton("Volver a usuarios", { attrs: "data-back-users" }), body: `
+        <div class="grid gap-3 md:grid-cols-2">${[["Nombre", account.full_name], ["Correo", account.email], ["CC", account.document || "-"], ["Teléfono", account.phone || "-"], ["Estado", account.active ? "Activo" : "Inactivo"]].map(([label, value]) => `<div class="rounded-xl bg-slate-50 p-3"><p class="text-xs text-slate-500">${label}</p><p class="font-semibold">${escapeHtml(value)}</p></div>`).join("")}</div>
+        <form id="userProfileForm" class="mt-4 grid gap-3 md:grid-cols-2">${selectField({ id: "profileRole", label: "Rol", value: account.role, options: [{ value: "ADMIN", label: "Admin" }, { value: "PHARMACY_OPERATOR", label: "Operador de farmacia" }, { value: "EPS_OPERATOR", label: "Operador de EPS" }] })}${selectField({ id: "profileEps", label: "EPS", options: epsList.map((e) => ({ value: e.id, label: e.name })) })}${selectField({ id: "profilePharmacy", label: "Farmacia o sede", options: [] })}<div class="md:col-span-2">${primaryButton("Guardar cambios", { type: "submit" })} ${account.active ? secondaryButton("Deshabilitar usuario", { tone: "red", attrs: "data-disable-profile-user" }) : statusBadge("Usuario inactivo", "red")}</div></form>` });
+      document.querySelector("[data-back-users]").addEventListener("click", renderUsers);
+      document.getElementById("profileEps").addEventListener("change", async (event) => {
+        const pharmacySelect = document.getElementById("profilePharmacy");
+        pharmacySelect.innerHTML = '<option value="">Selecciona una farmacia o sede</option>';
+        if (!event.target.value) return;
+        const linked = await adminApi.listEpsPharmacies(event.target.value);
+        pharmacySelect.innerHTML += linked.map((pharmacy) => `<option value="${pharmacy.id}">${escapeHtml(pharmacy.name)}</option>`).join("");
+      });
+      document.getElementById("userProfileForm").addEventListener("submit", async (event) => { event.preventDefault(); const role = profileRole.value; try { await adminApi.updateUserRole(account.id, { role, pharmacyId: role === "PHARMACY_OPERATOR" ? Number(profilePharmacy.value) : null, epsId: role === "EPS_OPERATOR" ? Number(profileEps.value) : null }); toast("Perfil actualizado."); await renderUsers(); } catch (error) { toast(error.detail || error.message, "red"); } });
+      document.querySelector("[data-disable-profile-user]")?.addEventListener("click", async () => { try { await adminApi.updateUserStatus(account.id, false); toast("Usuario deshabilitado."); await renderUsers(); } catch (error) { toast(error.detail || error.message, "red"); } });
+    });
+  });
+
+  document.querySelectorAll("[data-change-role]").forEach((button) => button.addEventListener("click", async () => {
+    const normalized = document.getElementById(`user-role-${button.dataset.changeRole}`).value;
+    let pharmacyId = null; let epsId = null;
+    if (normalized === "PHARMACY_OPERATOR") {
+      pharmacyId = Number(window.prompt(`ID de farmacia o sede:\n${pharmacies.map((p) => `${p.id}: ${p.name}`).join("\n")}`));
+      if (!pharmacyId) return;
+    }
+    if (normalized === "EPS_OPERATOR") {
+      epsId = Number(window.prompt(`ID de EPS:\n${epsList.map((e) => `${e.id}: ${e.name}`).join("\n")}`));
+      if (!epsId) return;
+    }
+    try { await adminApi.updateUserRole(button.dataset.changeRole, { role: normalized, pharmacyId, epsId }); toast("Rol actualizado."); await renderUsers(); }
+    catch (error) { toast(error.detail || error.message, "red"); }
+  }));
 
   document.querySelectorAll("[data-delete-user]").forEach((button) => {
     button.addEventListener("click", async () => {
@@ -361,6 +452,23 @@ async function renderUsers() {
       }
     });
   });
+}
+
+async function renderRequests() {
+  setContent(loadingState("Cargando peticiones..."));
+  const requests = await adminApi.listBranchChangeRequests();
+  setContent(panel({ title: "Peticiones de sedes", body: requests.length ? dataTable({
+    headers: ["Solicitante", "Farmacia", "Sede", "Acción", "Fecha", "Estado", "Decisión"],
+    rows: requests.map((request) => [
+      escapeHtml(request.requester_name), escapeHtml(request.pharmacy_name), escapeHtml(request.branch_name),
+      escapeHtml(request.action), formatDate(request.created_at), statusBadge(request.status, request.status === "PENDING" ? "amber" : request.status === "APPROVED" ? "emerald" : "red"),
+      request.status === "PENDING" ? `<div class="flex gap-2">${secondaryButton("Aprobar", { tone: "emerald", attrs: `data-review-request="${request.id}" data-decision="APPROVED"` })}${secondaryButton("Rechazar", { tone: "red", attrs: `data-review-request="${request.id}" data-decision="REJECTED"` })}</div>` : "-"
+    ])
+  }) : emptyState("No hay peticiones registradas.") }));
+  document.querySelectorAll("[data-review-request]").forEach((button) => button.addEventListener("click", async () => {
+    try { await adminApi.reviewBranchChangeRequest(button.dataset.reviewRequest, button.dataset.decision); toast("Petición actualizada."); await renderRequests(); }
+    catch (error) { toast(error.detail || error.message, "red"); }
+  }));
 }
 
 /**
@@ -517,6 +625,7 @@ const RENDERERS = {
   pharmacies: (ctx) => renderCatalog("pharmacies", ctx),
   medicines: (ctx) => renderCatalog("medicines", ctx),
   users: renderUsers,
+  requests: renderRequests,
   audit: renderAudit,
   profile: renderProfileSection
 };

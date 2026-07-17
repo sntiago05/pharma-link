@@ -12,7 +12,7 @@ import {
 import { ROLES } from '../config/roles.js';
 import { audit } from '../middleware/audit.middleware.js';
 import { authorize } from '../middleware/auth.middleware.js';
-import { requirePharmacyAccess } from '../middleware/pharmacy-access.middleware.js';
+import { requirePharmacyAccess, requirePharmacyOrParentAccess } from '../middleware/pharmacy-access.middleware.js';
 import { validate } from '../middleware/validate.middleware.js';
 import { findReservationPharmacyId } from '../services/reservation.service.js';
 import { paginationQuery } from '../validators/common.validators.js';
@@ -346,7 +346,7 @@ router.get(
   ]),
   // Previously missing: an operator could list another pharmacy's reservations,
   // exposing patient names and documents across tenants.
-  requirePharmacyAccess((req) => Number(req.params.pharmacyId)),
+  requirePharmacyOrParentAccess((req) => Number(req.params.pharmacyId)),
   listPharmacyReservations,
 );
 

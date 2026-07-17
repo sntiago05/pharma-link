@@ -48,10 +48,14 @@ const resolvePatient = async ({ epsId, document, fullName, email, phone }, clien
  * @returns {Promise<object>} The created order with its details.
  */
 export const createEpsOrder = async ({
-  epsId, orderNumber, patientDocument, patientFullName, patientEmail, patientPhone,
+  epsId, patientDocument, patientFullName, patientEmail, patientPhone,
   issueDate, expirationDate, details,
 }) =>
   withTransaction(async (client) => {
+    const now = new Date();
+    const prefix = `ORD-${now.getFullYear()}-${String(now.getDate()).padStart(2, '0')}${String(now.getMonth() + 1).padStart(2, '0')}-`;
+    const sequence = await client.query('SELECT COUNT(*)::int AS count FROM medical_orders WHERE order_number LIKE $1', [`${prefix}%`]);
+    const orderNumber = `${prefix}${String(sequence.rows[0].count + 1).padStart(4, '0')}`;
     const patient = await resolvePatient(
       {
         epsId,
@@ -62,14 +66,6 @@ export const createEpsOrder = async ({
       },
       client,
     );
-
-    const duplicate = await client.query(
-      'SELECT id FROM medical_orders WHERE order_number = $1',
-      [orderNumber],
-    );
-    if (duplicate.rowCount) {
-      throw ApiError.conflict(`Order ${orderNumber} already exists.`);
-    }
 
     const order = await client.query(
       `INSERT INTO medical_orders (patient_id, eps_id, order_number, issue_date, expiration_date, status)

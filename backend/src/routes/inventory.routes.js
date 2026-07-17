@@ -3,7 +3,7 @@ import { adjustInventory, listInventory } from '../controllers/inventory.control
 import { ROLES } from '../config/roles.js';
 import { audit } from '../middleware/audit.middleware.js';
 import { authorize } from '../middleware/auth.middleware.js';
-import { requirePharmacyAccess } from '../middleware/pharmacy-access.middleware.js';
+import { requirePharmacyAccess, requirePharmacyOrParentAccess } from '../middleware/pharmacy-access.middleware.js';
 import { validate } from '../middleware/validate.middleware.js';
 import { adjustInventoryRules, listInventoryRules } from '../validators/inventory.validators.js';
 
@@ -46,7 +46,7 @@ router.get(
   '/:pharmacyId',
   authorize([ROLES.ADMIN, ROLES.PHARMACY]),
   validate(listInventoryRules),
-  requirePharmacyAccess(pharmacyOfParams),
+  requirePharmacyOrParentAccess(pharmacyOfParams),
   listInventory,
 );
 

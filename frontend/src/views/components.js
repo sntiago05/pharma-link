@@ -225,27 +225,37 @@ export function textField({ id, label, type = "text", value = "", placeholder = 
     <div>
       <label for="${id}" class="mb-2 block text-sm font-semibold text-slate-700">${escapeHtml(label)}</label>
       <input id="${id}" name="${id}" type="${type}" value="${escapeHtml(value)}"
-        ${placeholder ? `placeholder="${escapeHtml(placeholder)}"` : ""}
+        placeholder="${escapeHtml(placeholder || (type === "number" ? "Ingresa un valor" : type === "time" ? "Selecciona la hora" : `Ingresa ${label.toLowerCase()}`))}"
         ${min !== "" ? `min="${min}"` : ""} ${max !== "" ? `max="${max}"` : ""} ${step !== "" ? `step="${step}"` : ""} ${required ? "required" : ""}
         class="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm outline-none transition focus:border-emerald-600 focus:ring-4 focus:ring-emerald-100">
     </div>
   `;
 }
 
-/** Scrollable table. Cells must already be escaped by the caller. */
-export function dataTable({ headers, rows }) {
+/**
+ * Scrollable table. Cells must already be escaped by the caller.
+ *
+ * `maxHeight` caps how tall the table can grow before it scrolls internally
+ * instead of pushing the rest of the panel down — useful for lists that can
+ * have dozens of rows (farmacias, EPS, usuarios). The header stays pinned
+ * (`sticky`) while the body scrolls. Pass `maxHeight: null` to disable the cap
+ * for tables that should always show every row.
+ */
+export function dataTable({ headers, rows, maxHeight = "26rem" }) {
   if (!rows.length) return emptyState("Sin registros para mostrar.");
 
   return `
-    <div class="overflow-x-auto rounded-[20px] border border-emerald-100">
-      <table class="w-full min-w-[520px] border-collapse text-left text-sm">
-        <thead class="bg-[#0D4D44]">
-          <tr>${headers.map((header) => `<th class="px-4 py-3 font-semibold text-white">${escapeHtml(header)}</th>`).join("")}</tr>
-        </thead>
-        <tbody class="divide-y divide-slate-100">
-          ${rows.map((cells) => `<tr class="hover:bg-slate-50">${cells.map((cell) => `<td class="px-4 py-3 text-slate-700">${cell}</td>`).join("")}</tr>`).join("")}
-        </tbody>
-      </table>
+    <div class="overflow-x-auto rounded-[20px]">
+      <div class="${maxHeight ? "overflow-y-auto" : ""}" style="${maxHeight ? `max-height: ${maxHeight};` : ""}">
+        <table class="w-full min-w-[520px] border-collapse text-left text-sm">
+          <thead class="bg-[#0D4D44] ${maxHeight ? "sticky top-0 z-10" : ""}">
+            <tr>${headers.map((header) => `<th class="px-4 py-3 font-semibold text-white">${escapeHtml(header)}</th>`).join("")}</tr>
+          </thead>
+          <tbody class="divide-y divide-emerald-700 bg-white">
+            ${rows.map((cells) => `<tr class="group hover:bg-[#95b8f6]">${cells.map((cell) => `<td class="px-4 py-3 text-slate-700">${cell}</td>`).join("")}</tr>`).join("")}
+          </tbody>
+        </table>
+      </div>
     </div>
   `;
 }
@@ -258,7 +268,7 @@ export function panel({ title, action = "", body }) {
         <p class="text-sm font-semibold text-white">${escapeHtml(title)}</p>
         ${action}
       </div>
-      <div class="mt-4 rounded-[20px] bg-emerald-500 p-4">${body}</div>
+      <div class="mt-4 rounded-[20px] bg-white p-4 transition">${body}</div>
     </section>
   `;
 }
