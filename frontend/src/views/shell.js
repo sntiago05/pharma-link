@@ -42,10 +42,11 @@ export function bindLogout(navigate) {
 }
 
 /** Quick-link list for the side column. */
-export function quickLinks(links) {
+export function quickLinks(links, { dashboardHref: customDashboardHref } = {}) {
   const pathParts = window.location.pathname.split("/").filter(Boolean);
-  const dashboardHref = `/${pathParts[0]}/dashboard`;
-  const isDashboard = window.location.pathname === dashboardHref || window.location.pathname === `/${pathParts[0]}`;
+  const baseDashboardHref = `/${pathParts[0]}/dashboard`;
+  const dashboardHref = customDashboardHref || baseDashboardHref;
+  const isDashboard = window.location.pathname === baseDashboardHref || window.location.pathname === `/${pathParts[0]}`;
 
   if (!isDashboard) {
     return `

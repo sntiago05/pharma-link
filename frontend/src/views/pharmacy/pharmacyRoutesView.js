@@ -34,14 +34,24 @@ import { bindLogout, quickLinks, sectionFromPath, userCard } from "../shell.js";
  */
 
 const SECTIONS = ["dashboard", "inventory", "reservations", "deliveries", "notifications", "profile"];
+const ADMIN_PHARMACY_KEY = "pharmaLink.adminPharmacyId";
 
-const NAV = (active) => [
-  { label: "Dashboard", href: "/pharmacy/dashboard", active: active === "dashboard" },
-  { label: "Inventario", href: "/pharmacy/inventory", active: active === "inventory" },
-  { label: "Reservas", href: "/pharmacy/reservations", active: active === "reservations" },
-  { label: "Entregas", href: "/pharmacy/deliveries", active: active === "deliveries" },
-  { label: "Notificaciones", href: "/pharmacy/notifications", active: active === "notifications" },
-  { label: "Perfil", href: "/pharmacy/profile", active: active === "profile" }
+const appendPharmacyId = (path, pharmacyId) => {
+  if (!pharmacyId) return path;
+
+  const [pathname, query = ""] = path.split("?");
+  const params = new URLSearchParams(query);
+  params.set("pharmacyId", pharmacyId);
+  return `${pathname}?${params.toString()}`;
+};
+
+const NAV = (active, pharmacyId) => [
+  { label: "Dashboard", href: appendPharmacyId("/pharmacy/dashboard", pharmacyId), active: active === "dashboard" },
+  { label: "Inventario", href: appendPharmacyId("/pharmacy/inventory", pharmacyId), active: active === "inventory" },
+  { label: "Reservas", href: appendPharmacyId("/pharmacy/reservations", pharmacyId), active: active === "reservations" },
+  { label: "Entregas", href: appendPharmacyId("/pharmacy/deliveries", pharmacyId), active: active === "deliveries" },
+  { label: "Notificaciones", href: appendPharmacyId("/pharmacy/notifications", pharmacyId), active: active === "notifications" },
+  { label: "Perfil", href: appendPharmacyId("/pharmacy/profile", pharmacyId), active: active === "profile" }
 ];
 
 const todayIso = () => {
@@ -49,19 +59,29 @@ const todayIso = () => {
   return new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
 };
 
-function paint({ user, section, body }) {
+function paint({ user, section, body, pharmacyId }) {
+  const adminBackLink =
+    user.role === "ADMIN"
+      ? `
+        <a href="/admin/dashboard" class="mt-4 flex items-center gap-2 rounded-[20px] border border-emerald-200 bg-white px-4 py-3 text-sm font-semibold text-[#0D4D44] transition hover:bg-emerald-50">
+          <span aria-hidden="true">←</span> Volver al panel admin
+        </a>
+      `
+      : "";
+
   document.getElementById("app").innerHTML = roleShell({
     title: "Panel de la farmacia",
     subtitle: "Gestiona inventario, reservas y entregas.",
-    navItems: NAV(section),
+    navItems: NAV(section, pharmacyId),
     content: `<div id="pharmacyContent">${body}</div>`,
     sideContent: `
       ${userCard({ user })}
+      ${adminBackLink}
       ${quickLinks([
-        { label: "Reservas de hoy", href: "/pharmacy/reservations" },
-        { label: "Confirmar entregas", href: "/pharmacy/deliveries" },
-        { label: "Ajustar inventario", href: "/pharmacy/inventory" }
-      ])}
+        { label: "Reservas de hoy", href: appendPharmacyId("/pharmacy/reservations", pharmacyId) },
+        { label: "Confirmar entregas", href: appendPharmacyId("/pharmacy/deliveries", pharmacyId) },
+        { label: "Ajustar inventario", href: appendPharmacyId("/pharmacy/inventory", pharmacyId) }
+      ], { dashboardHref: appendPharmacyId("/pharmacy/dashboard", pharmacyId) })}
     `
   });
 }
@@ -85,7 +105,7 @@ const noPharmacy = () => `
 /* Dashboard                                                                   */
 /* -------------------------------------------------------------------------- */
 
-async function renderDashboard({ pharmacyId }) {
+async function renderDashboard({ context, pharmacyId }) {
   setContent(loadingState("Cargando estadísticas..."));
 
   const data = await pharmacyApi.getDashboard(pharmacyId);
@@ -122,7 +142,7 @@ async function renderDashboard({ pharmacyId }) {
 
     ${panel({
       title: "Alertas de inventario",
-      action: `<a href="/pharmacy/inventory" class="text-sm font-medium text-emerald-700">Gestionar</a>`,
+      action: `<a href="${appendPharmacyId("/pharmacy/inventory", context.pharmacy?.id ? null : pharmacyId)}" class="text-sm font-medium text-emerald-700">Gestionar</a>`,
       body: alerts
     })}
   `);
@@ -278,6 +298,7 @@ async function renderReservations(ctx) {
     const query = new URLSearchParams();
     const date = document.getElementById("filterDate").value;
     const status = document.getElementById("filterStatus").value;
+    if (!ctx.context.pharmacy?.id) query.set("pharmacyId", pharmacyId);
     if (date) query.set("date", date);
     if (status) query.set("status", status);
     ctx.navigate(`/pharmacy/reservations${query.toString() ? `?${query}` : ""}`);
@@ -500,8 +521,11 @@ const RENDERERS = {
 
 export async function renderPharmacyDashboard({ navigate, user, currentPath }) {
   const section = sectionFromPath(currentPath, SECTIONS, "dashboard");
+  const urlPharmacyId = Number(new URLSearchParams(window.location.search).get("pharmacyId"));
+  const storedPharmacyId = Number(window.sessionStorage.getItem(ADMIN_PHARMACY_KEY));
+  const initialPharmacyId = urlPharmacyId || (user.role === "ADMIN" ? storedPharmacyId : null);
 
-  paint({ user, section, body: loadingState() });
+  paint({ user, section, body: loadingState(), pharmacyId: initialPharmacyId });
   bindLogout(navigate);
 
   let context = getContext();
@@ -517,7 +541,7 @@ export async function renderPharmacyDashboard({ navigate, user, currentPath }) {
   // ADMIN may open this panel; it has no user_pharmacies row, so it is pointed
   // at the pharmacy in the URL (?pharmacyId=) or the first one it manages.
   const pharmacyId =
-    context.pharmacy?.id || Number(new URLSearchParams(window.location.search).get("pharmacyId"));
+    context.pharmacy?.id || urlPharmacyId || (user.role === "ADMIN" ? storedPharmacyId : null);
 
   if (!pharmacyId) {
     setContent(
@@ -527,6 +551,17 @@ export async function renderPharmacyDashboard({ navigate, user, currentPath }) {
     );
     return;
   }
+
+  if (!context.pharmacy?.id) {
+    window.sessionStorage.setItem(ADMIN_PHARMACY_KEY, String(pharmacyId));
+    if (!urlPharmacyId) {
+      navigate(appendPharmacyId(currentPath, pharmacyId), { replace: true });
+      return;
+    }
+  }
+
+  paint({ user, section, body: loadingState(), pharmacyId: context.pharmacy?.id ? null : pharmacyId });
+  bindLogout(navigate);
 
   try {
     await RENDERERS[section]({ navigate, user, currentPath, context, pharmacyId });
