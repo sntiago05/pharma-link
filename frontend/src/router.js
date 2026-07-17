@@ -3,6 +3,8 @@ import { canAccess, homeFor } from "./services/roles.js";
 import { renderLanding } from "./views/landing/ladingpage.js";
 import { renderLandingDep } from "./views/landing/landingpage_dep.js";
 import { renderLogin } from "./views/login/loginView.js";
+import { renderForgotPassword } from "./views/forgotPassword/forgotPasswordView.js";
+import { renderResetPassword } from "./views/resetPassword/resetPasswordView.js";
 import { renderProfile } from "./views/profile/profileView.js";
 import { renderRegister } from "./views/register/registerView.js";
 import { renderPatientDashboard } from "./views/patient/patientRoutesView.js";
@@ -19,7 +21,17 @@ import { renderNotFound } from "./views/notFound/notFoundView.js";
  * which is why several routes map to the same renderer.
  */
 
-const PUBLIC_ROUTES = new Set(["/", "/landing-dep", "/login", "/register", "/welcome"]);
+// The reset routes must be public: someone who cannot sign in is exactly who
+// needs them, and the emailed link is opened by a signed-out visitor.
+const PUBLIC_ROUTES = new Set([
+  "/",
+  "/landing-dep",
+  "/login",
+  "/register",
+  "/welcome",
+  "/forgot-password",
+  "/reset-password"
+]);
 
 const routes = {
   "/": renderLandingDep,
@@ -27,6 +39,8 @@ const routes = {
   "/welcome": renderWelcome,
   "/login": renderLogin,
   "/register": renderRegister,
+  "/forgot-password": renderForgotPassword,
+  "/reset-password": renderResetPassword,
   "/profile": renderProfile,
 
   "/patient": renderPatientDashboard,

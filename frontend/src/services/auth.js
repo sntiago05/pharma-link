@@ -62,6 +62,54 @@ export async function loadContext() {
   return context;
 }
 
+/**
+ * Asks for a password reset link.
+ *
+ * Always reports success, mirroring the backend: whether or not the address has
+ * an account is deliberately not revealed, so the UI must not branch on it
+ * either.
+ */
+export async function requestPasswordReset(email) {
+  try {
+    await apiFetch("/auth/forgot-password", {
+      method: "POST",
+      body: { email },
+      auth: false
+    });
+
+    return { success: true };
+  } catch (error) {
+    return {
+      success: false,
+      message:
+        error instanceof ApiError
+          ? error.detail
+          : "No se pudo enviar el correo. Intenta de nuevo."
+    };
+  }
+}
+
+/** Redeems a reset token and sets the new password. */
+export async function resetPassword({ token, password }) {
+  try {
+    await apiFetch("/auth/reset-password", {
+      method: "POST",
+      body: { token, password },
+      auth: false
+    });
+
+    return { success: true };
+  } catch (error) {
+    return {
+      success: false,
+      message:
+        error instanceof ApiError
+          ? error.detail
+          : "No se pudo restablecer la contraseña. Solicita un enlace nuevo."
+    };
+  }
+}
+
 export function logout() {
   clearSession();
 }

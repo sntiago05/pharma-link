@@ -38,21 +38,46 @@ The front end reads `VITE_API_BASE_URL` and falls back to
 `http://localhost:4000/api`. If you serve the API from another origin, set that
 variable *and* add the front end's origin to `CORS_ORIGINS` in `backend/.env`.
 
-### Roles and test flow
+### Demo data
 
-The seed data creates `admin@pharmalink.local` / `Admin1234`, one EPS
-("EPS Demo"), one pharmacy and three medicines. To exercise the whole flow you
-need one user per role — an operator is only useful once an admin links it to a
-pharmacy (`user_pharmacies`) or an EPS (`user_eps`):
+Registration only ever creates patients, and there is no UI to create operators
+or link them to an organisation, so testing the other roles needs a seed:
 
-1. Sign in as admin and register the pharmacies, medicines and EPS you need,
-   then associate each EPS with its pharmacies (**Farmacias → Asociar EPS y
-   farmacia**). Without that link a patient cannot reserve anywhere.
-2. Set the pharmacy's working hours (**Panel de farmacia → Perfil**): they define
-   the appointment grid.
-3. As the EPS operator, issue an order for a patient's document.
-4. As the patient, complete the profile (EPS + document), then reserve.
-5. As the pharmacy operator, confirm the delivery.
+```bash
+cd backend
+npm run db:seed:demo
+```
+
+It is idempotent and never deletes anything. Password for all four accounts is
+`Admin1234`:
+
+| Role | Email | Sees |
+| --- | --- | --- |
+| Admin | `admin@pharmalink.local` | Everything |
+| Patient | `paciente@pharmalink.local` | 3 orders (one already expired) |
+| Pharmacy | `farmacia@pharmalink.local` | Farmacia Central Demo only |
+| EPS | `eps@pharmalink.local` | EPS Demo |
+
+It also adds a second pharmacy (Farmacia Norte Demo) that the operator is *not*
+assigned to, so the 403 isolation is visible, and leaves MED-003 at 5 units in
+Farmacia Central to trigger the low-stock alert.
+
+`scripts/seed-demo.sql` lives outside `db/`, so neither the Docker entrypoint nor
+`npm run db:migrate` will ever load these accounts into a real database.
+
+### Test flow
+
+1. As **EPS**, issue an order for document `1020304050` (the demo patient).
+2. As **Patient**, open *Reservar*: pick the order, a pharmacy (only the ones
+   that can serve it in full are selectable), a date and a slot.
+3. As **Pharmacy**, confirm the delivery in *Entregas*. The stock drops and the
+   order closes as `DELIVERED`.
+
+To do this from scratch instead: an admin must register the EPS, the pharmacies
+and the medicines, associate each EPS with its pharmacies (**Farmacias →
+Asociar EPS y farmacia** — without that link a patient cannot reserve anywhere),
+and the pharmacy must set its working hours (**Perfil**), which define the
+appointment grid.
 
 > On a brand-new Docker volume, `db/01_ddl.sql` and the additive migrations run
 > automatically. `npm run db:migrate` is what brings an **existing** database up

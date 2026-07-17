@@ -64,7 +64,7 @@ export async function apiFetch(path, { method = "GET", body, params, auth = true
     });
   } catch {
     // fetch only rejects on network failure; give a message a user can act on.
-    throw new ApiError("No se pudo conectar con el servidor. Verifica que el backend esté activo.", {
+    throw new ApiError("No se pudo conectar con el servidor.", {
       status: 0
     });
   }

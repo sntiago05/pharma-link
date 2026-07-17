@@ -52,6 +52,12 @@ function loginTemplate() {
           />
         </div>
 
+        <p class="text-right">
+          <a href="/forgot-password" class="text-sm font-medium text-emerald-800 hover:text-emerald-600">
+            ¿Olvidaste tu contraseña?
+          </a>
+        </p>
+
         <button
           type="submit"
           class="flex h-12 w-full items-center justify-center rounded-[28px] bg-gradient-to-r from-[#0D4D44] to-[#059E3E] text-sm font-semibold text-white shadow-lg shadow-emerald-900/10 transition hover:opacity-95"

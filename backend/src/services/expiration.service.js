@@ -62,11 +62,17 @@ export const expireOrders = async () =>
 
     if (orders.rowCount) {
       // Resolve the notification recipients (the patients' user accounts).
+      // Pre-enrolled patients (created by an EPS order before the person
+      // registers) have user_id NULL and no account to notify; they must be
+      // filtered out here, because notifications.user_id is NOT NULL and one
+      // such row would roll back the whole sweep — leaving every expired order
+      // active and its stock held forever.
       const recipients = await client.query(
         `SELECT medical_orders.id, medical_orders.order_number, patients.user_id
          FROM medical_orders
          INNER JOIN patients ON patients.id = medical_orders.patient_id
-         WHERE medical_orders.id = ANY($1::int[])`,
+         WHERE medical_orders.id = ANY($1::int[])
+           AND patients.user_id IS NOT NULL`,
         [orders.rows.map((order) => order.id)],
       );
       await notifyOrdersExpired(recipients.rows, client);
