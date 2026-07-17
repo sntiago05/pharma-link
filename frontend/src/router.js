@@ -56,6 +56,7 @@ const routes = {
   "/admin/eps": renderAdminDashboard,
   "/admin/pharmacies": renderAdminDashboard,
   "/admin/medicines": renderAdminDashboard,
+  "/admin/users": renderAdminDashboard,
   "/admin/audit": renderAdminDashboard,
   "/admin/profile": renderAdminDashboard
 };

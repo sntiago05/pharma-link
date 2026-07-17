@@ -220,13 +220,13 @@ export function selectField({ id, label, options, value = "", placeholder = "Sel
   `;
 }
 
-export function textField({ id, label, type = "text", value = "", placeholder = "", required = true, min = "", step = "" }) {
+export function textField({ id, label, type = "text", value = "", placeholder = "", required = true, min = "", max = "", step = "" }) {
   return `
     <div>
       <label for="${id}" class="mb-2 block text-sm font-semibold text-slate-700">${escapeHtml(label)}</label>
       <input id="${id}" name="${id}" type="${type}" value="${escapeHtml(value)}"
         ${placeholder ? `placeholder="${escapeHtml(placeholder)}"` : ""}
-        ${min !== "" ? `min="${min}"` : ""} ${step !== "" ? `step="${step}"` : ""} ${required ? "required" : ""}
+        ${min !== "" ? `min="${min}"` : ""} ${max !== "" ? `max="${max}"` : ""} ${step !== "" ? `step="${step}"` : ""} ${required ? "required" : ""}
         class="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm outline-none transition focus:border-emerald-600 focus:ring-4 focus:ring-emerald-100">
     </div>
   `;

@@ -6,7 +6,9 @@ export const listCatalog = (type) => apiGet(`/catalog/${type}`);
 export const getCatalogItem = (type, id) => apiGet(`/catalog/${type}/${id}`);
 export const createCatalog = (type, payload) => apiPost(`/catalog/${type}`, payload);
 export const updateCatalog = (type, id, payload) => apiPut(`/catalog/${type}/${id}`, payload);
-export const deleteCatalog = (type, id) => apiDelete(`/catalog/${type}/${id}`);
+export const deleteCatalog = (type, id, payload) => apiDelete(`/catalog/${type}/${id}`, payload);
+export const listUsers = () => apiGet('/catalog/users');
+export const deleteUser = (id, payload) => apiDelete(`/catalog/users/${id}`, payload);
 
 export const linkEpsPharmacy = (epsId, pharmacyId) =>
   apiPost("/catalog/eps-pharmacies", { epsId, pharmacyId });

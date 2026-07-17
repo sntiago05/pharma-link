@@ -2,9 +2,11 @@ import { Router } from 'express';
 import {
   createCatalog,
   deleteCatalog,
+  deleteUser,
   getCatalogItem,
   linkEpsPharmacy,
   listCatalog,
+  listUsers,
   setWorkingHours,
   updateCatalog,
 } from '../controllers/catalog.controller.js';
@@ -16,6 +18,7 @@ import { validate } from '../middleware/validate.middleware.js';
 import {
   catalogIdRules,
   createRules,
+  deleteCatalogRules,
   linkEpsPharmacyRules,
   updateRules,
   workingHoursRules,
@@ -298,13 +301,22 @@ const registerCrud = (type) => {
   router.delete(
     `/${type}/:id`,
     admin,
-    validate(catalogIdRules),
+    validate(deleteCatalogRules),
     audit({ action: 'DELETE', table: type === 'eps' ? 'eps' : type }),
     deleteCatalog(type),
   );
 };
 
 ['eps', 'pharmacies', 'medicines'].forEach(registerCrud);
+
+router.get('/users', admin, listUsers);
+router.delete(
+  '/users/:id',
+  admin,
+  validate(deleteCatalogRules),
+  audit({ action: 'DELETE', table: 'users' }),
+  deleteUser,
+);
 
 router.post(
   '/eps-pharmacies',

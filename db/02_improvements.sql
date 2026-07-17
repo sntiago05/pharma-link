@@ -89,3 +89,20 @@ CREATE INDEX IF NOT EXISTS idx_inventory_movements_created ON inventory_movement
 CREATE INDEX IF NOT EXISTS idx_user_pharmacies_pharmacy_id ON user_pharmacies(pharmacy_id);
 CREATE INDEX IF NOT EXISTS idx_eps_pharmacies_pharmacy_id ON eps_pharmacies(pharmacy_id);
 CREATE INDEX IF NOT EXISTS idx_pharmacy_inventory_medicine_id ON pharmacy_inventory(medicine_id);
+
+-- ---------------------------------------------------------------------------
+-- Patient pre-enrolment and pharmacy branches
+-- ---------------------------------------------------------------------------
+-- EPS operators can issue an order for a real patient before that person has a
+-- PharmaLink account. Keep the patient record, but do not create hidden
+-- credentials. Later, when the patient registers, /patients/me links the user
+-- to this pre-enrolled row.
+ALTER TABLE patients ALTER COLUMN user_id DROP NOT NULL;
+ALTER TABLE patients ADD COLUMN IF NOT EXISTS full_name VARCHAR(150);
+ALTER TABLE patients ADD COLUMN IF NOT EXISTS email VARCHAR(150);
+
+-- A row in pharmacies remains the operational location used by inventory,
+-- schedules and reservations. parent_pharmacy_id lets several locations be
+-- grouped as branches of one pharmacy brand without changing those FKs.
+ALTER TABLE pharmacies ADD COLUMN IF NOT EXISTS parent_pharmacy_id INTEGER REFERENCES pharmacies(id);
+CREATE INDEX IF NOT EXISTS idx_pharmacies_parent_id ON pharmacies(parent_pharmacy_id);

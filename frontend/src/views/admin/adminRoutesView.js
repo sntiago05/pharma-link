@@ -28,13 +28,14 @@ import { bindLogout, quickLinks, sectionFromPath, userCard } from "../shell.js";
  * reserve, and the audit trail.
  */
 
-const SECTIONS = ["dashboard", "eps", "pharmacies", "medicines", "audit", "profile"];
+const SECTIONS = ["dashboard", "eps", "pharmacies", "medicines", "users", "audit", "profile"];
 
 const NAV = (active) => [
   { label: "Dashboard", href: "/admin/dashboard", active: active === "dashboard" },
   { label: "EPS", href: "/admin/eps", active: active === "eps" },
   { label: "Farmacias", href: "/admin/pharmacies", active: active === "pharmacies" },
   { label: "Medicamentos", href: "/admin/medicines", active: active === "medicines" },
+  { label: "Usuarios", href: "/admin/users", active: active === "users" },
   { label: "Auditoría", href: "/admin/audit", active: active === "audit" },
   { label: "Perfil", href: "/admin/profile", active: active === "profile" }
 ];
@@ -153,9 +154,12 @@ const CATALOG_FORMS = {
   },
   pharmacies: {
     title: "Farmacias",
-    columns: ["Nombre", "Ciudad", "Dirección", "NIT", "Estado"],
+    columns: ["Nombre", "Tipo", "Ciudad", "Direccion", "NIT", "Estado"],
     toRow: (item) => [
       escapeHtml(item.name),
+      item.parent_pharmacy_id
+        ? `Sede de ${escapeHtml(item.parent_pharmacy_name || "farmacia")}`
+        : `Matriz ${item.branch_count ? `(${item.branch_count} sede${item.branch_count === 1 ? "" : "s"})` : ""}`,
       escapeHtml(item.city || "-"),
       escapeHtml(item.address || "-"),
       escapeHtml(item.nit || "-"),
@@ -198,7 +202,11 @@ async function renderCatalog(type, ctx) {
   const config = CATALOG_FORMS[type];
   setContent(loadingState(`Cargando ${config.title.toLowerCase()}...`));
 
-  const items = await adminApi.listCatalog(type);
+  const [items, epsList] = await Promise.all([
+    adminApi.listCatalog(type),
+    type === "pharmacies" ? adminApi.listCatalog("eps") : Promise.resolve([])
+  ]);
+  const parentPharmacies = type === "pharmacies" ? items.filter((item) => !item.parent_pharmacy_id) : [];
 
   setContent(`
     ${panel({
@@ -215,6 +223,25 @@ async function renderCatalog(type, ctx) {
               })
             )
             .join("")}
+          ${
+            type === "pharmacies"
+              ? `
+                ${selectField({
+                  id: "parentPharmacyId",
+                  label: "Farmacia matriz (opcional, para crear sede)",
+                  options: parentPharmacies.map((pharmacy) => ({ value: pharmacy.id, label: pharmacy.name })),
+                  placeholder: "Esta farmacia sera matriz"
+                })}
+                <div>
+                  <label for="epsIds" class="mb-2 block text-sm font-semibold text-slate-700">EPS asociadas</label>
+                  <select id="epsIds" name="epsIds" multiple
+                    class="min-h-28 w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm outline-none transition focus:border-emerald-600 focus:ring-4 focus:ring-emerald-100">
+                    ${epsList.map((eps) => `<option value="${eps.id}">${escapeHtml(eps.name)}</option>`).join("")}
+                  </select>
+                </div>
+              `
+              : ""
+          }
           <div class="md:col-span-2">
             <p id="catalogError" class="min-h-5 text-sm font-medium text-red-600"></p>
             ${primaryButton(`Crear ${config.title.toLowerCase()}`, { type: "submit" })}
@@ -249,6 +276,16 @@ async function renderCatalog(type, ctx) {
     const payload = Object.fromEntries(
       config.fields.map((field) => [field.id, document.getElementById(field.id).value.trim()])
     );
+    if (type === "pharmacies") {
+      payload.parentPharmacyId = document.getElementById("parentPharmacyId").value || null;
+      payload.epsIds = Array.from(document.getElementById("epsIds").selectedOptions).map((option) =>
+        Number(option.value)
+      );
+      if (!payload.epsIds.length) {
+        errorNode.textContent = "Selecciona al menos una EPS para asociar la farmacia.";
+        return;
+      }
+    }
 
     try {
       await adminApi.createCatalog(type, payload);
@@ -261,10 +298,19 @@ async function renderCatalog(type, ctx) {
 
   document.querySelectorAll("[data-delete]").forEach((button) => {
     button.addEventListener("click", async () => {
+      const needsPassword = ["eps", "pharmacies", "medicines"].includes(type);
+      const adminPassword = needsPassword
+        ? window.prompt("Confirma tu contrasena de administrador para eliminar este registro.")
+        : null;
+      if (needsPassword && !adminPassword) return;
       if (!window.confirm("¿Eliminar este registro? La acción no se puede deshacer.")) return;
 
       try {
-        await adminApi.deleteCatalog(type, button.dataset.delete);
+        await adminApi.deleteCatalog(
+          type,
+          button.dataset.delete,
+          adminPassword ? { adminPassword } : undefined
+        );
         toast("Registro eliminado.");
         await renderCatalog(type, ctx);
       } catch (error) {
@@ -275,6 +321,46 @@ async function renderCatalog(type, ctx) {
   });
 
   if (type === "pharmacies") await bindLinkPanel(items, () => renderCatalog(type, ctx));
+}
+
+async function renderUsers() {
+  setContent(loadingState("Cargando usuarios..."));
+  const users = await adminApi.listUsers();
+
+  setContent(
+    panel({
+      title: "Usuarios",
+      action: `<span class="text-sm text-slate-400">${users.length} registro(s)</span>`,
+      body: users.length
+        ? dataTable({
+            headers: ["Nombre", "Correo", "Rol", "Estado", "Acciones"],
+            rows: users.map((account) => [
+              escapeHtml(account.full_name),
+              escapeHtml(account.email),
+              escapeHtml(account.role),
+              statusBadge(account.active ? "Activo" : "Inactivo", account.active ? "emerald" : "red"),
+              secondaryButton("Eliminar", { tone: "red", attrs: `data-delete-user="${account.id}"` })
+            ])
+          })
+        : emptyState("Sin usuarios registrados.")
+    })
+  );
+
+  document.querySelectorAll("[data-delete-user]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const adminPassword = window.prompt("Confirma tu contrasena de administrador para eliminar este usuario.");
+      if (!adminPassword) return;
+      if (!window.confirm("¿Eliminar este usuario? La acción no se puede deshacer.")) return;
+
+      try {
+        await adminApi.deleteUser(button.dataset.deleteUser, { adminPassword });
+        toast("Usuario eliminado.");
+        await renderUsers();
+      } catch (error) {
+        toast(error.detail || error.message, "red");
+      }
+    });
+  });
 }
 
 /**
@@ -430,6 +516,7 @@ const RENDERERS = {
   eps: (ctx) => renderCatalog("eps", ctx),
   pharmacies: (ctx) => renderCatalog("pharmacies", ctx),
   medicines: (ctx) => renderCatalog("medicines", ctx),
+  users: renderUsers,
   audit: renderAudit,
   profile: renderProfileSection
 };

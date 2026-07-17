@@ -258,6 +258,10 @@ async function renderCreate(ctx) {
     })
   );
 
+  const minimumOrderDate = todayIso();
+  document.getElementById("issueDate").min = minimumOrderDate;
+  document.getElementById("expirationDate").min = minimumOrderDate;
+
   const itemsList = document.getElementById("itemsList");
 
   const addItemRow = () => {
@@ -297,6 +301,21 @@ async function renderCreate(ctx) {
       return;
     }
 
+    const issueDate = document.getElementById("issueDate").value;
+    const expirationDate = document.getElementById("expirationDate").value;
+    if (issueDate < minimumOrderDate) {
+      errorNode.textContent = "La fecha de emisi\u00f3n no puede ser anterior a hoy.";
+      return;
+    }
+    if (expirationDate < minimumOrderDate) {
+      errorNode.textContent = "La fecha de vencimiento no puede ser anterior a hoy.";
+      return;
+    }
+    if (expirationDate < issueDate) {
+      errorNode.textContent = "La fecha de vencimiento debe ser igual o posterior a la emisi\u00f3n.";
+      return;
+    }
+
     const submitButton = event.target.querySelector("button[type=submit]");
     submitButton.disabled = true;
     submitButton.textContent = "Generando...";
@@ -304,8 +323,8 @@ async function renderCreate(ctx) {
     const payload = {
       orderNumber: document.getElementById("orderNumber").value.trim(),
       patientDocument: document.getElementById("patientDocument").value.trim(),
-      issueDate: document.getElementById("issueDate").value,
-      expirationDate: document.getElementById("expirationDate").value,
+      issueDate,
+      expirationDate,
       details
     };
 

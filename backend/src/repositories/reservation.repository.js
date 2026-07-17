@@ -75,6 +75,7 @@ export const insertReservation = async (
 export const findReservationForUpdate = async ({ reservationId, userId }, client) => {
   const result = await client.query(
     `SELECT reservations.*,
+            medical_orders.expiration_date,
             medical_orders.reschedule_count,
             medical_orders.cancellation_count,
             medical_orders.order_number,

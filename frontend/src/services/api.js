@@ -94,4 +94,4 @@ export const apiGet = (path, params) => apiFetch(path, { params });
 export const apiPost = (path, body) => apiFetch(path, { method: "POST", body });
 export const apiPut = (path, body) => apiFetch(path, { method: "PUT", body });
 export const apiPatch = (path, body) => apiFetch(path, { method: "PATCH", body });
-export const apiDelete = (path) => apiFetch(path, { method: "DELETE" });
+export const apiDelete = (path, body) => apiFetch(path, { method: "DELETE", body });

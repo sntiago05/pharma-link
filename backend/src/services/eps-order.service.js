@@ -1,7 +1,4 @@
-import bcrypt from 'bcryptjs';
-import { randomUUID } from 'node:crypto';
 import { query } from '../config/db.js';
-import { ROLES } from '../config/roles.js';
 import { ApiError } from '../utils/api-error.js';
 import { withTransaction } from '../utils/transaction.js';
 
@@ -18,8 +15,8 @@ import { withTransaction } from '../utils/transaction.js';
  * Finds an EPS's patient by document, enrolling them if unknown.
  *
  * An EPS legitimately knows patients PharmaLink has never seen, so the operator
- * can create the account inline. The password is random and unusable: the
- * patient must set their own credentials through the normal flow.
+ * can pre-enrol the patient inline. No user or password is created here; the
+ * patient will link this record when they register and complete their profile.
  */
 const resolvePatient = async ({ epsId, document, fullName, email, phone }, client) => {
   const existing = await client.query(
@@ -35,14 +32,10 @@ const resolvePatient = async ({ epsId, document, fullName, email, phone }, clien
     );
   }
 
-  const role = await client.query('SELECT id FROM roles WHERE name = $1', [ROLES.PATIENT]);
-  const user = await client.query(
-    'INSERT INTO users (role_id, full_name, email, password) VALUES ($1, $2, $3, $4) RETURNING id',
-    [role.rows[0].id, fullName, email.toLowerCase(), await bcrypt.hash(randomUUID(), 12)],
-  );
   const patient = await client.query(
-    'INSERT INTO patients (user_id, eps_id, document, phone) VALUES ($1, $2, $3, $4) RETURNING id',
-    [user.rows[0].id, epsId, document, phone ?? null],
+    `INSERT INTO patients (user_id, eps_id, document, phone, full_name, email)
+     VALUES (NULL, $1, $2, $3, $4, $5) RETURNING id`,
+    [epsId, document, phone ?? null, fullName, email.toLowerCase()],
   );
   return patient.rows[0];
 };
@@ -114,7 +107,7 @@ export const listEpsOrders = async ({ epsId, status, search, limit = 50, offset 
   params.push(limit, offset);
   const result = await query(
     `SELECT medical_orders.*,
-            users.full_name AS patient_name,
+            COALESCE(patients.full_name, users.full_name, patients.document) AS patient_name,
             patients.document AS patient_document,
             COALESCE(
               JSON_AGG(
@@ -126,11 +119,11 @@ export const listEpsOrders = async ({ epsId, status, search, limit = 50, offset 
             ) AS items
      FROM medical_orders
      INNER JOIN patients ON patients.id = medical_orders.patient_id
-     INNER JOIN users ON users.id = patients.user_id
+     LEFT JOIN users ON users.id = patients.user_id
      LEFT JOIN order_details ON order_details.order_id = medical_orders.id
      LEFT JOIN medicines ON medicines.id = order_details.medicine_id
      WHERE ${conditions.join(' AND ')}
-     GROUP BY medical_orders.id, users.full_name, patients.document
+     GROUP BY medical_orders.id, users.full_name, patients.full_name, patients.document
      ORDER BY medical_orders.created_at DESC
      LIMIT $${params.length - 1} OFFSET $${params.length}`,
     params,

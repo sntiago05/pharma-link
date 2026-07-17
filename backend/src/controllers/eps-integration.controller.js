@@ -1,8 +1,5 @@
-import bcrypt from 'bcryptjs';
-import { randomUUID } from 'node:crypto';
 import { query } from '../config/db.js';
 import { logger } from '../config/logger.js';
-import { ROLES } from '../config/roles.js';
 import { ApiError } from '../utils/api-error.js';
 import { sendSuccess } from '../utils/api-response.js';
 import { asyncHandler } from '../utils/async-handler.js';
@@ -25,9 +22,8 @@ const logEpsRequest = async ({ epsId, orderNumber, statusCode, payload }) => {
 /**
  * Enrols a patient the EPS has sent for the first time.
  *
- * The account gets a random, unusable password: PharmaLink never receives the
- * patient's password from the EPS, so the user must go through a normal
- * credential flow to sign in.
+ * This creates only the patient domain row. It intentionally does not create a
+ * user or hidden password; the patient links the row after registering.
  */
 const enrolPatient = async ({ epsId, document, fullName, email, phone }, client) => {
   if (!fullName || !email) {
@@ -36,17 +32,10 @@ const enrolPatient = async ({ epsId, document, fullName, email, phone }, client)
     );
   }
 
-  const role = await client.query('SELECT id FROM roles WHERE name = $1', [ROLES.PATIENT]);
-  if (!role.rowCount) throw ApiError.internal('PATIENT role is not configured in the database.');
-
-  const user = await client.query(
-    'INSERT INTO users (role_id, full_name, email, password) VALUES ($1, $2, $3, $4) RETURNING id',
-    [role.rows[0].id, fullName, email, await bcrypt.hash(randomUUID(), 12)],
-  );
-
   const patient = await client.query(
-    'INSERT INTO patients (user_id, eps_id, document, phone) VALUES ($1, $2, $3, $4) RETURNING id',
-    [user.rows[0].id, epsId, document, phone ?? null],
+    `INSERT INTO patients (user_id, eps_id, document, phone, full_name, email)
+     VALUES (NULL, $1, $2, $3, $4, $5) RETURNING id`,
+    [epsId, document, phone ?? null, fullName, email.toLowerCase()],
   );
 
   return patient.rows[0];

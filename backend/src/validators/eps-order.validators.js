@@ -5,6 +5,7 @@ import {
   optionalStringBody,
   stringBody,
 } from './common.validators.js';
+import { today } from '../utils/dates.js';
 
 export const createEpsOrderRules = [
   idParam('epsId'),
@@ -18,8 +19,16 @@ export const createEpsOrderRules = [
     .bail()
     .customSanitizer((value) => value.trim().toLowerCase()),
   optionalStringBody('patientPhone', { max: 20 }),
-  dateBody('issueDate'),
+  dateBody('issueDate').bail().custom((value) => {
+    if (value < today()) {
+      throw new Error('issueDate cannot be before today.');
+    }
+    return true;
+  }),
   dateBody('expirationDate').bail().custom((value, { req }) => {
+    if (value < today()) {
+      throw new Error('expirationDate cannot be before today.');
+    }
     if (req.body.issueDate && value < req.body.issueDate) {
       throw new Error('expirationDate must be on or after issueDate.');
     }

@@ -1,8 +1,10 @@
 import { createHash } from 'node:crypto';
+import bcrypt from 'bcryptjs';
 import { query } from '../config/db.js';
 import { ApiError } from '../utils/api-error.js';
 import { sendSuccess } from '../utils/api-response.js';
 import { asyncHandler } from '../utils/async-handler.js';
+import { withTransaction } from '../utils/transaction.js';
 
 /**
  * Generic CRUD for the three catalogs (EPS, pharmacies, medicines).
@@ -21,10 +23,19 @@ const handlers = {
     fields: ['name', 'nit', 'apiKey'],
   },
   pharmacies: {
-    list: 'SELECT id, name, nit, address, city, inventory_api_url, active FROM pharmacies ORDER BY name',
-    create: `INSERT INTO pharmacies (name, nit, address, city, inventory_api_url, api_key)
-             VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, name, nit, address, city, inventory_api_url, active`,
-    fields: ['name', 'nit', 'address', 'city', 'inventoryApiUrl', 'apiKey'],
+    list: `SELECT pharmacies.id, pharmacies.name, pharmacies.nit, pharmacies.address, pharmacies.city,
+                  pharmacies.inventory_api_url, pharmacies.active, pharmacies.parent_pharmacy_id,
+                  parent.name AS parent_pharmacy_name,
+                  COUNT(branches.id)::int AS branch_count
+           FROM pharmacies
+           LEFT JOIN pharmacies parent ON parent.id = pharmacies.parent_pharmacy_id
+           LEFT JOIN pharmacies branches ON branches.parent_pharmacy_id = pharmacies.id
+           GROUP BY pharmacies.id, parent.name
+           ORDER BY pharmacies.name`,
+    create: `INSERT INTO pharmacies (name, nit, address, city, inventory_api_url, api_key, parent_pharmacy_id)
+             VALUES ($1, $2, $3, $4, $5, $6, $7)
+             RETURNING id, name, nit, address, city, inventory_api_url, active, parent_pharmacy_id`,
+    fields: ['name', 'nit', 'address', 'city', 'inventoryApiUrl', 'apiKey', 'parentPharmacyId'],
   },
   medicines: {
     list: 'SELECT id, code, name, presentation, description FROM medicines ORDER BY name',
@@ -45,9 +56,10 @@ const editable = {
     table: 'pharmacies',
     columns: {
       name: 'name', nit: 'nit', address: 'address', city: 'city',
-      inventoryApiUrl: 'inventory_api_url', apiKey: 'api_key', active: 'active',
+      inventoryApiUrl: 'inventory_api_url', apiKey: 'api_key',
+      parentPharmacyId: 'parent_pharmacy_id', active: 'active',
     },
-    select: 'id, name, nit, address, city, inventory_api_url, active',
+    select: 'id, name, nit, address, city, inventory_api_url, parent_pharmacy_id, active',
   },
   medicines: {
     table: 'medicines',
@@ -57,6 +69,16 @@ const editable = {
 };
 
 const LABELS = { eps: 'EPS', pharmacies: 'Pharmacy', medicines: 'Medicine' };
+
+const verifyAdminPassword = async ({ userId, password }) => {
+  if (!password) {
+    throw ApiError.badRequest('Admin password is required to delete this record.');
+  }
+
+  const admin = await query('SELECT password FROM users WHERE id = $1 AND active = TRUE', [userId]);
+  const matches = await bcrypt.compare(password, admin.rows[0]?.password || '');
+  if (!matches) throw ApiError.unauthorized('Invalid admin password.');
+};
 
 export const listCatalog = (type) =>
   asyncHandler(async (_req, res) =>
@@ -68,19 +90,33 @@ export const listCatalog = (type) =>
 
 export const createCatalog = (type) =>
   asyncHandler(async (req, res) => {
-    const values = handlers[type].fields.map((field) => req.body[field]);
+    const values = handlers[type].fields.map((field) => req.body[field] ?? null);
 
     // The API key is only ever stored as a SHA-256 digest, so the plaintext the
     // admin supplies is hashed here and never persisted.
     if (type === 'eps') values[2] = createHash('sha256').update(values[2]).digest('hex');
 
-    const result = await query(handlers[type].create, values);
+    const item = await withTransaction(async (client) => {
+      const result = await client.query(handlers[type].create, values);
 
-    res.locals.auditRecordId = result.rows[0].id;
+      if (type === 'pharmacies') {
+        for (const epsId of req.body.epsIds || []) {
+          await client.query(
+            `INSERT INTO eps_pharmacies (eps_id, pharmacy_id) VALUES ($1, $2)
+             ON CONFLICT (eps_id, pharmacy_id) DO UPDATE SET active = TRUE`,
+            [epsId, result.rows[0].id],
+          );
+        }
+      }
+
+      return result.rows[0];
+    });
+
+    res.locals.auditRecordId = item.id;
     return sendSuccess(res, {
       status: 201,
       message: `${LABELS[type]} created.`,
-      data: result.rows[0],
+      data: item,
     });
   });
 
@@ -153,6 +189,10 @@ export const updateCatalog = (type) =>
 
 export const deleteCatalog = (type) =>
   asyncHandler(async (req, res) => {
+    if (['eps', 'pharmacies', 'medicines'].includes(type)) {
+      await verifyAdminPassword({ userId: req.auth.sub, password: req.body?.adminPassword });
+    }
+
     const result = await query(
       `DELETE FROM ${editable[type].table} WHERE id = $1 RETURNING id`,
       [req.params.id],
@@ -164,3 +204,35 @@ export const deleteCatalog = (type) =>
     // that (correctly) do not parse a body for this status.
     return res.status(204).end();
   });
+
+/** ADMIN-only user directory. Accounts are created through registration, not this catalog. */
+export const listUsers = asyncHandler(async (_req, res) => {
+  const result = await query(
+    `SELECT users.id, users.full_name, users.email, users.active, roles.name AS role
+     FROM users
+     INNER JOIN roles ON roles.id = users.role_id
+     ORDER BY users.full_name`,
+  );
+  return sendSuccess(res, { message: 'User list retrieved.', data: result.rows });
+});
+
+/** Deletes an unlinked user after re-authenticating the administrator. */
+export const deleteUser = asyncHandler(async (req, res) => {
+  const userId = Number(req.params.id);
+  if (userId === Number(req.auth.sub)) {
+    throw ApiError.badRequest('You cannot delete your own administrator account.');
+  }
+
+  await verifyAdminPassword({ userId: req.auth.sub, password: req.body?.adminPassword });
+
+  const patient = await query('SELECT id FROM patients WHERE user_id = $1', [userId]);
+  if (patient.rowCount) {
+    throw ApiError.conflict('This user has a patient profile and clinical history, so the account cannot be deleted.');
+  }
+
+  const result = await query('DELETE FROM users WHERE id = $1 RETURNING id', [userId]);
+  if (!result.rowCount) throw ApiError.notFound('User not found.');
+
+  res.locals.auditRecordId = userId;
+  return res.status(204).end();
+});

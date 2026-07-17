@@ -32,6 +32,10 @@ export const createRules = {
     // isURL rejects. Existing rows must stay creatable.
     url('inventoryApiUrl'),
     stringBody('apiKey', { min: 1, max: 255 }),
+    body('parentPharmacyId').optional({ values: 'null' }).isInt({ min: 1 })
+      .withMessage('parentPharmacyId must be a valid pharmacy id.').toInt(),
+    body('epsIds').optional().isArray().withMessage('epsIds must be an array.'),
+    body('epsIds.*').optional().isInt({ min: 1 }).withMessage('Each epsIds item must be valid.').toInt(),
   ],
   medicines: [
     stringBody('code', { min: 1, max: 40 }),
@@ -58,6 +62,8 @@ export const updateRules = {
     optionalStringBody('city', { max: 80 }),
     optionalStringBody('inventoryApiUrl', { max: 500 }),
     optionalStringBody('apiKey', { max: 255 }),
+    body('parentPharmacyId').optional({ values: 'null' }).isInt({ min: 1 })
+      .withMessage('parentPharmacyId must be a valid pharmacy id.').toInt(),
     body('active').optional().isBoolean().withMessage('active must be a boolean.').toBoolean(),
   ],
   medicines: [
@@ -70,6 +76,11 @@ export const updateRules = {
 };
 
 export const catalogIdRules = [idParam('id')];
+
+export const deleteCatalogRules = [
+  idParam('id'),
+  body('adminPassword').optional().isString().withMessage('adminPassword must be a string.'),
+];
 
 export const linkEpsPharmacyRules = [idBody('epsId'), idBody('pharmacyId')];
 

@@ -72,6 +72,14 @@ const assertOrderIsReservable = (order) => {
   }
 };
 
+const toDateOnly = (value) => (value instanceof Date ? value.toISOString().slice(0, 10) : String(value).slice(0, 10));
+
+const assertReservationBeforeExpiration = ({ reservationDate, expirationDate }) => {
+  if (toDateOnly(reservationDate) > toDateOnly(expirationDate)) {
+    throw ApiError.badRequest('Reservation date cannot be after the order expiration date.');
+  }
+};
+
 /**
  * Explains a failed stock hold.
  *
@@ -138,6 +146,7 @@ export const createReservation = async ({
   withTransaction(async (client) => {
     const order = await findOrderForUpdate({ orderId, userId }, client);
     assertOrderIsReservable(order);
+    assertReservationBeforeExpiration({ reservationDate, expirationDate: order.expiration_date });
 
     if (!(await isPharmacyLinkedToEps({ epsId: order.eps_id, pharmacyId }, client))) {
       throw ApiError.badRequest('Pharmacy is not associated with the order EPS.');
@@ -260,6 +269,11 @@ export const rescheduleReservation = async ({
         `This order reached the limit of ${MAX_RESCHEDULES} reschedules and cannot be moved again.`,
       );
     }
+
+    assertReservationBeforeExpiration({
+      reservationDate,
+      expirationDate: reservation.expiration_date,
+    });
 
     await lockPharmacy(reservation.pharmacy_id, client);
     await assertSlotIsBookable(

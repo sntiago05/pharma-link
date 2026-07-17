@@ -55,6 +55,8 @@ const todayIso = () => {
   return new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
 };
 
+const dateOnly = (value) => String(value || "").slice(0, 10);
+
 function paint({ user, section, body }) {
   document.getElementById("app").innerHTML = roleShell({
     title: "Panel del paciente",
@@ -273,6 +275,7 @@ async function renderAvailability({ navigate }) {
 
   const preselected = new URLSearchParams(window.location.search).get("order");
   const initialOrder = reservable.find((order) => String(order.id) === preselected) || reservable[0];
+  const initialMaxDate = dateOnly(initialOrder.expiration_date);
 
   setContent(
     panel({
@@ -291,7 +294,7 @@ async function renderAvailability({ navigate }) {
           })}
           <div id="pharmacyStep"></div>
           <div id="dateStep" class="hidden">
-            ${textField({ id: "dateInput", label: "3. Escoge la fecha", type: "date", value: todayIso(), min: todayIso() })}
+            ${textField({ id: "dateInput", label: "3. Escoge la fecha", type: "date", value: todayIso(), min: todayIso(), max: initialMaxDate })}
           </div>
           <div id="slotStep"></div>
         </div>
@@ -303,9 +306,26 @@ async function renderAvailability({ navigate }) {
   const pharmacyStep = document.getElementById("pharmacyStep");
   const dateStep = document.getElementById("dateStep");
   const slotStep = document.getElementById("slotStep");
+  const selectedOrder = () => reservable.find((order) => String(order.id) === String(state.orderId));
+  const setDateLimit = () => {
+    const order = selectedOrder();
+    const dateInput = document.getElementById("dateInput");
+    if (!order || !dateInput) return;
+    const maxDate = dateOnly(order.expiration_date);
+    dateInput.max = maxDate;
+    if (!state.date || state.date > maxDate) {
+      state.date = maxDate;
+      dateInput.value = maxDate;
+    }
+  };
 
   async function loadSlots() {
     if (!state.pharmacyId) return;
+    setDateLimit();
+    if (state.date > dateOnly(selectedOrder()?.expiration_date)) {
+      slotStep.innerHTML = errorState("La fecha no puede ser posterior al vencimiento de la orden.", { retry: false });
+      return;
+    }
 
     slotStep.innerHTML = loadingState("Consultando horarios...");
     state.slot = null;
@@ -354,7 +374,22 @@ async function renderAvailability({ navigate }) {
     });
 
     confirmButton.addEventListener("click", async () => {
-      if (!state.slot) return;
+      if (!state.orderId) {
+        document.getElementById("reserveError").textContent = "Selecciona una orden.";
+        return;
+      }
+      if (!state.pharmacyId) {
+        document.getElementById("reserveError").textContent = "Selecciona una farmacia.";
+        return;
+      }
+      if (!state.slot) {
+        document.getElementById("reserveError").textContent = "Selecciona un horario.";
+        return;
+      }
+      if (state.date > dateOnly(selectedOrder()?.expiration_date)) {
+        document.getElementById("reserveError").textContent = "La fecha no puede ser posterior al vencimiento de la orden.";
+        return;
+      }
 
       const errorNode = document.getElementById("reserveError");
       errorNode.textContent = "";
@@ -448,11 +483,13 @@ async function renderAvailability({ navigate }) {
 
   document.getElementById("orderSelect").addEventListener("change", (event) => {
     state.orderId = event.target.value;
+    setDateLimit();
     if (state.orderId) loadPharmacies();
   });
 
   document.getElementById("dateInput").addEventListener("change", (event) => {
     state.date = event.target.value;
+    setDateLimit();
     loadSlots();
   });
 
@@ -563,7 +600,14 @@ async function renderReservations(ctx) {
       container.classList.remove("hidden");
       container.innerHTML = `
         <div class="mt-3 rounded-[16px] border border-emerald-200 bg-white p-3">
-          ${textField({ id: `date-${id}`, label: "Nueva fecha", type: "date", value: todayIso(), min: todayIso() })}
+          ${textField({
+            id: `date-${id}`,
+            label: "Nueva fecha",
+            type: "date",
+            value: todayIso(),
+            min: todayIso(),
+            max: dateOnly(reservation.expiration_date)
+          })}
           <div id="slots-${id}" class="mt-3"></div>
         </div>
       `;
@@ -571,6 +615,10 @@ async function renderReservations(ctx) {
       const loadSlots = async () => {
         const slotsNode = document.getElementById(`slots-${id}`);
         const date = document.getElementById(`date-${id}`).value;
+        if (date > dateOnly(reservation.expiration_date)) {
+          slotsNode.innerHTML = errorState("La fecha no puede ser posterior al vencimiento de la orden.", { retry: false });
+          return;
+        }
         slotsNode.innerHTML = loadingState("Consultando horarios...");
 
         try {
