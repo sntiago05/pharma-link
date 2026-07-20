@@ -59,9 +59,9 @@ INSERT INTO working_hours (pharmacy_id, opening_time, closing_time, slot_duratio
 SELECT id, '07:00', '13:00', 20, 2 FROM pharmacies WHERE nit = '902222222-1'
 ON CONFLICT (pharmacy_id) DO NOTHING;
 
--- ---------------------------------------------------------------------------
+
 -- 1. Users (password: Admin1234)
--- ---------------------------------------------------------------------------
+
 
 INSERT INTO users (role_id, full_name, email, password)
 SELECT roles.id, data.full_name, data.email,
