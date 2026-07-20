@@ -1,157 +1,124 @@
 # PharmaLink
 
-Platform connecting EPS, patients and pharmacies: medical orders, appointment
-slots, reservations, inventory and deliveries. Express + PostgreSQL API with a
-vanilla-JS + Vite + Tailwind front end.
+Plataforma que conecta sistemas de prescripciones médicas (EPS), pacientes y farmacias para gestionar órdenes, citas, reservas, inventario y entregas.
 
-## Local setup
+**[English Version →](README_EN.md)**
 
-1. Start PostgreSQL from the project root:
+## Descripción
 
-   ```bash
-   docker compose up -d
-   ```
+PharmaLink es una solución integral diseñada para optimizar el proceso de gestión de prescripciones en el ecosistema de salud colombiano. Integra:
 
-2. In `backend`, copy `.env.example` to `.env` and set the local values.
-3. Install dependencies, apply migrations and start the API:
+- **EPS (Entidades Promotoras de Salud)** — Proveedores de prescripciones electrónicas que envían órdenes médicas
+- **Pacientes** — Usuarios finales que necesitan medicinas y desean agendar entregas
+- **Farmacias** — Proveedores de servicio que almacenan y entregan medicinas
 
-   ```bash
-   cd backend
-   npm install
-   npm run db:migrate
-   npm run dev
-   ```
+### Características Principales
 
-4. In another terminal, start the front end:
+- ✅ Gestión de órdenes médicas con API para EPS
+- ✅ Reservas inteligentes con horarios disponibles
+- ✅ Seguimiento de inventario en tiempo real
+- ✅ Arquitectura multi-tenant (aislamiento de datos por organización)
+- ✅ Integración con APIs externas de farmacias
+- ✅ Sistema de notificaciones automáticas
+- ✅ Auditoría completa de todas las acciones
+- ✅ Control de acceso basado en roles
 
-   ```bash
-   cd frontend
-   npm install
-   npm run dev
-   ```
+## Autores
 
-The API listens on `http://localhost:4000` and the web app on
-`http://localhost:5173`. `GET /health` verifies the API and the database
-connection.
+Este proyecto fue desarrollado por:
 
-The front end reads `VITE_API_BASE_URL` and falls back to
-`http://localhost:4000/api`. If you serve the API from another origin, set that
-variable *and* add the front end's origin to `CORS_ORIGINS` in `backend/.env`.
+| Nombre | Rol |
+|--------|-----|
+| **Santiago Andres Rodriguez Manzano** | Arquitecto Principal & Desarrollo |
+| **Joseph David Herreño Theran** | Backend & Diseño de API |
+| **Mateo Andrés Múnera Opina** | Frontend & UI/UX |
+| **Daniel Alexander Arciniegas Púa** | Base de Datos |
+| **Felipe Beltrán** | Integración & Testing |
 
-### Demo data
+## Stack Técnico
 
-On a **fresh docker compose up**, all demo data is loaded automatically:
+- **Backend**: Node.js + Express.js
+- **Base de Datos**: PostgreSQL
+- **Frontend**: Vanilla JS + Vite + Tailwind CSS
+- **Contenedores**: Docker & Docker Compose
+- **Autenticación**: JWT + bcrypt
+- **Documentación**: OpenAPI 3.0 (Swagger)
+- **Seguridad**: Helmet.js, CORS, rate limiting, auditoría
+
+## Instalación Rápida
+
+### 1. Inicia la base de datos (auto-ejecuta migraciones y seeds)
 
 ```bash
 docker compose up -d
-# Wait for Postgres to finish initialization (~3 seconds)
-# Demo accounts are now ready
 ```
 
-If you prefer to seed manually or on an existing database:
+### 2. Inicia el backend
 
 ```bash
 cd backend
-npm run db:seed:demo
+cp .env.example .env
+npm install
+npm run dev
 ```
 
-This is idempotent and never deletes anything. Password for all four accounts is `Admin1234`:
+API en `http://localhost:4000` | Documentación en `http://localhost:4000/api/docs`
 
-| Role | Email | Sees |
+### 3. Inicia el frontend (otra terminal)
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Frontend en `http://localhost:5173`
+
+## Cuentas de Demo
+
+Todas tienen contraseña `Admin1234`:
+
+| Rol | Email | Acceso |
 | --- | --- | --- |
-| Admin | `admin@pharmalink.local` | Everything |
-| Patient | `paciente@pharmalink.local` | 3 orders (one already expired) |
-| Pharmacy | `farmacia@pharmalink.local` | Farmacia Central Demo only |
+| Admin | `admin@pharmalink.local` | Sistema completo |
+| Paciente | `paciente@pharmalink.local` | 3 órdenes, reservas |
+| Farmacia | `farmacia@pharmalink.local` | Farmacia Central Demo |
 | EPS | `eps@pharmalink.local` | EPS Demo |
 
-It also adds a second pharmacy (Farmacia Norte Demo) that the operator is *not*
-assigned to, so the 403 isolation is visible, and leaves MED-003 at 5 units in
-Farmacia Central to trigger the low-stock alert.
+## Flujo de Prueba
 
-`scripts/seed-demo.sql` lives outside `db/`, so neither the Docker entrypoint nor
-`npm run db:migrate` will ever load these accounts into a real database.
+1. Como **EPS**, emite una orden para el documento `1020304050` (paciente demo)
+2. Como **Paciente**, ve *Reservar*: selecciona la orden, una farmacia, fecha y horario
+3. Como **Farmacia**, confirma la entrega en *Entregas* → stock se reduce, orden cierra
 
-### Test flow
+## Documentación
 
-1. As **EPS**, issue an order for document `1020304050` (the demo patient).
-2. As **Patient**, open *Reservar*: pick the order, a pharmacy (only the ones
-   that can serve it in full are selectable), a date and a slot.
-3. As **Pharmacy**, confirm the delivery in *Entregas*. The stock drops and the
-   order closes as `DELIVERED`.
+- **[README en Inglés →](README_EN.md)** — Documentación técnica completa en inglés (B1)
+- **[API Integration Examples](docs/API_INTEGRATION_EXAMPLES.md)** — Patrones EPS y APIs externas
+- **[Integration Testing Guide](docs/INTEGRATION_TESTING.md)** — Testing demo y producción
+- **[Swagger / OpenAPI](http://localhost:4000/api/docs)** — Documentación interactiva
 
-To do this from scratch instead: an admin must register the EPS, the pharmacies
-and the medicines, associate each EPS with its pharmacies (**Farmacias →
-Asociar EPS y farmacia** — without that link a patient cannot reserve anywhere),
-and the pharmacy must set its working hours (**Perfil**), which define the
-appointment grid.
-
-> On a brand-new Docker volume, `db/01_ddl.sql` and the additive migrations run
-> automatically. `npm run db:migrate` is what brings an **existing** database up
-> to date; it is idempotent, so running it twice is safe.
-
-## Documentation
-
-Interactive API docs (OpenAPI 3.0) at **`http://localhost:4000/api/docs`**; the
-raw spec is at `/api/docs.json`. Use the *Authorize* button to paste a JWT.
-
-### Integration Guides
-
-- **[API Integration Examples](docs/API_INTEGRATION_EXAMPLES.md)** — How external systems (EPS, pharmacies) integrate with PharmaLink:
-  - EPS sending prescription orders via `X-API-Key` authentication
-  - PharmaLink consuming external pharmacy inventory APIs
-  - Contract specifications and example payloads
-  
-- **[Integration Testing Guide](docs/INTEGRATION_TESTING.md)** — Test both demo (internal inventory) and production (external API) modes:
-  - Quick start for testing with the mock pharmacy server
-  - Failure scenario testing (out of stock, auth errors, timeouts)
-  - Configuration patterns for different environments
-  
-- **Example code** in `docs/examples/`:
-  - `eps-api-client.sh` — Bash script to test EPS API calls
-  - `eps-api-client.js` — Node.js EPS client implementation
-  - `mock-pharmacy-server.js` — Mock pharmacy API for development/testing
-  - `pharmacy-inventory-client.js` — Client library for pharmacy inventory API
-
-## Architecture
+## Arquitectura
 
 ```
-backend/
-  app.js                  Express wiring: security, logging, routes, error handling
-  scripts/                migrate.js, seed-roles.js
-  src/
-    config/               env, db, cors, roles, logger, swagger
-    routes/               HTTP routing + validation + authorization + @openapi docs
-    controllers/          HTTP <-> service translation only
-    services/             business rules and transactions
-    repositories/         SQL
-    middleware/           auth, roles, validation, pharmacy/EPS scoping, audit, errors, rate limit
-    validators/           express-validator rules per endpoint
-    utils/                ApiError, response envelope, asyncHandler, transactions, dates
+backend/                        Node.js + Express API
+├── src/config                  Configuración: base de datos, logger, swagger
+├── src/middleware              Autenticación, validación, rate limiting
+├── src/routes                  Endpoints HTTP
+├── src/controllers             Traducción request/response
+├── src/services                Lógica de negocio
+├── src/repositories            Consultas SQL
+└── src/utils                   Utilidades: errores, respuestas
+
+frontend/                       Vanilla JS + Vite + Tailwind
+├── src/services/               API client, autenticación, sesión
+└── src/views/                  Templates HTML, componentes
+
 db/
-  01_ddl.sql              from-scratch schema (Docker entrypoint, fresh volume only)
-  02_migrations.sql       additive, idempotent migrations (02..14 merged)
-  03_seed_demo.sql        development-only demo data (runs on fresh volumes)
-
-frontend/
-  src/
-    app.js                entry point
-    router.js             role-guarded client-side routing
-    services/
-      api.js              fetch client: bearer token, envelope, 401 handling
-      session.js          user + token + cached /me context
-      auth.js             login, register, loadContext
-      roles.js            role names, home route and access rules
-      patient.js | pharmacy.js | eps.js | admin.js | notifications.js
-    views/
-      components.js       design system (roleShell, statCard, tables, states...)
-      shell.js            shared panel chrome (user card, logout, quick links)
-      patientRoutesView.js | pharmacyRoutesView.js
-      epsRoutesView.js     | adminRoutesView.js
-      loginView.js | registerView.js | ladingpage.js | welcomePage.js
+├── 01_ddl.sql                 Schema inicial (tablas, índices, constraints)
+├── 02_migrations.sql          Migraciones aditivas (idempotentes)
+└── 03_seed_demo.sql           Datos demo (auto-cargados en primer run)
 ```
-
-Views build HTML with template literals, so any value coming from the API must
-go through `escapeHtml` from `components.js`.
 
 ## Response format
 
