@@ -106,6 +106,7 @@ backend/
 db/
   01_ddl.sql              from-scratch schema (Docker entrypoint, fresh volume only)
   02_migrations.sql       additive, idempotent migrations (02..14 merged)
+  03_seed_demo.sql        development-only demo data (runs on fresh volumes)
 
 frontend/
   src/
