@@ -448,6 +448,28 @@ const definition = {
   },
   // Applied to every operation unless overridden (e.g. login, EPS integration).
   security: [{ bearerAuth: [] }],
+  externalDocs: {
+    description: 'Additional usage notes: demo credentials, rate limits, and how seeds are applied on first docker init',
+    url: 'https://github.com/sntiago05/pharma-link#local-setup',
+  },
+  // Extra human-readable notes exposed in the spec for quick reference
+  'x-extra-info': {
+    demoAccounts: {
+      password: 'Admin1234',
+      accounts: [
+        { email: 'admin@pharmalink.local', role: 'ADMIN' },
+        { email: 'paciente@pharmalink.local', role: 'PATIENT' },
+        { email: 'farmacia@pharmalink.local', role: 'PHARMACY_OPERATOR' },
+        { email: 'eps@pharmalink.local', role: 'EPS_OPERATOR' }
+      ],
+      epsApiKey: 'eps-demo-key'
+    },
+    notes: [
+      'When starting with a brand-new Postgres volume, db/01_ddl.sql, db/02_migrations.sql and db/03_seed_demo.sql are executed automatically by the Postgres entrypoint.',
+      'Auth endpoints are rate-limited. Failed auth attempts count against the quota and may return 429.',
+      'Rate limit headers exposed: RateLimit-Limit, RateLimit-Remaining, RateLimit-Reset.'
+    ]
+  }
 };
 
 export const swaggerSpec = swaggerJsdoc({
