@@ -105,8 +105,7 @@ backend/
     utils/                ApiError, response envelope, asyncHandler, transactions, dates
 db/
   01_ddl.sql              from-scratch schema (Docker entrypoint, fresh volume only)
-  02_improvements.sql     notifications, audit_logs, indexes  (idempotent)
-  03_user_eps.sql         EPS operator <-> EPS link            (idempotent)
+  02_migrations.sql       additive, idempotent migrations (02..14 merged)
 
 frontend/
   src/
