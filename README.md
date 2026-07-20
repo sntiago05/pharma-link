@@ -40,16 +40,22 @@ variable *and* add the front end's origin to `CORS_ORIGINS` in `backend/.env`.
 
 ### Demo data
 
-Registration only ever creates patients, and there is no UI to create operators
-or link them to an organisation, so testing the other roles needs a seed:
+On a **fresh docker compose up**, all demo data is loaded automatically:
+
+```bash
+docker compose up -d
+# Wait for Postgres to finish initialization (~3 seconds)
+# Demo accounts are now ready
+```
+
+If you prefer to seed manually or on an existing database:
 
 ```bash
 cd backend
 npm run db:seed:demo
 ```
 
-It is idempotent and never deletes anything. Password for all four accounts is
-`Admin1234`:
+This is idempotent and never deletes anything. Password for all four accounts is `Admin1234`:
 
 | Role | Email | Sees |
 | --- | --- | --- |
@@ -87,6 +93,24 @@ appointment grid.
 
 Interactive API docs (OpenAPI 3.0) at **`http://localhost:4000/api/docs`**; the
 raw spec is at `/api/docs.json`. Use the *Authorize* button to paste a JWT.
+
+### Integration Guides
+
+- **[API Integration Examples](docs/API_INTEGRATION_EXAMPLES.md)** — How external systems (EPS, pharmacies) integrate with PharmaLink:
+  - EPS sending prescription orders via `X-API-Key` authentication
+  - PharmaLink consuming external pharmacy inventory APIs
+  - Contract specifications and example payloads
+  
+- **[Integration Testing Guide](docs/INTEGRATION_TESTING.md)** — Test both demo (internal inventory) and production (external API) modes:
+  - Quick start for testing with the mock pharmacy server
+  - Failure scenario testing (out of stock, auth errors, timeouts)
+  - Configuration patterns for different environments
+  
+- **Example code** in `docs/examples/`:
+  - `eps-api-client.sh` — Bash script to test EPS API calls
+  - `eps-api-client.js` — Node.js EPS client implementation
+  - `mock-pharmacy-server.js` — Mock pharmacy API for development/testing
+  - `pharmacy-inventory-client.js` — Client library for pharmacy inventory API
 
 ## Architecture
 
