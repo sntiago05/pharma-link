@@ -70,7 +70,7 @@ export const createEpsOrder = async ({
     const order = await client.query(
       `INSERT INTO medical_orders (patient_id, eps_id, order_number, issue_date, expiration_date, status)
        VALUES ($1, $2, $3, $4, $5, 'PENDING') RETURNING *`,
-      [patient.id, epsId, orderNumber, issueDate, expirationDate],
+      [patient.id, epsId, "order3", issueDate, expirationDate],
     );
 
     for (const detail of details) {

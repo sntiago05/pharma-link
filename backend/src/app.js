@@ -5,25 +5,6 @@ import jwt from 'jsonwebtoken';
 import { env } from './config/env.js';
 import { logger } from './config/logger.js';
 
-const users = [
-  {
-    id: 1,
-    fullName: 'Administrador',
-    email: 'admin@pharmalink.com',
-    passwordHash: bcrypt.hashSync('123456', 12),
-    role: 'ADMIN',
-    active: true,
-  },
-  {
-    id: 2,
-    fullName: 'Usuario de prueba',
-    email: 'usuario@pharmalink.com',
-    passwordHash: bcrypt.hashSync('123456', 12),
-    role: 'USUARIO',
-    active: true,
-  },
-];
-
 function createToken(user) {
   if (!env.jwt.secret) {
     throw new Error('JWT_SECRET is not configured.');
