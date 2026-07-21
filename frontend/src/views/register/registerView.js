@@ -86,7 +86,7 @@ export function renderRegister({ navigate }) {
       fullname: document.getElementById("fullname").value,
       email,
       password,
-      document: document.value,
+      document: String(document.value),
       phone: phone.value
     });
 

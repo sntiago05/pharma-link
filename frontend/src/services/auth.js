@@ -43,6 +43,7 @@ export async function registerUser(data) {
 
     return { success: true, user: created.user };
   } catch (error) {
+    console.log(error.detail);
     return {
       success: false,
       message: error instanceof ApiError ? error.detail : "No se pudo crear la cuenta."
