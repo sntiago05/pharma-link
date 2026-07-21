@@ -1,0 +1,125 @@
+import { loadContext, login } from "../../services/auth.js";
+import { homeFor } from "../../services/roles.js";
+
+function loginTemplate() {
+  return `
+  <main class="relative flex min-h-screen items-center justify-center bg-slate-50 px-4 py-8">
+    <a href="/" class="absolute left-4 top-4 z-10 inline-flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-md transition hover:bg-slate-100 sm:left-6 sm:top-6" aria-label="Volver a la página principal">
+      <img class="h-7 w-7" src="/img/Back.png" alt="" />
+    </a>
+    <section class="relative w-full max-w-[390px] overflow-hidden lg:max-w-[700px] lg:rounded-[32px] lg:bg-white lg:px-6 lg:py-8 lg:shadow-xl lg:ring-1 lg:ring-slate-200">
+      <header class="mb-10 text-center">
+        <img src="/img/logo%20horizontal.png" alt="Pharma Link logo" class="mx-auto h-14 w-26" />
+      </header>
+
+      <div class="mb-10 flex justify-center">
+        <img
+          src="/img/loginImg.png"
+          alt="Illustración de salud y farmacia"
+          class="h-44 w-44 rounded-full bg-slate-100 object-cover"
+        />
+      </div>
+
+      <div class="mb-8 text-center">
+        <h1 class="text-2xl font-semibold text-slate-900">Join Pharma <span class="text-teal-900">Link</span></h1>
+        <p class="mt-2 text-sm text-slate-500">Inicia sesión para acceder a tu tablero y gestionar tu farmacia.</p>
+      </div>
+
+      <form id="loginForm" class="space-y-5" method="post" novalidate>
+        <div class="space-y-2">
+          <label for="email" class="block text-sm font-medium text-slate-700">Email or ID</label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            autocomplete="email"
+            placeholder="nombre@correo.com"
+            required
+            class="w-full rounded-sm border border-neutral-300 bg-transparent px-3 py-3 text-sm text-slate-900 outline-none focus:border-teal-700 focus:ring-2 focus:ring-teal-100"
+          />
+        </div>
+
+        <div class="space-y-2">
+          <label for="password" class="block text-sm font-medium text-slate-700">Password</label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            autocomplete="current-password"
+            placeholder="Ingresa tu contraseña"
+            required
+            class="w-full rounded-sm border border-neutral-300 bg-transparent px-3 py-3 text-sm text-slate-900 outline-none focus:border-teal-700 focus:ring-2 focus:ring-teal-100"
+          />
+        </div>
+
+        <p class="text-right">
+          <a href="/forgot-password" class="text-sm font-medium text-emerald-800 hover:text-emerald-600">
+            ¿Olvidaste tu contraseña?
+          </a>
+        </p>
+
+        <button
+          type="submit"
+          class="flex h-12 w-full items-center justify-center rounded-[28px] bg-gradient-to-r from-[#0D4D44] to-[#059E3E] text-sm font-semibold text-white shadow-lg shadow-emerald-900/10 transition hover:opacity-95"
+        >
+          LOGIN
+        </button>
+
+        <p id="errorMessage" class="min-h-5 text-center text-sm font-medium text-red-600"></p>
+      </form>
+
+      <p class="mt-6 text-center text-sm text-slate-500">
+        Don't have an account?
+        <a id="signupLink" href="/register" class="font-semibold text-emerald-800 hover:text-emerald-600">Sign up</a>
+      </p>
+    </section>
+  </main>
+  `;
+}
+
+export function renderLogin({ navigate }) {
+  document.getElementById("app").innerHTML = loginTemplate();
+
+  document.getElementById("signupLink").addEventListener("click", (event) => {
+    event.preventDefault();
+    navigate("/register");
+  });
+
+  const form = document.getElementById("loginForm");
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const errorMessage = document.getElementById("errorMessage");
+    const submitButton = form.querySelector("button[type=submit]");
+
+    errorMessage.textContent = "";
+    submitButton.disabled = true;
+    submitButton.textContent = "INGRESANDO...";
+
+    // `login` stores both the user and the token; the token used to be dropped
+    // here, which left every later request unauthenticated.
+    const result = await login(email, password);
+
+    if (!result.success) {
+      errorMessage.textContent = result.message;
+      submitButton.disabled = false;
+      submitButton.textContent = "LOGIN";
+      return;
+    }
+
+    // Resolve which pharmacy / EPS / patient profile this user is attached to.
+    // A failure here is not fatal: each panel reloads its own context.
+    try {
+      await loadContext();
+    } catch (error) {
+      console.warn("No se pudo cargar el contexto de sesión:", error);
+    }
+
+    // Route by the role the backend actually returned, instead of assuming
+    // "not ADMIN" means patient — that sent operators to the patient panel.
+    navigate(homeFor(result.user.role));
+  });
+}
